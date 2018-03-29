@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Accordion?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.TitledPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" stylesheets="@styles.css" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="timetable.Controller">
+   <center>
+      <GridPane fx:id="gridPane" alignment="TOP_CENTER" gridLinesVisible="true">
+        <columnConstraints>
+            <ColumnConstraints hgrow="SOMETIMES" maxWidth="70" minWidth="10.0" prefWidth="100.0" />
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+        </columnConstraints>
+         <children>
+            <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="1">
+               <children>
+                  <Label text="Monday" textAlignment="CENTER" />
+               </children>
+            </HBox>
+            <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
+               <children>
+                  <Label text="Start" textAlignment="CENTER" />
+               </children>
+            </HBox>
+            <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="2">
+               <children>
+                  <Label text="Tuesday" textAlignment="CENTER" />
+               </children>
+            </HBox>
+            <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="3">
+               <children>
+                  <Label text="Wednesday" textAlignment="CENTER" />
+               </children>
+            </HBox>
+            <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="4">
+               <children>
+                  <Label text="Thursday" textAlignment="CENTER" />
+               </children>
+            </HBox>
+            <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="5">
+               <children>
+                  <Label text="Friday" textAlignment="CENTER" />
+               </children>
+            </HBox>
+         </children>
+         <rowConstraints>
+            <RowConstraints percentHeight="5" />
+         </rowConstraints>
+      </GridPane>
+   </center>
+   <right>
+      <Accordion BorderPane.alignment="CENTER">
+        <panes>
+          <TitledPane fx:id="studentGroupsTitledPane" animated="true" text="Studentgroups">
+               <content>
+                  <ListView fx:id="studentGroupsView" prefHeight="200.0" prefWidth="200.0" />
+               </content>
+          </TitledPane>
+          <TitledPane fx:id="teachersTitledPane" animated="true" prefHeight="425.0" prefWidth="144.0" text="Teachers">
+               <content>
+                  <ListView fx:id="teachersView" prefHeight="200.0" prefWidth="200.0" />
+               </content>
+          </TitledPane>
+          <TitledPane fx:id="locationsTitledPane" animated="true" text="Locations">
+               <content>
+                  <ListView fx:id="locationsView" prefHeight="200.0" prefWidth="200.0" />
+               </content>
+          </TitledPane>
+        </panes>
+      </Accordion>
+   </right>
+</BorderPane>

@@ -1,0 +1,47 @@
+.root{
+    -fx-font-size: 10pt;
+    -fx-font-family: "Consolas";
+    -fx-base: rgb(10, 10, 10);
+    -fx-background: rgb(10, 10, 10);
+}
+
+LectureContainer {
+    -fx-alignment: center;
+    -fx-border-style: solid inside;
+    -fx-border-color: black;
+    -fx-padding: 2;
+    -fx-border-width: 2;
+    -fx-border-insets: 2;
+    -fx-border-radius: 5;
+}
+
+LectureContainer Label {
+    -fx-alignment: center;
+    -fx-font-size: 14pt;
+    -fx-font-family: "Gabriola";
+}
+
+LectureContainer ScrollPane {
+    -fx-alignment: center;
+    -fx-background-color: transparent;
+}
+
+LectureContainer VBox {
+    -fx-alignment: center;
+}
+
+LectureRepresentation {
+    -fx-alignment: center;
+}
+
+.correctlecture {
+    -fx-border-color: #002d00;
+}
+
+.incorrectlecture {
+    -fx-border-color: #2d0000;
+}
+
+GridPane {
+    -fx-stroke: #ffffff;
+}

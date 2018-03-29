@@ -1,0 +1,14 @@
+Voor lessen plaatsen:
+loop over lessen
+    check voor elke les, als er nog geen container staat, plaats er dan 1
+    Voeg les toe aan de container. In de toevoeg methode in Container moet staan dat alles opnieuw getoond wordt
+                                    Zelfde voor de verwijdermethode
+    Hou lijst bij van alle Containers in de Controller
+    voor het toevoegen van lessen, overloop die lijst en verwijder uit elke container alle lessen
+
+Controller:
+- hbox van lectures = hbox van lectureDTOs
+- in toon() maakt hij voor alle lectures een hbox en steekt die in de vbox
+- rij en kolom positie
+- lijst lectures
+- plaatst lectures in vbox en vbox op juiste plaats
