@@ -27,7 +27,7 @@ public class Controller {
         containerMap = new HashMap<>();
     }
 
-    public void initializeGrid(){
+    private void initializeGrid(){
         List<String> startUren = new SQLiteDataAccessProvider().getDataAccessContext().getPeriodDAO().getStartTimes();
         // Rijen invoegen met juiste hoogte
         int aantalRijen = startUren.size();
@@ -49,7 +49,7 @@ public class Controller {
         }
     }
 
-    public void initializeViews(){
+    private void initializeViews(){
         List<TeacherDTO> teachers = new SQLiteDataAccessProvider().getDataAccessContext().getTeacherDAO().getTeachers();
         teachersView.getItems().setAll(teachers);
         teachersView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> updateTableContents("teacher_id", teachersView.getSelectionModel().getSelectedItem().getId()));

@@ -10,10 +10,12 @@ import database.interfaces.TeacherDAO;
 import database.interfaces.implementations.SQLiteDataAccessProvider;
 import database.interfaces.implementations.SQLiteTeacherDAO;
 import javafx.application.Application;
+import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.layout.Pane;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 
@@ -23,13 +25,19 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception{
-        Parent root = FXMLLoader.load(getClass().getResource("sample.fxml"));
+        FXMLLoader loader = new FXMLLoader();
 
-        Application.Parameters param = getParameters();
-        List<String> parameterlijst = param.getRaw();
+        Parent root = loader.load(getClass().getResource("sample.fxml"));
         primaryStage.setTitle("Timetable");
         primaryStage.setScene(new Scene(root));
         setFullScreen(primaryStage);
+
+        Controller nick = loader.getController();
+        if (nick == null){
+            System.out.println("fuk");
+        }
+
+        List<String> parameterlijst = getParameters().getRaw();
         startWithParameters(parameterlijst);
         primaryStage.show();
     }
@@ -50,7 +58,7 @@ public class Main extends Application {
         if (param.size() == 1){
             printInfo(param);
         } else if (param.size() == 2){
-            //showStartData(param);
+            showStartData(param);
         } else if (param.size() == 3){
             //showStartData(param);
             //takeScreenshot();
@@ -63,17 +71,20 @@ public class Main extends Application {
     public void showStartData(List<String> param){
         String columnName = param.get(0) + "_id";
         String name = param.get(1);
+        int id = 0;
 
         DataAccessContext context = new SQLiteDataAccessProvider().getDataAccessContext();
         if (param.get(0).equals("teacher")){
             TeacherDAO dao = context.getTeacherDAO();
-            int id = dao.getTeachersByName(name).get(0).getId();
+             id = dao.getTeachersByName(name).get(0).getId();
+            //controller klasse opvragen
+
         } else if (param.get(0).equals("students")){
             StudentGroupDAO dao = context.getStudentDAO();
-            int id = dao.getStudentGroupsByName(name).get(0).getId();
+             id = dao.getStudentGroupsByName(name).get(0).getId();
         } else if (param.get(0).equals("location")){
             LocationDAO dao = context.getLocationDAO();
-            int id = dao.getLocationsByName(name).get(0).getId();
+             id = dao.getLocationsByName(name).get(0).getId();
         } else {
             //invalidArguments();
         }

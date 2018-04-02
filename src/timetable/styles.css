@@ -17,7 +17,7 @@ LectureContainer {
 
 LectureContainer Label {
     -fx-alignment: center;
-    -fx-font-size: 14pt;
+    -fx-font-size: 10pt;
     -fx-font-family: "Gabriola";
 }
 
@@ -35,13 +35,9 @@ LectureRepresentation {
 }
 
 .correctlecture {
-    -fx-border-color: #002d00;
+    -fx-border-color: #09bc20;
 }
 
 .incorrectlecture {
-    -fx-border-color: #2d0000;
-}
-
-GridPane {
-    -fx-stroke: #ffffff;
+    -fx-border-color: #f90000;
 }

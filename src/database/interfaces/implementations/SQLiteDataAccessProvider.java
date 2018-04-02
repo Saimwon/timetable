@@ -9,7 +9,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
 public class SQLiteDataAccessProvider implements DataAccessProvider{
-    private static String dbConnectionString = "jdbc:sqlite:project_db";
+    private static String dbConnectionString = "jdbc:sqlite:new_db";
 
     public Connection makeConnection(){
         try {
