@@ -18,6 +18,8 @@ public class LectureRepresentation extends VBox {
 
     public LectureRepresentation(String name1, String profName1){
         this.getStyleClass().add("lecture");
+        //this.setAlignment(Pos.CENTER);
+        this.
         infoList = new ArrayList<>();
         infoList.add(name1);
         infoList.add(profName1);
@@ -27,6 +29,7 @@ public class LectureRepresentation extends VBox {
     private void initialize(){
         for (String info : infoList){
             Label lab =  new Label(info);
+            //lab.setAlignment(Pos.CENTER);
             getChildren().add(lab);
         }
     }
