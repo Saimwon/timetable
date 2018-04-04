@@ -1,3 +1,7 @@
+/*
+Van Braeckel Simon
+ */
+
 package timetable;
 
 import database.DTO.LocationDTO;
@@ -64,7 +68,9 @@ public class Main extends Application {
     }
 
     public void startWithParameters(List<String> param, Scene scene){
-        if (param.size() == 1){
+        if (param.size() == 0) {
+            //doe niets
+        } else if (param.size() == 1){
             printInfo(param);
         } else if (param.size() == 2){
             showStartData(param);
@@ -91,7 +97,7 @@ public class Main extends Application {
     }
 
     private void error(){
-        System.out.println("Incorrect start parameters.");
+        System.out.println("There was an error in handling your start parameters.");
         Platform.exit();
     }
 
@@ -137,6 +143,7 @@ public class Main extends Application {
         } else {
             error();
         }
+
     }
 
     public void printInfo(List<String> param){

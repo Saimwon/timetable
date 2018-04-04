@@ -1,3 +1,7 @@
+/*
+Van Braeckel Simon
+ */
+
 package database.interfaces;
 /*
 Interface waarmee alle interactie met de location tabel in de DB gebeurt

@@ -1,3 +1,7 @@
+/*
+Van Braeckel Simon
+ */
+
 package database.interfaces.implementations;
 
 import database.DTO.TeacherDTO;

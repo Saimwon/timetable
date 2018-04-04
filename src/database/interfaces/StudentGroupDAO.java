@@ -1,3 +1,7 @@
+/*
+Van Braeckel Simon
+ */
+
 package database.interfaces;
 
 import database.DTO.StudentGroupDTO;

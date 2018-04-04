@@ -1,3 +1,7 @@
+/*
+Van Braeckel Simon
+ */
+
 package guielements;
 
 import javafx.geometry.Pos;

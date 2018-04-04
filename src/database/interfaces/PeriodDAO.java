@@ -1,3 +1,7 @@
+/*
+Van Braeckel Simon
+ */
+
 package database.interfaces;
 
 import java.util.List;

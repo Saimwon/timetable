@@ -1,3 +1,7 @@
+/*
+Van Braeckel Simon
+ */
+
 package database.interfaces;
 
 public interface DataAccessContext extends AutoCloseable {

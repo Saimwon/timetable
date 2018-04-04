@@ -1,3 +1,7 @@
+/*
+Van Braeckel Simon
+ */
+
 package database.interfaces.implementations;
 
 import database.interfaces.DataAccessContext;
@@ -9,7 +13,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
 public class SQLiteDataAccessProvider implements DataAccessProvider{
-    private static String dbConnectionString = "jdbc:sqlite:new_db";
+    private static String dbConnectionString = "jdbc:sqlite:src/timetable/lectures.db";
 
     public Connection makeConnection(){
         try {

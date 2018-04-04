@@ -1,3 +1,7 @@
+/*
+Van Braeckel Simon
+ */
+
 package timetable;
 
 import database.DTO.*;
@@ -5,6 +9,7 @@ import database.interfaces.LectureDAO;
 import database.interfaces.implementations.SQLiteDataAccessProvider;
 import guielements.LectureRepresentation;
 import guielements.LectureContainer;
+import guielements.MyTable;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
@@ -14,7 +19,7 @@ import javafx.scene.layout.RowConstraints;
 import java.util.*;
 
 public class Controller {
-    public GridPane gridPane;
+    public MyTable gridPane;
     public ListView<StudentGroupDTO> studentGroupsView;
     public ListView<TeacherDTO> teachersView;
     public ListView<LocationDTO> locationsView;
@@ -22,31 +27,10 @@ public class Controller {
     private Map<Integer, String> starthours;
 
     public void initialize(){
-        initializeGrid();
+        gridPane.initializeRows(new SQLiteDataAccessProvider().getDataAccessContext().getPeriodDAO().getStartTimes());
+
         initializeViews();
         containerMap = new HashMap<>();
-    }
-
-    private void initializeGrid(){
-        List<String> startUren = new SQLiteDataAccessProvider().getDataAccessContext().getPeriodDAO().getStartTimes();
-        // Rijen invoegen met juiste hoogte
-        int aantalRijen = startUren.size();
-        for (int i = 0; i < aantalRijen; i++) {
-            RowConstraints row = new RowConstraints();
-            row.setPercentHeight(95.0/aantalRijen);
-            row.setMaxHeight(95.0/aantalRijen);
-            gridPane.getRowConstraints().add(row);
-        }
-        // Juiste uren invullen
-        int teller = 1;
-        for (String startUur : startUren){
-            HBox uurHBox = new HBox();
-            uurHBox.setAlignment(Pos.CENTER);
-            uurHBox.getChildren().add(new Label(startUur));
-            gridPane.addRow(teller, uurHBox);
-            gridPane.getRowConstraints().add(new RowConstraints());
-            teller++;
-        }
     }
 
     private void initializeViews(){
