@@ -10,35 +10,44 @@ import database.interfaces.TeacherDAO;
 import database.interfaces.implementations.SQLiteDataAccessProvider;
 import database.interfaces.implementations.SQLiteTeacherDAO;
 import javafx.application.Application;
+import javafx.application.Platform;
+import javafx.embed.swing.SwingFXUtils;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.image.WritableImage;
 import javafx.scene.layout.Pane;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Main extends Application {
 
+    private Controller controller;
+
     @Override
     public void start(Stage primaryStage) throws Exception{
-        FXMLLoader loader = new FXMLLoader();
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("sample.fxml"));
 
-        Parent root = loader.load(getClass().getResource("sample.fxml"));
+        Parent root = loader.load();
         primaryStage.setTitle("Timetable");
-        primaryStage.setScene(new Scene(root));
+
+        Scene scene = new Scene(root);
+        primaryStage.setScene(scene);
         setFullScreen(primaryStage);
 
-        Controller nick = loader.getController();
-        if (nick == null){
-            System.out.println("fuk");
-        }
+        this.controller = loader.getController();
 
         List<String> parameterlijst = getParameters().getRaw();
-        startWithParameters(parameterlijst);
+        System.out.println(parameterlijst.size());
+        startWithParameters(parameterlijst, scene);
         primaryStage.show();
     }
 
@@ -54,18 +63,36 @@ public class Main extends Application {
         stage.setHeight(height);
     }
 
-    public void startWithParameters(List<String> param){
+    public void startWithParameters(List<String> param, Scene scene){
         if (param.size() == 1){
             printInfo(param);
         } else if (param.size() == 2){
             showStartData(param);
         } else if (param.size() == 3){
-            //showStartData(param);
-            //takeScreenshot();
+            showStartData(param);
+            takeScreenshot(scene, param.get(2));
         } else {
-            //geef foutboodschap
-            //crashofzo();
+            error();
         }
+    }
+
+    private void takeScreenshot(Scene scene, String destination){
+        WritableImage screenshot = scene.snapshot(null);
+        BufferedImage bufferedImage = SwingFXUtils.fromFXImage(screenshot, null);
+        File file = new File(destination);
+        try {
+            ImageIO.write(bufferedImage, "png", file);
+        } catch (Exception e){
+            System.out.println("Error writing screenshot to file.");
+            e.printStackTrace();
+            System.out.println();
+            error();
+        }
+    }
+
+    private void error(){
+        System.out.println("Incorrect start parameters.");
+        Platform.exit();
     }
 
     public void showStartData(List<String> param){
@@ -76,19 +103,40 @@ public class Main extends Application {
         DataAccessContext context = new SQLiteDataAccessProvider().getDataAccessContext();
         if (param.get(0).equals("teacher")){
             TeacherDAO dao = context.getTeacherDAO();
-             id = dao.getTeachersByName(name).get(0).getId();
-            //controller klasse opvragen
 
+            List<TeacherDTO> results = dao.getTeachersByName(name);
+            if (results.isEmpty()){
+                System.out.println("No results found for " + param.get(1));
+                error();
+            } else {
+                id = results.get(0).getId();
+                controller.updateTableContents(columnName, id);
+            }
         } else if (param.get(0).equals("students")){
             StudentGroupDAO dao = context.getStudentDAO();
-             id = dao.getStudentGroupsByName(name).get(0).getId();
+
+            List<StudentGroupDTO> results = dao.getStudentGroupsByName(name);
+            if (results.isEmpty()){
+                System.out.println("No results found for " + param.get(1));
+                error();
+            } else {
+                id = results.get(0).getId();
+                controller.updateTableContents(columnName, id);
+            }
         } else if (param.get(0).equals("location")){
             LocationDAO dao = context.getLocationDAO();
-             id = dao.getLocationsByName(name).get(0).getId();
-        } else {
-            //invalidArguments();
-        }
 
+            List<LocationDTO> results = dao.getLocationsByName(name);
+            if (results.isEmpty()){
+                System.out.println("No results found for " + param.get(1));
+                error();
+            } else {
+                id = results.get(0).getId();
+                controller.updateTableContents(columnName, id);
+            }
+        } else {
+            error();
+        }
     }
 
     public void printInfo(List<String> param){
@@ -114,7 +162,7 @@ public class Main extends Application {
                 System.out.println(loc.getName());
             }
         } else {
-            //error();
+            error();
         }
     }
 
