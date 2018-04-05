@@ -10,11 +10,9 @@ import database.interfaces.implementations.SQLiteDataAccessProvider;
 import guielements.LectureRepresentation;
 import guielements.LectureContainer;
 import guielements.MyTable;
-import javafx.geometry.Pos;
 import javafx.scene.control.*;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.RowConstraints;
 
 import java.util.*;
 
@@ -25,8 +23,11 @@ public class Controller {
     public ListView<LocationDTO> locationsView;
     private Map<String, LectureContainer> containerMap;
     private Map<Integer, String> starthours;
+    //veld dat geselecteeerde lecture bijhoudt
+    private LectureRepresentation selected;
 
     public void initialize(){
+        selected = null;
         gridPane.initializeRows(new SQLiteDataAccessProvider().getDataAccessContext().getPeriodDAO().getStartTimes());
 
         initializeViews();
@@ -77,7 +78,18 @@ public class Controller {
 
                 //zet lecture in container
                 String teachname = new SQLiteDataAccessProvider().getDataAccessContext().getTeacherDAO().getTeacherByID(lec.getTeacher_id()).getName();
-                LectureRepresentation lectureRepresentation = new LectureRepresentation(lec.getCourse(), teachname);
+                LectureRepresentation lectureRepresentation = new LectureRepresentation(lec.getCourse(), teachname, lec);
+
+                lectureRepresentation.addEventFilter(MouseEvent.MOUSE_PRESSED, event -> {
+                    System.out.println("klik gedetecteerd");
+                    //verwijder
+                    if (selected != null) {
+                        selected.getStyleClass().remove("selectedlecture");
+                    }
+                    selected = (LectureRepresentation) event.getSource();
+                    selected.getStyleClass().add("selectedlecture");
+                });
+
                 container.addLecture(lectureRepresentation);
                 container.notifyOfChange();
             }

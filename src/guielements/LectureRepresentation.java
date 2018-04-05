@@ -4,10 +4,8 @@ Van Braeckel Simon
 
 package guielements;
 
-import javafx.geometry.Pos;
+import database.DTO.LectureDTO;
 import javafx.scene.control.Label;
-import javafx.scene.control.ScrollPane;
-import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 
 import java.util.ArrayList;
@@ -15,8 +13,10 @@ import java.util.List;
 
 public class LectureRepresentation extends VBox {
     private List<String> infoList;
+    private LectureDTO lectureDTO;
 
-    public LectureRepresentation(String name1, String profName1){
+    public LectureRepresentation(String name1, String profName1, LectureDTO lectureDTO){
+        this.lectureDTO = lectureDTO;
         this.getStyleClass().add("lecture");
         //this.setAlignment(Pos.CENTER);
         this.
@@ -26,11 +26,23 @@ public class LectureRepresentation extends VBox {
         initialize();
     }
 
+    public String getCourse(){
+        return infoList.get(0);
+    }
+
     private void initialize(){
         for (String info : infoList){
             Label lab =  new Label(info);
-            //lab.setAlignment(Pos.CENTER);
             getChildren().add(lab);
         }
+    }
+
+    public LectureDTO getLectureDTO() {
+        return lectureDTO;
+    }
+
+
+    public void setLectureDTO(LectureDTO lec) {
+        this.lectureDTO = lec;
     }
 }

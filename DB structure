@@ -147,4 +147,5 @@ insert into lecture values (1, 1, 3, "Programmeren", 1, 5, 2)
                          , (1, 9, 6, "Logisch programmeren", 4, 2, 6)
                          , (1, 3, 34, "Computationele biologie", 5, 1, 2)
                          , (1, 19, 7, "Automaten, berekenbaarheid en complexiteit", 2, 5, 2)
+                         , (3, 19, 7, "Klootzak.", 2, 5, 2)
                          ;

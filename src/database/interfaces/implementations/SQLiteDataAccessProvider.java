@@ -13,7 +13,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
 public class SQLiteDataAccessProvider implements DataAccessProvider{
-    private static String dbConnectionString = "jdbc:sqlite:src/timetable/lectures.db";
+    private static String dbConnectionString = "jdbc:sqlite::resource:timetable/lectures.db";
 
     public Connection makeConnection(){
         try {
