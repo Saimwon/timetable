@@ -4,7 +4,7 @@ Van Braeckel Simon
 
 package database.DTO;
 
-public class LectureDTO extends DTO{
+public class LectureDTO{
 
     private int student_id;
     private int teacher_id;

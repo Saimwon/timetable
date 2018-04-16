@@ -8,4 +8,6 @@ import java.sql.Connection;
 
 public interface DataAccessProvider {
     public DataAccessContext getDataAccessContext();
+    public void setDbConnectionString(String path);
+    public String getDbConnectionString();
 }

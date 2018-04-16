@@ -5,6 +5,7 @@ Van Braeckel Simon
 package database.interfaces.implementations;
 
 import database.DTO.StudentGroupDTO;
+import database.interfaces.SimpleDAO;
 import database.interfaces.StudentGroupDAO;
 
 import java.sql.Connection;
@@ -16,12 +17,13 @@ import java.util.List;
 
 public class SQLiteStudentGroupDAO implements StudentGroupDAO{
     private Connection conn;
+    private String tablename = "students";
     public SQLiteStudentGroupDAO(Connection conn){
         this.conn = conn;
     }
 
     public List<StudentGroupDTO> getStudentGroups(){
-        try (PreparedStatement statement = conn.prepareStatement("select * from students order by name")){
+        try (PreparedStatement statement = conn.prepareStatement("select * from " + tablename + " order by name COLLATE NOCASE")){
             ResultSet resultSet = statement.executeQuery();
             return verwerkResultaat(resultSet);
         } catch (SQLException e){
@@ -31,7 +33,7 @@ public class SQLiteStudentGroupDAO implements StudentGroupDAO{
     }
 
     public List<StudentGroupDTO> getStudentGroupsByName(String name){
-        try (PreparedStatement statement = conn.prepareStatement("select * from students where name = ?")){
+        try (PreparedStatement statement = conn.prepareStatement("select * from " + tablename + " where name = ?")){
             statement.setString(1, name);
             ResultSet resultSet = statement.executeQuery();
             return verwerkResultaat(resultSet);
@@ -52,5 +54,40 @@ public class SQLiteStudentGroupDAO implements StudentGroupDAO{
             return null;
         }
         return result;
+    }
+
+    @Override
+    public boolean addEntry(String name){
+        //Check of er al iemand is met die naam, zo ja -> error
+        if (name.isEmpty() || ! getStudentGroupsByName(name).isEmpty()){
+            return false;
+        }
+
+        //Voeg nieuwe entry toe aan DB
+        try (PreparedStatement statement = conn.prepareStatement(
+                "INSERT INTO " + tablename + "(name) VALUES (?)"
+        )) {
+            statement.setString(1, name);
+            statement.executeUpdate();
+        } catch (SQLException ex) {
+            System.out.println("could not add entry");
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public boolean renameEntry(int id, String newName){
+        //Voeg nieuwe entry toe aan DB
+        try (PreparedStatement statement = conn.prepareStatement(
+                "UPDATE " + tablename + " SET name = ? WHERE id = ?")) {
+            statement.setString(1, newName);
+            statement.setInt(2, id);
+            statement.executeUpdate();
+        } catch (SQLException ex) {
+            System.out.println("Failed to rename entry");
+            return false;
+        }
+        return true;
     }
 }

@@ -49,6 +49,7 @@ insert into teacher values (1, "Kris Coolsaet")
                          , (20, "Bart Dhoedt")
                          ;
 
+
 insert into location values (1, "Sterre, S9, A0")
                           , (2, "Sterre, S9, A1")
                           , (3, "Sterre, S9, A2")

@@ -1,6 +1,5 @@
 Het fullscreen maken van de window in main kan mss op een betere plaats
 Exceptions moeten beter opgevangen worden
 
-Alle DAO implementaties zijn bijna hetzelfde.
-
-Meer data tonen
+ALLE DAO IPLMENENTATIES ZIJN BIJNA HETZELFDE
+Error geven bij toevoegen of aanpassen van persoon is heel lelijk

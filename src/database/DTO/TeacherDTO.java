@@ -4,13 +4,19 @@ Van Braeckel Simon
 
 package database.DTO;
 
-public class TeacherDTO extends DTO{
+public class TeacherDTO implements SimpleDTO {
+    private static String tableName = "teacher";
     private int id;
     private String name;
 
     public TeacherDTO(int id, String name){
         this.id = id;
         this.name = name;
+    }
+
+    @Override
+    public String getTableName() {
+        return tableName;
     }
 
     public int getId() {

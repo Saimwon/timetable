@@ -11,7 +11,7 @@ import database.DTO.LocationDTO;
 
 import java.util.List;
 
-public interface LocationDAO {
+public interface LocationDAO extends SimpleDAO{
     public List<LocationDTO> getLocations();
     public List<LocationDTO> getLocationsByName(String name);
 }
