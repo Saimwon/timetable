@@ -10,6 +10,7 @@ public interface DataAccessContext extends AutoCloseable {
     public LocationDAO getLocationDAO();
     public LectureDAO getLectureDAO();
     public PeriodDAO getPeriodDAO();
+    public DatabaseDefiner getDatabaseDefiner();
 
     @Override
     public void close();

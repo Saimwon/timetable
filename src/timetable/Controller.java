@@ -16,6 +16,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
+import javafx.stage.Window;
 
 import java.io.File;
 import java.util.*;
@@ -157,7 +158,9 @@ public class Controller {
     public void openDatabase(){
         FileChooser chooser = new FileChooser();
         chooser.setTitle("Open Database File");
-        //chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("SQLite files", "*.db"));
+        chooser.getExtensionFilters().addAll(
+                new FileChooser.ExtensionFilter("Sqlite Files (.db)", "*.db"),
+                new FileChooser.ExtensionFilter("All Files", "*.*"));
         File file = chooser.showOpenDialog(
                 gridPane.getScene().getWindow()
         );
@@ -180,8 +183,23 @@ public class Controller {
     }
 
     public void createDatabase(){
-        DirectoryChooser chooser = new DirectoryChooser();
-        File file = chooser.showDialog(gridPane.getScene().getWindow());
+        FileChooser chooser = new FileChooser();
+        Window parent = gridPane.getScene().getWindow();
+        chooser.setTitle("Create database dialog.");
+        File destinationFile = chooser.showSaveDialog(parent);
+        if (destinationFile != null) {
+            String path = destinationFile.getPath();
+            if (path.endsWith(".db")){
+                dataAccessProvider.setDbConnectionString(path);
+                //Starturen bemachtigen
+
+
+
+                //DatabaseDefiner = dataAccessProvider.getDataAccessContext().getDatabaseDefiner().define(startHours);
+            } else {
+                showErrorDialog("Your file must have .db as its extension.");
+            }
+        }
     }
 
     public void newEntry(){

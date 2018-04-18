@@ -41,6 +41,11 @@ public class SQLiteDataAccessContext implements DataAccessContext{
     }
 
     @Override
+    public DatabaseDefiner getDatabaseDefiner(){
+        return new SQLiteDatabaseDefiner(conn);
+    }
+
+    @Override
     public void close(){
         try {
             conn.close();
