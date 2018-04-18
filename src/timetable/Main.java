@@ -12,12 +12,13 @@ import javafx.scene.Scene;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 
+import java.io.IOException;
 import java.util.List;
 
 public class Main extends Application {
 
     @Override
-    public void start(Stage primaryStage) throws Exception{
+    public void start(Stage primaryStage) throws IOException{
         FXMLLoader loader = new FXMLLoader(getClass().getResource("sample.fxml"));
 
         Parent root = loader.load();

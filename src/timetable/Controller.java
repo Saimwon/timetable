@@ -20,6 +20,7 @@ import javafx.stage.Window;
 import starthourdialog.StartHourDialog;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.*;
 
 public class Controller {
@@ -192,8 +193,12 @@ public class Controller {
         //doe getresult op dat object
         //
         //
-
-
+        StartHourDialog startHourDialog = new StartHourDialog();
+        startHourDialog.showAndWait();
+        List<String> startHours = startHourDialog.getResult();
+        if (starthours == null){ //Dit zou betekenen dat er op cancel is gedrukt in het dialoogvenster
+            return;
+        }
 
         FileChooser chooser = new FileChooser();
         Window parent = gridPane.getScene().getWindow();
