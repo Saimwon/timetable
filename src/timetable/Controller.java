@@ -17,6 +17,7 @@ import javafx.scene.layout.GridPane;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.Window;
+import starthourdialog.StartHourDialog;
 
 import java.io.File;
 import java.util.*;
@@ -183,6 +184,17 @@ public class Controller {
     }
 
     public void createDatabase(){
+        //Starturen bemachtigen
+        //maak stage subklasseobject aan
+        //voer daar showandwait op uit
+        //na die showandwait is het venster gesloten
+        //in klasse: moet result op null zetten als er cancel wordt gedrukt ipv save
+        //doe getresult op dat object
+        //
+        //
+
+
+
         FileChooser chooser = new FileChooser();
         Window parent = gridPane.getScene().getWindow();
         chooser.setTitle("Create database dialog.");
@@ -191,9 +203,6 @@ public class Controller {
             String path = destinationFile.getPath();
             if (path.endsWith(".db")){
                 dataAccessProvider.setDbConnectionString(path);
-                //Starturen bemachtigen
-
-
 
                 //DatabaseDefiner = dataAccessProvider.getDataAccessContext().getDatabaseDefiner().define(startHours);
             } else {
