@@ -18,7 +18,6 @@ public class LectureRepresentation extends VBox {
     public LectureRepresentation(String name1, String profName1, LectureDTO lectureDTO){
         this.lectureDTO = lectureDTO;
         this.getStyleClass().add("lecture");
-        //this.setAlignment(Pos.CENTER);
         this.
         infoList = new ArrayList<>();
         infoList.add(name1);

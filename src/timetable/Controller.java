@@ -19,7 +19,6 @@ import javafx.stage.Window;
 import starthourdialog.StartHourDialog;
 
 import java.io.File;
-import java.sql.Time;
 import java.util.*;
 
 public class Controller {
@@ -35,13 +34,19 @@ public class Controller {
     public ListView<SimpleDTO> locationsView;
     private Map<String, LectureContainer> containerMap;
     private Map<Integer, String> starthours;
+
+    //Alles ivm toevoegbar van lectures onderaan de applicatie
+    public ComboBox<StudentGroupDTO> studentGroupComboBox;
+    public ComboBox<TeacherDTO> teacherComboBox;
+    public ComboBox<LocationDTO> locationComboBox;
+
     //veld dat geselecteerde lecture bijhoudt:
-    private LectureRepresentation selected;
+    private LectureRepresentation selectedLecture;
 
 
     public void initialize() {
         dataAccessProvider = new SQLiteDataAccessProvider();
-        selected = null;
+        selectedLecture = null;
         initializeGridPaneRows();
 
         initializeViews();
@@ -49,7 +54,8 @@ public class Controller {
     }
 
     public void initializeGridPaneRows() {
-        gridPane.initializeStartHours(dataAccessProvider.getDataAccessContext().getPeriodDAO().getStartTimes());
+        List<String> startHours = dataAccessProvider.getDataAccessContext().getPeriodDAO().getStartTimes();
+        gridPane.initializeStartHours(startHours);
     }
 
     public void initializeViews() {
@@ -62,21 +68,22 @@ public class Controller {
     }
 
     private void refreshViews() {
-//        studentGroupsView.getItems().clear();
-//        teachersView.getItems().clear();
-//        locationsView.getItems().clear();
-
         List<TeacherDTO> teachers = dataAccessProvider.getDataAccessContext().getTeacherDAO().getTeachers();
         teachersView.getItems().setAll(teachers);
+        teacherComboBox.getItems().addAll(teachers);
 
         List<StudentGroupDTO> studentGroups = dataAccessProvider.getDataAccessContext().getStudentDAO().getStudentGroups();
         studentGroupsView.getItems().setAll(studentGroups);
+        studentGroupComboBox.getItems().setAll(studentGroups);
 
         List<LocationDTO> locations = dataAccessProvider.getDataAccessContext().getLocationDAO().getLocations();
         locationsView.getItems().setAll(locations);
+        locationComboBox.getItems().setAll(locations);
     }
 
     public void nameSelected(String tableName, SimpleDTO simpleDTO) {
+        selectedLecture = null;
+
         if (simpleDTO == null) {
             return;
         }
@@ -88,21 +95,15 @@ public class Controller {
         gridPane.getChildren().removeAll(containerMap.values());
     }
 
-    public void updateTableContents(String columnName, int id) {
-//        List<TeacherDTO> teachers = dataAccessProvider.getDataAccessContext().getTeacherDAO().getTeachers();
-//        List<StudentGroupDTO> stugro = dataAccessProvider.getDataAccessContext().getStudentDAO().getStudentGroups();
-//        List<LocationDTO> locations = dataAccessProvider.getDataAccessContext().getLocationDAO().getLocations();
-//        for (TeacherDTO tdo : teachers){
-//            System.out.println(tdo.getName());
-//        }
-//        for (LocationDTO ldo : locations){
-//            System.out.println(ldo.getName());
-//        }
-//        for (StudentGroupDTO tdo : stugro){
-//            System.out.println(tdo.getName());
-//        }
-//      DEBUG OUTPUT VOOR ALS DB SWITCH NIET WERKT
+    public void refreshTable(){
+        updateTableContents(lastColumnName, lastId);
+    }
 
+    private String lastColumnName;
+    private int lastId;
+    public void updateTableContents(String columnName, int id) {
+        lastColumnName = columnName;
+        lastId = id;
 
         LectureDAO lectureDAO = dataAccessProvider.getDataAccessContext().getLectureDAO();
         List<LectureDTO> lectureList = lectureDAO.getLecturesFromColumnById(columnName, id);
@@ -142,12 +143,12 @@ public class Controller {
 
                 lectureRepresentation.addEventFilter(MouseEvent.MOUSE_PRESSED, event -> {
                     //verwijder de styleclass van de vorige geselecteerde lecture
-                    if (selected != null) {
-                        selected.getStyleClass().remove("selectedlecture");
+                    if (selectedLecture != null) {
+                        selectedLecture.getStyleClass().remove("selectedlecture");
                     }
-                    //update "selected" variabele en voeg stijlklasse toe
-                    selected = (LectureRepresentation) event.getSource();
-                    selected.getStyleClass().add("selectedlecture");
+                    //update "selectedLecture" variabele en voeg stijlklasse toe
+                    selectedLecture = (LectureRepresentation) event.getSource();
+                    selectedLecture.getStyleClass().add("selectedlecture");
                 });
 
                 container.addLecture(lectureRepresentation);
@@ -197,10 +198,10 @@ public class Controller {
         File destinationFile = chooser.showSaveDialog(parent);
         if (destinationFile != null) {
             String path = destinationFile.getPath().endsWith(".db") ? destinationFile.getPath() : destinationFile.getPath() + ".db";
-            System.out.println(path);
             dataAccessProvider.setDbConnectionString(path);
             dataAccessProvider.getDataAccessContext().getDatabaseDefiner().define(startHours);
 
+            clearTable();
             initializeGridPaneRows();
             refreshViews();
         } else {
@@ -218,7 +219,7 @@ public class Controller {
         TitledPane openedPane = accordion.getExpandedPane();
 
         if (openedPane == null){
-            //Geef aan dat er een pane geopend moet zijn
+            showErrorDialog("Open a category to add this entry to.");
         } else {
             //naam v geopende pane vragen en omzetten naar tabelnaam waar we de nieuwe persoon moeten invoegen
             SimpleDAO simpleDAO = titledPaneNameToTableName.get(openedPane.getText());
@@ -227,7 +228,7 @@ public class Controller {
 
             boolean addingEntryWasSucces = simpleDAO.addEntry(nameToAdd);
             if (! addingEntryWasSucces){
-                showErrorDialog("Failed to add entry to database.");
+                showErrorDialog("Failed to add entry.");
             }
             refreshViews();
         }
@@ -250,7 +251,7 @@ public class Controller {
             showErrorDialog("Please select a location, studentgroup or teacher to rename.");
             return;
         }
-        //zoek daarvan de selected entry met onze map
+        //zoek daarvan de selectedLecture entry met onze map
         SimpleDTO simpleDTO = openedPaneNameToListView.get(openedPane.getText()).getSelectionModel().getSelectedItem();
         if (simpleDTO == null){
             showErrorDialog("Please select a location, studentgroup or teacher to rename.");
@@ -272,6 +273,24 @@ public class Controller {
         }
         refreshViews();
         updateTableContents(tableName + "_id", id);
+    }
+
+    public void deleteLecture(){
+        if (selectedLecture == null){
+            showErrorDialog("A lecture must be selected.");
+            return;
+        }
+
+         if (! dataAccessProvider.getDataAccessContext().getLectureDAO().deleteEntry(selectedLecture.getLectureDTO())){
+             showErrorDialog("Failed to delete lecture.");
+             return;
+         }
+
+         refreshTable();
+    }
+
+    public void editLecture(){
+
     }
 
     public void showErrorDialog(String message){
