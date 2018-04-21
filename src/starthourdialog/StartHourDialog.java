@@ -7,32 +7,22 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import timetable.Controller;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 public class StartHourDialog extends Stage {
+    private List<Integer[]> startHours;
 
-    /*
-    moet kunnen:
-    getresult
-    de fxml koppelen aan zichzelf
-     */
-    private boolean saved;
-    private List<String> result;
-    private StartHourDialogController controller;
-
-    public StartHourDialog() { //Programma moet crashen als loader.load een exception geeft
-        this.saved = false;
-        this.result = null;
+    public StartHourDialog() {
+        this.startHours = null;
         //koppel fxml aan zelf
         FXMLLoader loader = new FXMLLoader(getClass().getResource("starthourdialog.fxml"));
         Parent root = null;
         try {
             root = loader.load();
         } catch (IOException e){
+            //Crash als het programma de fxml file van deze klasse niet vindt
             e.printStackTrace();
             System.exit(1);
         }
@@ -41,13 +31,16 @@ public class StartHourDialog extends Stage {
         Scene scene = new Scene(root);
         this.setScene(scene);
 
-        this.controller = loader.getController();
+        StartHourDialogController controller = loader.getController();
         controller.setStartHourDialog(this);
     }
 
-    public List<String> getResult(){
-        return result;
+
+    public void setStartHours(List<Integer[]> startHours){
+        this.startHours = startHours;
     }
 
-
+    public List<Integer[]> getStartHours(){
+        return this.startHours;
+    }
 }

@@ -8,7 +8,7 @@ Interface waarmee alle interactie met de lecture tabel in de DB gebeurt
  */
 
 
-import database.DTO.LectureDTO;
+import database.DataTransferObjects.LectureDTO;
 
 import java.util.List;
 

@@ -2,11 +2,10 @@
 Van Braeckel Simon
  */
 
-package database.interfaces.implementations;
+package database.interfaces.implementations.DataAccessObjects;
 
-import database.DTO.LocationDTO;
+import database.DataTransferObjects.LocationDTO;
 import database.interfaces.LocationDAO;
-import database.interfaces.SimpleDAO;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;

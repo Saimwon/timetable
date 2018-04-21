@@ -4,9 +4,7 @@ Van Braeckel Simon
 
 package guielements;
 
-import database.DTO.LectureDTO;
 import javafx.scene.control.Label;
-import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 
 import java.util.ArrayList;

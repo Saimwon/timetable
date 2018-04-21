@@ -4,7 +4,7 @@ Van Braeckel Simon
 
 package database.interfaces;
 
-import database.DTO.StudentGroupDTO;
+import database.DataTransferObjects.StudentGroupDTO;
 
 import java.util.List;
 

@@ -2,18 +2,19 @@
 Van Braeckel Simon
  */
 
-package database.DTO;
+package database.DataTransferObjects;
 
-public class LocationDTO implements SimpleDTO {
-    private static String tableName = "location";
+public class TeacherDTO implements SimpleDTO {
+    private static String tableName = "teacher";
     private int id;
     private String name;
 
-    public LocationDTO(int id, String name){
+    public TeacherDTO(int id, String name){
         this.id = id;
         this.name = name;
     }
 
+    @Override
     public String getTableName() {
         return tableName;
     }

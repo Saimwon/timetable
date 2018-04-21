@@ -2,9 +2,9 @@
 Van Braeckel Simon
  */
 
-package database.interfaces.implementations;
+package database.interfaces.implementations.DataAccessObjects;
 
-import database.DTO.LectureDTO;
+import database.DataTransferObjects.LectureDTO;
 import database.interfaces.LectureDAO;
 
 import java.sql.Connection;

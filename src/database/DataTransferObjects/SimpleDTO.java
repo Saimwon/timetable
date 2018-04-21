@@ -2,7 +2,7 @@
 Van Braeckel Simon
  */
 
-package database.DTO;
+package database.DataTransferObjects;
 
 public interface SimpleDTO {
     public int getId();

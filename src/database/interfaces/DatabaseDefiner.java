@@ -7,5 +7,5 @@ import java.sql.Connection;
 import java.util.List;
 
 public interface DatabaseDefiner {
-    public void define(List<String> startHours);
+    public void define(List<Integer[]> startHours);
 }

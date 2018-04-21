@@ -7,7 +7,7 @@ package database.interfaces;
 Interface waarmee alle interactie met de teacher tabel in de DB gebeurt
  */
 
-import database.DTO.TeacherDTO;
+import database.DataTransferObjects.TeacherDTO;
 
 import java.util.List;
 

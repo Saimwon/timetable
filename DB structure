@@ -5,12 +5,11 @@ drop table teacher;
 drop table location;
 drop table lecture;
 
-create table period   ("id", "hour", "minute");
-create table students ("id", "name");
-create table teacher  ("id", "name");
-create table location ("id", "name");
+create table period   ("id" integer primary key, "hour", "minute");
+create table students ("id" integer primary key, "name");
+create table teacher  ("id" integer primary key, "name");
+create table location ("id" integer primary key, "name");
 create table lecture  ("students_id", "teacher_id", "location_id", "course", "day", "first_block", "duration");
-                                                                                                   = amount of blocks
 
 insert into period values (1,  8, 30)
                         , (2, 10, 0)
@@ -48,7 +47,6 @@ insert into teacher values (1, "Kris Coolsaet")
                          , (19, "Leo Storme")
                          , (20, "Bart Dhoedt")
                          ;
-
 
 insert into location values (1, "Sterre, S9, A0")
                           , (2, "Sterre, S9, A1")
@@ -148,5 +146,4 @@ insert into lecture values (1, 1, 3, "Programmeren", 1, 5, 2)
                          , (1, 9, 6, "Logisch programmeren", 4, 2, 6)
                          , (1, 3, 34, "Computationele biologie", 5, 1, 2)
                          , (1, 19, 7, "Automaten, berekenbaarheid en complexiteit", 2, 5, 2)
-                         , (3, 19, 7, "Klootzak.", 2, 5, 2)
                          ;

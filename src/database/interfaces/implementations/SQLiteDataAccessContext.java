@@ -5,6 +5,8 @@ Van Braeckel Simon
 package database.interfaces.implementations;
 
 import database.interfaces.*;
+import database.interfaces.implementations.DataAccessObjects.*;
+import database.interfaces.implementations.DataAccessObjects.DatabaseDefinition.SQLiteDatabaseDefiner;
 
 import java.sql.Connection;
 import java.sql.SQLException;

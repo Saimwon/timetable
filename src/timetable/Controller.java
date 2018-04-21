@@ -4,7 +4,7 @@ Van Braeckel Simon
 
 package timetable;
 
-import database.DTO.*;
+import database.DataTransferObjects.*;
 import database.interfaces.*;
 import database.interfaces.implementations.SQLiteDataAccessProvider;
 import database.interfaces.SimpleDAO;
@@ -14,13 +14,12 @@ import guielements.MyTable;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
-import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.Window;
 import starthourdialog.StartHourDialog;
 
 import java.io.File;
-import java.io.IOException;
+import java.sql.Time;
 import java.util.*;
 
 public class Controller {
@@ -49,11 +48,11 @@ public class Controller {
         containerMap = new HashMap<>();
     }
 
-    public void initializeGridPaneRows(){
+    public void initializeGridPaneRows() {
         gridPane.initializeStartHours(dataAccessProvider.getDataAccessContext().getPeriodDAO().getStartTimes());
     }
 
-    public void initializeViews(){
+    public void initializeViews() {
         teachersView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> nameSelected("teacher_id", teachersView.getSelectionModel().getSelectedItem()));
 
         studentGroupsView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> nameSelected("students_id", studentGroupsView.getSelectionModel().getSelectedItem()));
@@ -62,7 +61,7 @@ public class Controller {
         refreshViews();
     }
 
-    private void refreshViews(){
+    private void refreshViews() {
 //        studentGroupsView.getItems().clear();
 //        teachersView.getItems().clear();
 //        locationsView.getItems().clear();
@@ -77,19 +76,19 @@ public class Controller {
         locationsView.getItems().setAll(locations);
     }
 
-    public void nameSelected(String tableName, SimpleDTO simpleDTO){
-        if (simpleDTO == null){
+    public void nameSelected(String tableName, SimpleDTO simpleDTO) {
+        if (simpleDTO == null) {
             return;
         }
         updateTableContents(tableName, simpleDTO.getId());
         //doe nog iets?
     }
 
-    public void clearTable(){
+    public void clearTable() {
         gridPane.getChildren().removeAll(containerMap.values());
     }
 
-    public void updateTableContents(String columnName, int id){
+    public void updateTableContents(String columnName, int id) {
 //        List<TeacherDTO> teachers = dataAccessProvider.getDataAccessContext().getTeacherDAO().getTeachers();
 //        List<StudentGroupDTO> stugro = dataAccessProvider.getDataAccessContext().getStudentDAO().getStudentGroups();
 //        List<LocationDTO> locations = dataAccessProvider.getDataAccessContext().getLocationDAO().getLocations();
@@ -111,11 +110,11 @@ public class Controller {
         clearTable();
         //clear map
         containerMap = new HashMap<>();
-        for (LectureDTO lec : lectureList){
+        for (LectureDTO lec : lectureList) {
             //loop over duration
             //als er nog geen entry is in de containermap voor die positie:
             //nieuwe lesuurcontainer maken en in map steken
-            for (int i = 0; i < lec.getDuration(); i++){
+            for (int i = 0; i < lec.getDuration(); i++) {
                 int row = lec.getDay();
                 int column = lec.getFirst_block() + i;
 
@@ -134,7 +133,7 @@ public class Controller {
 
                 //zet lecture in container
                 TeacherDTO teacherById = dataAccessProvider.getDataAccessContext().getTeacherDAO().getTeacherByID(lec.getTeacher_id());
-                if (teacherById == null){
+                if (teacherById == null) {
                     showErrorDialog("One of the lectures uses a TeacherID for which there is no entry in table \"teachers\".");
                     return;
                 }
@@ -157,7 +156,7 @@ public class Controller {
         }
     }
 
-    public void openDatabase(){
+    public void openDatabase() {
         FileChooser chooser = new FileChooser();
         chooser.setTitle("Open Database File");
         chooser.getExtensionFilters().addAll(
@@ -166,37 +165,29 @@ public class Controller {
         File file = chooser.showOpenDialog(
                 gridPane.getScene().getWindow()
         );
-        if ( file != null && file.getName().endsWith(".db")) {
+        if (file != null && file.getName().endsWith(".db")) {
             String path = file.getPath();
             updateDatabasePath(path);
             clearTable();
             initializeGridPaneRows();
             refreshViews();
-        } else if (file != null){
+        } else if (file != null) {
             showErrorDialog("Please choose a file that has the .db extension.");
         }
     }
 
-    public void updateDatabasePath(String path){
+    public void updateDatabasePath(String path) {
         //verander veld in dataAccessContext
         dataAccessProvider.setDbConnectionString(path);
         //reinitialize table
         refreshViews();
     }
 
-    public void createDatabase(){
-        //Starturen bemachtigen
-        //maak stage subklasseobject aan
-        //voer daar showandwait op uit
-        //na die showandwait is het venster gesloten
-        //in klasse: moet result op null zetten als er cancel wordt gedrukt ipv save
-        //doe getresult op dat object
-        //
-        //
+    public void createDatabase() {
         StartHourDialog startHourDialog = new StartHourDialog();
         startHourDialog.showAndWait();
-        List<String> startHours = startHourDialog.getResult();
-        if (starthours == null){ //Dit zou betekenen dat er op cancel is gedrukt in het dialoogvenster
+        List<Integer[]> startHours = startHourDialog.getStartHours();
+        if (startHours == null) { //Dit zou betekenen dat er op cancel is gedrukt in het dialoogvenster
             return;
         }
 
@@ -205,14 +196,15 @@ public class Controller {
         chooser.setTitle("Create database dialog.");
         File destinationFile = chooser.showSaveDialog(parent);
         if (destinationFile != null) {
-            String path = destinationFile.getPath();
-            if (path.endsWith(".db")){
-                dataAccessProvider.setDbConnectionString(path);
+            String path = destinationFile.getPath().endsWith(".db") ? destinationFile.getPath() : destinationFile.getPath() + ".db";
+            System.out.println(path);
+            dataAccessProvider.setDbConnectionString(path);
+            dataAccessProvider.getDataAccessContext().getDatabaseDefiner().define(startHours);
 
-                //DatabaseDefiner = dataAccessProvider.getDataAccessContext().getDatabaseDefiner().define(startHours);
-            } else {
-                showErrorDialog("Your file must have .db as its extension.");
-            }
+            initializeGridPaneRows();
+            refreshViews();
+        } else {
+            return;
         }
     }
 

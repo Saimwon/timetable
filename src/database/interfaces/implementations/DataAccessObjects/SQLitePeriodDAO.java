@@ -2,9 +2,8 @@
 Van Braeckel Simon
  */
 
-package database.interfaces.implementations;
+package database.interfaces.implementations.DataAccessObjects;
 
-import database.DTO.TeacherDTO;
 import database.interfaces.PeriodDAO;
 
 import java.sql.Connection;

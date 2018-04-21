@@ -50,3 +50,9 @@ LectureRepresentation {
     -fx-border-width: 1;
     -fx-border-color: #4286f4;
 }
+
+.incorrecttimeinput {
+    -fx-border-radius: 3;
+    -fx-border-width: 1;
+    -fx-border-color: #f90000;
+}

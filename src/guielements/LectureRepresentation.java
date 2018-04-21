@@ -4,7 +4,7 @@ Van Braeckel Simon
 
 package guielements;
 
-import database.DTO.LectureDTO;
+import database.DataTransferObjects.LectureDTO;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
 
