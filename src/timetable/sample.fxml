@@ -110,6 +110,7 @@
                 </Menu>
                 <Menu mnemonicParsing="false" text="Edit">
                     <items>
+                        <MenuItem mnemonicParsing="false" text="Add New Lecture" onAction="#createLecture"/>
                         <MenuItem mnemonicParsing="false" text="Edit Selected Lecture" onAction="#editLecture"/>
                         <MenuItem mnemonicParsing="false" text="Delete Selected Lecture" onAction="#deleteLecture"/>
                     </items>

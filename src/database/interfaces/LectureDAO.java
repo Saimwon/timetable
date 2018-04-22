@@ -14,6 +14,7 @@ import java.util.List;
 
 public interface LectureDAO {
     public List<LectureDTO> getLecturesFromColumnById(String columnname, int id);
-    public boolean addEntry(int students_id, int teacher_id, int location_id, String courseName, int day, int first_block, int duration);
+    public boolean addEntry(LectureDTO lectureDTO);
     public boolean deleteEntry(LectureDTO lectureDTO);
+    public boolean lectureExists(LectureDTO lectureDTO);
 }

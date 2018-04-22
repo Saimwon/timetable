@@ -1,13 +1,13 @@
 /*
 Van Braeckel Simon
+
+Gemeenschappelijke interface voor de 3 tabellen in de DB die exact hetzelfde zijn behalve de naam.
  */
 
 package database.DataTransferObjects;
 
-public interface SimpleDTO {
-    public int getId();
+import lectureinfodialog.NameIdDTO;
 
-    public String getName();
-
+public interface SimpleDTO extends NameIdDTO{
     public String getTableName();
 }

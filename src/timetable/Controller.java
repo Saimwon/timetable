@@ -16,6 +16,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.stage.FileChooser;
 import javafx.stage.Window;
+import lectureinfodialog.LectureInput;
 import starthourdialog.StartHourDialog;
 
 import java.io.File;
@@ -33,7 +34,7 @@ public class Controller {
     public ListView<SimpleDTO> teachersView;
     public ListView<SimpleDTO> locationsView;
     private Map<String, LectureContainer> containerMap;
-    private Map<Integer, String> starthours;
+    private List<String> starthours;
 
     //Alles ivm toevoegbar van lectures onderaan de applicatie
     public ComboBox<StudentGroupDTO> studentGroupComboBox;
@@ -55,6 +56,7 @@ public class Controller {
 
     public void initializeGridPaneRows() {
         List<String> startHours = dataAccessProvider.getDataAccessContext().getPeriodDAO().getStartTimes();
+        starthours = startHours;
         gridPane.initializeStartHours(startHours);
     }
 
@@ -210,6 +212,13 @@ public class Controller {
     }
 
     public void newEntry(){
+        //Ingegeven naam controleren
+        if (newEntryTextField.getText().contains("\"") || newEntryTextField.getText().isEmpty()){
+            showErrorDialog("Invalid name.");
+            return;
+        }
+
+
         Map<String, SimpleDAO> titledPaneNameToTableName = new HashMap<>();
         titledPaneNameToTableName.put("Locations", dataAccessProvider.getDataAccessContext().getLocationDAO());
         titledPaneNameToTableName.put("Teachers", dataAccessProvider.getDataAccessContext().getTeacherDAO());
@@ -235,6 +244,11 @@ public class Controller {
     }
 
     public void renameEntry(){
+        if (newEntryTextField.getText().contains("\"") || newEntryTextField.getText().isEmpty()){
+            showErrorDialog("Invalid name.");
+            return;
+        }
+
         Map<String, ListView<SimpleDTO>> openedPaneNameToListView = new HashMap<>();
         openedPaneNameToListView.put("Locations", locationsView);
         openedPaneNameToListView.put("Teachers", teachersView);
@@ -290,7 +304,38 @@ public class Controller {
     }
 
     public void editLecture(){
+        if (selectedLecture == null){
+            showErrorDialog("A lecture must be selected");
+            return;
+        }
 
+        LectureInput lectureInput = new LectureInput(studentGroupsView.getItems(), teachersView.getItems(), locationsView.getItems(), starthours, selectedLecture);
+        lectureInput.showAndWait();
+        LectureDTO lectureDTO = lectureInput.getLectureDTO();
+
+        if (lectureDTO != null) {
+            //adhv deze lectureDTO een entry toevoegen
+            if (dataAccessProvider.getDataAccessContext().getLectureDAO().addEntry(lectureDTO)) {
+                refreshTable();
+            } else {
+                showErrorDialog("Failed to add entry.");
+            }
+        }
+    }
+
+    public void createLecture(){
+        LectureInput lectureInput = new LectureInput(studentGroupsView.getItems(), teachersView.getItems(), locationsView.getItems(), starthours);
+        lectureInput.showAndWait();
+        LectureDTO lectureDTO = lectureInput.getLectureDTO();
+
+        if (lectureDTO != null) {
+            //adhv deze lectureDTO een entry toevoegen
+            if (dataAccessProvider.getDataAccessContext().getLectureDAO().addEntry(lectureDTO)) {
+                refreshTable();
+            } else {
+                showErrorDialog("Failed to add entry.");
+            }
+        }
     }
 
     public void showErrorDialog(String message){

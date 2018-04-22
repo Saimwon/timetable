@@ -60,12 +60,6 @@ public class SQLiteLocationDAO implements LocationDAO {
 
     @Override
     public boolean addEntry(String name){
-        //Check of er al iemand is met die naam, zo ja -> error
-        if (name.isEmpty() || ! getLocationsByName(name).isEmpty()){
-            return false;
-        }
-
-
         //Voeg nieuwe entry toe aan DB
         try (PreparedStatement statement = conn.prepareStatement(
                 "INSERT INTO " + tablename + "(name) VALUES (?)"

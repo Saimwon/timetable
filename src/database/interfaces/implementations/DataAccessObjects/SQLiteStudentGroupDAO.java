@@ -57,11 +57,6 @@ public class SQLiteStudentGroupDAO implements StudentGroupDAO{
 
     @Override
     public boolean addEntry(String name){
-        //Check of er al iemand is met die naam, zo ja -> error
-        if (name.isEmpty() || ! getStudentGroupsByName(name).isEmpty()){
-            return false;
-        }
-
         //Voeg nieuwe entry toe aan DB
         try (PreparedStatement statement = conn.prepareStatement(
                 "INSERT INTO " + tablename + "(name) VALUES (?)"

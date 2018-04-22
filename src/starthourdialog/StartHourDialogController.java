@@ -35,7 +35,7 @@ public class StartHourDialogController {
         Button removeButton = new Button("-");
         removeButton.setOnAction(event -> textFieldContainer.getChildren().remove(fieldContainer));
 
-        //Zet de textfields samen in de lijst zodat we ze bij saven gemakkelijk kunnen overlopen
+        //Zet de textfields samen in de lijst zodat we ze bij het saven gemakkelijk kunnen overlopen
         times.add(new TextField[]{hourField, minuteField});
 
         hourField.setPrefWidth(35.0);
@@ -70,9 +70,9 @@ public class StartHourDialogController {
             for (TextField textField : textFieldArray){
                 if (! isgeldig(textField.getCharacters(), hour)){
                     allValid = false;
-                    textField.getStyleClass().add("incorrecttimeinput");
+                    textField.getStyleClass().add("incorrectinput");
                 } else {
-                    textField.getStyleClass().removeAll("incorrecttimeinput");
+                    textField.getStyleClass().removeAll("incorrectinput");
                 }
                 hour = !hour;
             }

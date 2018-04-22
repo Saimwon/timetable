@@ -24,12 +24,7 @@ public class MyTable extends GridPane {
 
     public void initializeStartHours(List<String> startUren){
         //maak eerste kolom leeg
-        //ik ga proberen om de labels bij te houden in een lijst bij toevoeging en bij update removeall te gebruiken van de gridpane
         this.getChildren().removeAll(hboxLijst);
-        //voeg "start" toe op plaats 0,0
-
-
-
         //maak leeg
         this.getRowConstraints().clear();
         //voeg eerst toe om de eerste rij klein te maken

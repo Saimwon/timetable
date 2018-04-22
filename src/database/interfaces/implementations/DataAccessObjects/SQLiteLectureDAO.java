@@ -49,30 +49,58 @@ public class SQLiteLectureDAO implements LectureDAO{
     }
 
     @Override
-    public boolean addEntry(int students_id, int teacher_id, int location_id, String courseName, int day, int first_block, int duration){
-        //het checken of de lecture al bestaat doen we niet want dat is niet echt nodig.
-        //we krijgen wss een error als we dupes toevoegen
+    public boolean lectureExists(LectureDTO lectureDTO){
+        ResultSet resultSet = null;
+
+        try (PreparedStatement statement = conn.prepareStatement(
+                "SELECT * FROM lecture WHERE students_id = ? AND teacher_id = ? AND location_id = ? AND course = ? AND day = ? AND first_block = ? and duration = ?"
+        )) {
+            statement.setInt(1, lectureDTO.getStudent_id());
+            statement.setInt(2, lectureDTO.getTeacher_id());
+            statement.setInt(3, lectureDTO.getLocation_id());
+            statement.setString(4, lectureDTO.getCourse());
+            statement.setInt(5, lectureDTO.getDay());
+            statement.setInt(6, lectureDTO.getFirst_block());
+            statement.setInt(7, lectureDTO.getDuration());
+            resultSet = statement.executeQuery();
+
+            return resultSet.next();
+        } catch (SQLException ex) {
+            System.out.println("Iets gaat mis in het checken of deze lecture al bestaat.");
+            ex.printStackTrace();
+            return false;
+        }
+    }
+
+    @Override
+    public boolean addEntry(LectureDTO lectureDTO){
+        //check of lecture al bestaat
+        if (lectureExists(lectureDTO)){
+            return false;
+        }
 
 
         //Voeg nieuwe entry toe aan DB
         try (PreparedStatement statement = conn.prepareStatement(
                 "INSERT INTO lecture values(?, ?, ?, ?, ?, ?, ?)"
         )) {
-            statement.setInt(1, students_id);
-            statement.setInt(2, teacher_id);
-            statement.setInt(3, location_id);
-            statement.setString(4, courseName);
-            statement.setInt(5, day);
-            statement.setInt(6, first_block);
-            statement.setInt(7, duration);
+            statement.setInt(1, lectureDTO.getStudent_id());
+            statement.setInt(2, lectureDTO.getTeacher_id());
+            statement.setInt(3, lectureDTO.getLocation_id());
+            statement.setString(4, lectureDTO.getCourse());
+            statement.setInt(5, lectureDTO.getDay());
+            statement.setInt(6, lectureDTO.getFirst_block());
+            statement.setInt(7, lectureDTO.getDuration());
             statement.executeUpdate();
         } catch (SQLException ex) {
             System.out.println("Failed to add the lecture...");
+            ex.printStackTrace();
             return false;
         }
         return true;
     }
 
+    @Override
     public boolean deleteEntry(LectureDTO lectureDTO){
         try (PreparedStatement statement = conn.prepareStatement("DELETE FROM lecture WHERE students_id = ? AND teacher_id = ? AND location_id = ? AND course LIKE ? AND day = ? AND first_block = ? AND duration = ?")){
             statement.setInt(1, lectureDTO.getStudent_id());
