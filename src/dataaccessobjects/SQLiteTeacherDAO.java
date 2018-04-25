@@ -2,10 +2,10 @@
 Van Braeckel Simon
  */
 
-package database.interfaces.implementations.DataAccessObjects;
+package dataaccessobjects;
 
-import database.DataTransferObjects.StudentGroupDTO;
-import database.interfaces.StudentGroupDAO;
+import dataaccessobjects.dataccessinterfaces.TeacherDAO;
+import datatransferobjects.TeacherDTO;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -14,24 +14,31 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SQLiteStudentGroupDAO implements StudentGroupDAO{
+public class SQLiteTeacherDAO implements TeacherDAO {
     private Connection conn;
-    private String tablename = "students";
-    public SQLiteStudentGroupDAO(Connection conn){
+    private String tablename = "teacher";
+
+    public SQLiteTeacherDAO(Connection conn){
         this.conn = conn;
     }
 
-    public List<StudentGroupDTO> getStudentGroups(){
-        try (PreparedStatement statement = conn.prepareStatement("select * from " + tablename + " order by name COLLATE NOCASE")){
+    public TeacherDTO getTeacherByID(int teacher_id){
+        try (PreparedStatement statement = conn.prepareStatement("select * from " + tablename + " where id = ? order by name")){
+            statement.setInt(1, teacher_id);
             ResultSet resultSet = statement.executeQuery();
-            return verwerkResultaat(resultSet);
+            List<TeacherDTO> teachers = verwerkResultaat(resultSet);
+            if (teachers.size() != 0) {
+                return teachers.get(0);
+            } else {
+                return null;
+            }
         } catch (SQLException e){
             e.printStackTrace();
             return null;
         }
     }
 
-    public List<StudentGroupDTO> getStudentGroupsByName(String name){
+    public List<TeacherDTO> getTeachersByName(String name){
         try (PreparedStatement statement = conn.prepareStatement("select * from " + tablename + " where name = ?")){
             statement.setString(1, name);
             ResultSet resultSet = statement.executeQuery();
@@ -42,11 +49,21 @@ public class SQLiteStudentGroupDAO implements StudentGroupDAO{
         }
     }
 
-    public List<StudentGroupDTO> verwerkResultaat(ResultSet resultSet){
-        List<StudentGroupDTO> result = new ArrayList<>();
+    public List<TeacherDTO> getTeachers(){
+        try (PreparedStatement statement = conn.prepareStatement("select * from " + tablename + " order by name COLLATE NOCASE")){
+            ResultSet resultSet = statement.executeQuery();
+            return verwerkResultaat(resultSet);
+        } catch (SQLException e){
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public List<TeacherDTO> verwerkResultaat(ResultSet resultSet){
+        List<TeacherDTO> result = new ArrayList<>();
         try {
             while (resultSet.next()) {
-                result.add(new StudentGroupDTO(resultSet.getInt("id"), resultSet.getString("name")));
+                result.add(new TeacherDTO(resultSet.getInt("id"), resultSet.getString("name")));
             }
         } catch (SQLException e){
             e.printStackTrace();

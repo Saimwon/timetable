@@ -4,10 +4,11 @@ Van Braeckel Simon
 
 package timetable;
 
-import database.DataTransferObjects.*;
+import dataaccessobjects.dataccessinterfaces.LectureDAO;
 import database.interfaces.*;
 import database.interfaces.implementations.SQLiteDataAccessProvider;
-import database.interfaces.SimpleDAO;
+import dataaccessobjects.dataccessinterfaces.SimpleDAO;
+import datatransferobjects.*;
 import guielements.LectureRepresentation;
 import guielements.LectureContainer;
 import guielements.MyTable;
@@ -314,7 +315,11 @@ public class Controller {
         LectureDTO lectureDTO = lectureInput.getLectureDTO();
 
         if (lectureDTO != null) {
-            //adhv deze lectureDTO een entry toevoegen
+            //oude lecture verwijderen
+            dataAccessProvider.getDataAccessContext().getLectureDAO().deleteEntry(selectedLecture.getLectureDTO());
+            selectedLecture = null;
+
+            //adhv nieuwe lectureDTO een entry toevoegen
             if (dataAccessProvider.getDataAccessContext().getLectureDAO().addEntry(lectureDTO)) {
                 refreshTable();
             } else {
@@ -324,7 +329,7 @@ public class Controller {
     }
 
     public void createLecture(){
-        LectureInput lectureInput = new LectureInput(studentGroupsView.getItems(), teachersView.getItems(), locationsView.getItems(), starthours);
+        LectureInput lectureInput = new LectureInput(studentGroupsView.getItems(), teachersView.getItems(), locationsView.getItems(), starthours, null);
         lectureInput.showAndWait();
         LectureDTO lectureDTO = lectureInput.getLectureDTO();
 

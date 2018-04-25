@@ -4,6 +4,9 @@ Van Braeckel Simon
 
 package database.interfaces;
 
+import dataaccessobjects.dataccessinterfaces.*;
+import databasedefinition.DatabaseDefiner;
+
 public interface DataAccessContext extends AutoCloseable {
     public StudentGroupDAO getStudentDAO();
     public TeacherDAO getTeacherDAO();

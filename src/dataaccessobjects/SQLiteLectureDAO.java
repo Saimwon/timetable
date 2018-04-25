@@ -2,10 +2,10 @@
 Van Braeckel Simon
  */
 
-package database.interfaces.implementations.DataAccessObjects;
+package dataaccessobjects;
 
-import database.DataTransferObjects.LectureDTO;
-import database.interfaces.LectureDAO;
+import dataaccessobjects.dataccessinterfaces.LectureDAO;
+import datatransferobjects.LectureDTO;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -14,7 +14,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SQLiteLectureDAO implements LectureDAO{
+public class SQLiteLectureDAO implements LectureDAO {
     private Connection conn;
 
     public SQLiteLectureDAO(Connection conn){

@@ -2,7 +2,7 @@
 Van Braeckel Simon
  */
 
-package database.DataTransferObjects;
+package datatransferobjects;
 
 public class LocationDTO implements SimpleDTO {
     private static String tableName = "location";

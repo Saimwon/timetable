@@ -3,3 +3,6 @@ Exceptions moeten beter opgevangen worden
 
 ALLE DAO IPLMENENTATIES ZIJN BIJNA HETZELFDE
 Error geven bij toevoegen of aanpassen van persoon is heel lelijk
+
+bug: switch db, db heeft locaties maar in add lecture staan geen locaties
+    period selectfirst moet later dan dat listener gekoppeld wordt eraan.

@@ -4,7 +4,8 @@ Simon Van Braeckel
 
 package lectureinfodialog;
 
-import database.DataTransferObjects.*;
+import datatransferobjects.LectureDTO;
+import datatransferobjects.SimpleDTO;
 import guielements.LectureRepresentation;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -16,14 +17,19 @@ import java.util.List;
 
 public class LectureInput extends Stage{
     private LectureDTO lectureDTO;
-    LectureInputController controller;
+    private LectureInputController controller;
 
-    public LectureInput(List<SimpleDTO> studentgroups, List<SimpleDTO> teachers, List<SimpleDTO> locations, List<String> startHours){
+    public LectureInput(List<SimpleDTO> studentgroups, List<SimpleDTO> teachers, List<SimpleDTO> locations, List<String> startHours, LectureRepresentation lectureRepresentation){
         lectureDTO = null;
 
         FXMLLoader loader = new FXMLLoader(getClass().getResource("lectureinput.fxml"));
         Parent root = null;
         try {
+            if (lectureRepresentation == null) {
+                loader.setController(new LectureInputController());
+            } else {
+                loader.setController(new EditLectureInputController(lectureRepresentation));
+            }
             root = loader.load();
         } catch (IOException e){
             //Crash als het programma de fxml file van deze klasse niet vindt of als er een fout in staat.
@@ -37,12 +43,7 @@ public class LectureInput extends Stage{
 
         controller = loader.getController();
         controller.setLectureInput(this);
-        controller.initializeChoiceBoxes(studentgroups, teachers, locations, startHours);
-    }
-
-    public LectureInput(List<SimpleDTO> studentgroups, List<SimpleDTO> teachers, List<SimpleDTO> locations, List<String> startHours, LectureRepresentation selectedLecture){
-        this(studentgroups, teachers, locations, startHours);
-        controller.setStartData(selectedLecture);
+        controller.fillChoiceBoxes(studentgroups, teachers, locations, startHours);
     }
 
     public LectureDTO getLectureDTO() {

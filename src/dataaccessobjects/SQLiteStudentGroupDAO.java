@@ -2,10 +2,10 @@
 Van Braeckel Simon
  */
 
-package database.interfaces.implementations.DataAccessObjects;
+package dataaccessobjects;
 
-import database.DataTransferObjects.LocationDTO;
-import database.interfaces.LocationDAO;
+import dataaccessobjects.dataccessinterfaces.StudentGroupDAO;
+import datatransferobjects.StudentGroupDTO;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -14,16 +14,14 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SQLiteLocationDAO implements LocationDAO {
+public class SQLiteStudentGroupDAO implements StudentGroupDAO {
     private Connection conn;
-    private String tablename = "location";
-
-    public SQLiteLocationDAO(Connection conn){
+    private String tablename = "students";
+    public SQLiteStudentGroupDAO(Connection conn){
         this.conn = conn;
     }
 
-    @Override
-    public List<LocationDTO> getLocations() {
+    public List<StudentGroupDTO> getStudentGroups(){
         try (PreparedStatement statement = conn.prepareStatement("select * from " + tablename + " order by name COLLATE NOCASE")){
             ResultSet resultSet = statement.executeQuery();
             return verwerkResultaat(resultSet);
@@ -33,8 +31,7 @@ public class SQLiteLocationDAO implements LocationDAO {
         }
     }
 
-    @Override
-    public List<LocationDTO> getLocationsByName(String name){
+    public List<StudentGroupDTO> getStudentGroupsByName(String name){
         try (PreparedStatement statement = conn.prepareStatement("select * from " + tablename + " where name = ?")){
             statement.setString(1, name);
             ResultSet resultSet = statement.executeQuery();
@@ -45,11 +42,11 @@ public class SQLiteLocationDAO implements LocationDAO {
         }
     }
 
-    public List<LocationDTO> verwerkResultaat(ResultSet resultSet){
-        List<LocationDTO> result = new ArrayList<>();
+    public List<StudentGroupDTO> verwerkResultaat(ResultSet resultSet){
+        List<StudentGroupDTO> result = new ArrayList<>();
         try {
             while (resultSet.next()) {
-                result.add(new LocationDTO(resultSet.getInt("id"), resultSet.getString("name")));
+                result.add(new StudentGroupDTO(resultSet.getInt("id"), resultSet.getString("name")));
             }
         } catch (SQLException e){
             e.printStackTrace();

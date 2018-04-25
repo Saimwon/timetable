@@ -2,12 +2,12 @@
 Van Braeckel Simon
  */
 
-package database.interfaces;
+package dataaccessobjects.dataccessinterfaces;
 /*
 Interface waarmee alle interactie met de teacher tabel in de DB gebeurt
  */
 
-import database.DataTransferObjects.TeacherDTO;
+import datatransferobjects.TeacherDTO;
 
 import java.util.List;
 

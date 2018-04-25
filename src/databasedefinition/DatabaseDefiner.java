@@ -1,7 +1,7 @@
 /*
 Simon Van Braeckel
  */
-package database.interfaces;
+package databasedefinition;
 
 import java.sql.Connection;
 import java.util.List;

@@ -2,9 +2,9 @@
 Van Braeckel Simon
  */
 
-package database.interfaces.implementations.DataAccessObjects;
+package dataaccessobjects;
 
-import database.interfaces.PeriodDAO;
+import dataaccessobjects.dataccessinterfaces.PeriodDAO;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -13,7 +13,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SQLitePeriodDAO implements PeriodDAO{
+public class SQLitePeriodDAO implements PeriodDAO {
     private Connection conn;
 
     public SQLitePeriodDAO(Connection conn){

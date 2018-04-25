@@ -2,9 +2,9 @@
 Van Braeckel Simon
  */
 
-package database.interfaces;
+package dataaccessobjects.dataccessinterfaces;
 
-import database.DataTransferObjects.StudentGroupDTO;
+import datatransferobjects.StudentGroupDTO;
 
 import java.util.List;
 

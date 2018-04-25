@@ -1,18 +1,14 @@
 /*
 Simon Van Braeckel
  */
-package database.interfaces.implementations.DataAccessObjects.DatabaseDefinition;
+package databasedefinition;
 
-import database.interfaces.DatabaseDefiner;
+import databasedefinition.DatabaseDefiner;
 
-import java.io.*;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 
 /*

@@ -1,13 +1,12 @@
 /*
 Simon Van Braeckel
-
 Controller voor het venster dat zich opent wanneer je een lecture toevoegt of aanpast.
  */
 
 package lectureinfodialog;
 
-import database.DataTransferObjects.*;
-import guielements.LectureRepresentation;
+import datatransferobjects.LectureDTO;
+import datatransferobjects.SimpleDTO;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TextField;
 
@@ -21,8 +20,8 @@ public class LectureInputController {
     public ChoiceBox<SimpleDTO> teacherChoiceBox;
     public ChoiceBox<SimpleDTO> locationChoiceBox;
     public TextField courseNameTextField;
-    public ChoiceBox<Day> dayChoiceBox;
-    public ChoiceBox<Period> periodChoiceBox;
+    public ChoiceBox<DayDTO> dayChoiceBox;
+    public ChoiceBox<PeriodDTO> periodChoiceBox;
     public ChoiceBox<Integer> durationChoiceBox;
 
     private List<ChoiceBox> choiceBoxes;
@@ -40,62 +39,51 @@ public class LectureInputController {
     /*
     Vult eerst de 3 simpleDTO comboboxes op en maakt daarna een lijst van objecten om in de andere boxes te steken.
      */
-    public void initializeChoiceBoxes(List<SimpleDTO> studentgroups, List<SimpleDTO> teachers, List<SimpleDTO> locations, List<String> startHours){
-        studentGroupChoiceBox.getItems().addAll(studentgroups);
-        teacherChoiceBox.getItems().addAll(teachers);
-        locationChoiceBox.getItems().addAll(locations);
-
+    public void fillChoiceBoxes(List<SimpleDTO> studentgroups, List<SimpleDTO> teachers, List<SimpleDTO> locations, List<String> startHours){
         String[] dayNames = new String[]{"Monday", "Tuesday", "Wednesday", "Thursday", "Friday"};
-        List<Period> periods = new ArrayList<>();
-        List<Day> days = new ArrayList<>();
+        List<PeriodDTO> periods = new ArrayList<>();
+        List<DayDTO> days = new ArrayList<>();
         int teller = 1;
-        for (String startHour : startHours){
-            periods.add(new Period(teller, startHour));
+        for (String startHour : startHours) {
+            periods.add(new PeriodDTO(teller, startHour));
             if (teller <= 5) {
-                days.add(new Day(teller, dayNames[teller - 1]));
+                days.add(new DayDTO(teller, dayNames[teller - 1]));
             }
             teller += 1;
         }
-        dayChoiceBox.getItems().addAll(days);
-        periodChoiceBox.getItems().addAll(periods);
-
-        periodChoiceBox.getSelectionModel().selectedItemProperty().addListener(e -> fillDurationChoiceBox(periodChoiceBox.getSelectionModel().getSelectedItem().getId(), startHours.size()));
+        periodChoiceBox.getSelectionModel().selectedItemProperty().addListener(e -> fillDurationChoiceBox(periodChoiceBox.getSelectionModel().getSelectedIndex(), startHours.size()));
+        fillAndSelectFirst(studentGroupChoiceBox, studentgroups);
+        fillAndSelectFirst(teacherChoiceBox, teachers);
+        fillAndSelectFirst(locationChoiceBox, locations);
+        fillAndSelectFirst(dayChoiceBox, days);
+        fillAndSelectFirst(periodChoiceBox, periods);
     }
 
-    private void fillDurationChoiceBox(int selectedPeriodNr, int maxPeriodNr){
+    protected void fillAndSelectFirst(ChoiceBox choiceBox, List content){
+        choiceBox.getItems().addAll(content);
+        choiceBox.getSelectionModel().selectFirst();
+    }
+
+    protected void fillDurationChoiceBox(int selectedPeriodNr, int maxPeriodNr){
         durationChoiceBox.getItems().clear();
 
         for (int i = 1; i <= maxPeriodNr-selectedPeriodNr+1; i++){
             durationChoiceBox.getItems().add(i);
         }
-        durationChoiceBox.setValue(1);
+        durationChoiceBox.getSelectionModel().selectFirst();
     }
 
     public void save(){
-        boolean wasCorrect = true;
-        //overloop inputvelden, als een selectie ongeldig is, geef aan op GUI
-        for (ChoiceBox choiceBox : choiceBoxes){
-            if (choiceBox.getSelectionModel().getSelectedItem() == null){
-                choiceBox.getStyleClass().add("incorrectinput");
-                wasCorrect = false;
-            } else {
-                choiceBox.getStyleClass().removeAll("incorrectinput");
-            }
-        }
-        String courseName = courseNameTextField.getText();
-        if (courseName.isEmpty() || courseName.contains("\"")){
-            courseNameTextField.getStyleClass().add("incorrectinput");
-            wasCorrect = false;
-        } else {
-            courseNameTextField.getStyleClass().removeAll("incorrectinput");
-        }
+        boolean wasCorrect = checkInputs();
         if (! wasCorrect){
             return;
         }
 
+        lectureInput.setLectureDTO(makeLectureDTO());
+        lectureInput.close();
+    }
 
-        //check of coursenaam geldig is
-
+    public LectureDTO makeLectureDTO(){
         LectureDTO lectureDTO = new LectureDTO(studentGroupChoiceBox.getSelectionModel().getSelectedItem().getId(),
                 teacherChoiceBox.getSelectionModel().getSelectedItem().getId(),
                 locationChoiceBox.getSelectionModel().getSelectedItem().getId(),
@@ -104,8 +92,36 @@ public class LectureInputController {
                 periodChoiceBox.getSelectionModel().getSelectedItem().getId(),
                 durationChoiceBox.getSelectionModel().getSelectedItem());
 
-        lectureInput.setLectureDTO(lectureDTO);
-        lectureInput.close();
+        return lectureDTO;
+    }
+
+    protected boolean checkInputs(){
+        boolean wasCorrect = true;
+        //overloop inputvelden, als een selectie ongeldig is, geef aan in GUI
+        for (ChoiceBox choiceBox : choiceBoxes){
+            if (choiceBox.getSelectionModel().getSelectedItem() == null){
+                choiceBox.getStyleClass().add("incorrectinput");
+                wasCorrect = false;
+            } else {
+                choiceBox.getStyleClass().removeAll("incorrectinput");
+            }
+        }
+        if (! checkTextField()){
+            wasCorrect = false;
+        }
+        return wasCorrect;
+    }
+
+    protected boolean checkTextField(){
+        boolean wasCorrect = true;
+        String courseName = courseNameTextField.getText();
+        if (courseName.isEmpty() || courseName.contains("\"")){
+            courseNameTextField.getStyleClass().add("incorrectinput");
+            wasCorrect = false;
+        } else {
+            courseNameTextField.getStyleClass().removeAll("incorrectinput");
+        }
+        return wasCorrect;
     }
 
     public void cancel(){
@@ -118,9 +134,5 @@ public class LectureInputController {
 
     public void setLectureInput(LectureInput lectureInput) {
         this.lectureInput = lectureInput;
-    }
-
-    public void setStartData(LectureRepresentation selectedLecture){
-
     }
 }

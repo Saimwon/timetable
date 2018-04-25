@@ -2,7 +2,7 @@
 Van Braeckel Simon
  */
 
-package database.DataTransferObjects;
+package datatransferobjects;
 
 public class TeacherDTO implements SimpleDTO {
     private static String tableName = "teacher";

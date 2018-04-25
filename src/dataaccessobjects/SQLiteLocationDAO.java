@@ -2,10 +2,10 @@
 Van Braeckel Simon
  */
 
-package database.interfaces.implementations.DataAccessObjects;
+package dataaccessobjects;
 
-import database.DataTransferObjects.TeacherDTO;
-import database.interfaces.TeacherDAO;
+import dataaccessobjects.dataccessinterfaces.LocationDAO;
+import datatransferobjects.LocationDTO;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -14,31 +14,27 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SQLiteTeacherDAO implements TeacherDAO{
+public class SQLiteLocationDAO implements LocationDAO {
     private Connection conn;
-    private String tablename = "teacher";
+    private String tablename = "location";
 
-    public SQLiteTeacherDAO(Connection conn){
+    public SQLiteLocationDAO(Connection conn){
         this.conn = conn;
     }
 
-    public TeacherDTO getTeacherByID(int teacher_id){
-        try (PreparedStatement statement = conn.prepareStatement("select * from " + tablename + " where id = ? order by name")){
-            statement.setInt(1, teacher_id);
+    @Override
+    public List<LocationDTO> getLocations() {
+        try (PreparedStatement statement = conn.prepareStatement("select * from " + tablename + " order by name COLLATE NOCASE")){
             ResultSet resultSet = statement.executeQuery();
-            List<TeacherDTO> teachers = verwerkResultaat(resultSet);
-            if (teachers.size() != 0) {
-                return teachers.get(0);
-            } else {
-                return null;
-            }
+            return verwerkResultaat(resultSet);
         } catch (SQLException e){
             e.printStackTrace();
             return null;
         }
     }
 
-    public List<TeacherDTO> getTeachersByName(String name){
+    @Override
+    public List<LocationDTO> getLocationsByName(String name){
         try (PreparedStatement statement = conn.prepareStatement("select * from " + tablename + " where name = ?")){
             statement.setString(1, name);
             ResultSet resultSet = statement.executeQuery();
@@ -49,21 +45,11 @@ public class SQLiteTeacherDAO implements TeacherDAO{
         }
     }
 
-    public List<TeacherDTO> getTeachers(){
-        try (PreparedStatement statement = conn.prepareStatement("select * from " + tablename + " order by name COLLATE NOCASE")){
-            ResultSet resultSet = statement.executeQuery();
-            return verwerkResultaat(resultSet);
-        } catch (SQLException e){
-            e.printStackTrace();
-            return null;
-        }
-    }
-
-    public List<TeacherDTO> verwerkResultaat(ResultSet resultSet){
-        List<TeacherDTO> result = new ArrayList<>();
+    public List<LocationDTO> verwerkResultaat(ResultSet resultSet){
+        List<LocationDTO> result = new ArrayList<>();
         try {
             while (resultSet.next()) {
-                result.add(new TeacherDTO(resultSet.getInt("id"), resultSet.getString("name")));
+                result.add(new LocationDTO(resultSet.getInt("id"), resultSet.getString("name")));
             }
         } catch (SQLException e){
             e.printStackTrace();

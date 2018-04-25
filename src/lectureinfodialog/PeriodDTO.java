@@ -4,11 +4,11 @@ Simon Van Braeckel
 
 package lectureinfodialog;
 
-public class Period implements NameIdDTO {
+public class PeriodDTO implements NameIdDTO {
     private int Id;
     private String name;
 
-    public Period(int periodNr, String period) {
+    public PeriodDTO(int periodNr, String period) {
         this.Id = periodNr;
         this.name = period;
     }

@@ -4,12 +4,10 @@ Van Braeckel Simon
 
 package guielements;
 
-import database.DataTransferObjects.LectureDTO;
+import datatransferobjects.LectureDTO;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class LectureRepresentation extends VBox {

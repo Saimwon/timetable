@@ -1,7 +1,7 @@
 /*
 Simon Van Braeckel
  */
-package database.interfaces;
+package dataaccessobjects.dataccessinterfaces;
 
 
 //superclass for DataAccessObjects that manipulate tables with only an id column and a name column

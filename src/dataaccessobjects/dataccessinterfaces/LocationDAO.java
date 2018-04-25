@@ -2,12 +2,12 @@
 Van Braeckel Simon
  */
 
-package database.interfaces;
+package dataaccessobjects.dataccessinterfaces;
 /*
 Interface waarmee alle interactie met de location tabel in de DB gebeurt
  */
 
-import database.DataTransferObjects.LocationDTO;
+import datatransferobjects.LocationDTO;
 
 import java.util.List;
 

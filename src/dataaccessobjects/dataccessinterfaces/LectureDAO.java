@@ -2,13 +2,13 @@
 Van Braeckel Simon
  */
 
-package database.interfaces;
+package dataaccessobjects.dataccessinterfaces;
 /*
 Interface waarmee alle interactie met de lecture tabel in de DB gebeurt
  */
 
 
-import database.DataTransferObjects.LectureDTO;
+import datatransferobjects.LectureDTO;
 
 import java.util.List;
 
