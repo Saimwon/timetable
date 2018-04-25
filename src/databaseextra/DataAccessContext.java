@@ -2,7 +2,7 @@
 Van Braeckel Simon
  */
 
-package database.interfaces;
+package databaseextra;
 
 import dataaccessobjects.dataccessinterfaces.*;
 import databasedefinition.DatabaseDefiner;

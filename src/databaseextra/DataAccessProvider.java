@@ -2,9 +2,7 @@
 Van Braeckel Simon
  */
 
-package database.interfaces;
-
-import java.sql.Connection;
+package databaseextra;
 
 public interface DataAccessProvider {
     public DataAccessContext getDataAccessContext();

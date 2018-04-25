@@ -5,8 +5,8 @@ Van Braeckel Simon
 package timetable;
 
 import dataaccessobjects.dataccessinterfaces.LectureDAO;
-import database.interfaces.*;
-import database.interfaces.implementations.SQLiteDataAccessProvider;
+import databaseextra.DataAccessProvider;
+import databaseextra.SQLiteDataAccessProvider;
 import dataaccessobjects.dataccessinterfaces.SimpleDAO;
 import datatransferobjects.*;
 import guielements.LectureRepresentation;

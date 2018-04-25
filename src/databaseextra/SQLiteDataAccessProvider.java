@@ -2,15 +2,10 @@
 Van Braeckel Simon
  */
 
-package database.interfaces.implementations;
-
-import database.interfaces.DataAccessContext;
-import database.interfaces.DataAccessProvider;
+package databaseextra;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 
 public class SQLiteDataAccessProvider implements DataAccessProvider{
     private String dbConnectionString;

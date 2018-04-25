@@ -2,11 +2,10 @@
 Van Braeckel Simon
  */
 
-package database.interfaces.implementations;
+package databaseextra;
 
 import dataaccessobjects.*;
 import dataaccessobjects.dataccessinterfaces.*;
-import database.interfaces.*;
 import databasedefinition.SQLiteDatabaseDefiner;
 import databasedefinition.DatabaseDefiner;
 
