@@ -22,7 +22,7 @@ public class SQLiteTeacherDAO implements TeacherDAO {
         this.conn = conn;
     }
 
-    public TeacherDTO getTeacherByID(int teacher_id){
+    public TeacherDTO getEntryById(int teacher_id){
         try (PreparedStatement statement = conn.prepareStatement("select * from " + tablename + " where id = ? order by name")){
             statement.setInt(1, teacher_id);
             ResultSet resultSet = statement.executeQuery();
@@ -38,9 +38,8 @@ public class SQLiteTeacherDAO implements TeacherDAO {
         }
     }
 
-    public List<TeacherDTO> getTeachersByName(String name){
-        try (PreparedStatement statement = conn.prepareStatement("select * from " + tablename + " where name = ?")){
-            statement.setString(1, name);
+    public List<TeacherDTO> getAllEntries(){
+        try (PreparedStatement statement = conn.prepareStatement("select * from " + tablename + " order by name COLLATE NOCASE")){
             ResultSet resultSet = statement.executeQuery();
             return verwerkResultaat(resultSet);
         } catch (SQLException e){
@@ -49,8 +48,9 @@ public class SQLiteTeacherDAO implements TeacherDAO {
         }
     }
 
-    public List<TeacherDTO> getTeachers(){
-        try (PreparedStatement statement = conn.prepareStatement("select * from " + tablename + " order by name COLLATE NOCASE")){
+    public List<TeacherDTO> getEntryByName(String name){
+        try (PreparedStatement statement = conn.prepareStatement("select * from " + tablename + " where name = ?")){
+            statement.setString(1, name);
             ResultSet resultSet = statement.executeQuery();
             return verwerkResultaat(resultSet);
         } catch (SQLException e){

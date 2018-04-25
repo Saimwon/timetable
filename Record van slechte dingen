@@ -1,8 +1,5 @@
-Het fullscreen maken van de window in main kan mss op een betere plaats
-Exceptions moeten beter opgevangen worden
+Bij open Databank nog checken of databank correct is
 
-ALLE DAO IPLMENENTATIES ZIJN BIJNA HETZELFDE
-Error geven bij toevoegen of aanpassen van persoon is heel lelijk
+ALLE DAO IMPLEMENTATIES ZIJN BIJNA HETZELFDE
+zorg dat errorvensters vanzelf verdwijnen
 
-bug: switch db, db heeft locaties maar in add lecture staan geen locaties
-    period selectfirst moet later dan dat listener gekoppeld wordt eraan.

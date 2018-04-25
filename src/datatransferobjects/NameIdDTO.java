@@ -2,7 +2,7 @@
 Simon Van Braeckel
  */
 
-package lectureinfodialog;
+package datatransferobjects;
 
 public interface NameIdDTO {
     public int getId();

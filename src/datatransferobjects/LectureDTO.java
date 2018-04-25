@@ -51,4 +51,16 @@ public class LectureDTO{
     public int getDuration() {
         return duration;
     }
+
+    public boolean equals(LectureDTO o2){
+        boolean student = this.student_id == o2.getStudent_id();
+        boolean teacher = this.teacher_id == o2.getTeacher_id();
+        boolean location = this.location_id == o2.getLocation_id();
+        boolean coursename = this.course.equals(o2.getCourse());
+        boolean day = this.day == o2.getDay();
+        boolean period = this.first_block == o2.getFirst_block();
+        boolean duration = this.duration == o2.getDuration();
+
+        return student && teacher && location && coursename && day && period && duration;
+    }
 }

@@ -17,7 +17,9 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.stage.FileChooser;
 import javafx.stage.Window;
+import lectureinfodialog.EditLectureInputController;
 import lectureinfodialog.LectureInput;
+import lectureinfodialog.LectureInputController;
 import starthourdialog.StartHourDialog;
 
 import java.io.File;
@@ -25,6 +27,7 @@ import java.util.*;
 
 public class Controller {
     private DataAccessProvider dataAccessProvider;
+    private Window mainWindow;
 
     public TextField newEntryTextField;
     public Button newEntryButton;
@@ -42,7 +45,6 @@ public class Controller {
     public ComboBox<TeacherDTO> teacherComboBox;
     public ComboBox<LocationDTO> locationComboBox;
 
-    //veld dat geselecteerde lecture bijhoudt:
     private LectureRepresentation selectedLecture;
 
 
@@ -62,29 +64,29 @@ public class Controller {
     }
 
     public void initializeViews() {
-        teachersView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> nameSelected("teacher_id", teachersView.getSelectionModel().getSelectedItem()));
+        teachersView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> onNameSelected("teacher_id", teachersView.getSelectionModel().getSelectedItem()));
 
-        studentGroupsView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> nameSelected("students_id", studentGroupsView.getSelectionModel().getSelectedItem()));
+        studentGroupsView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> onNameSelected("students_id", studentGroupsView.getSelectionModel().getSelectedItem()));
 
-        locationsView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> nameSelected("location_id", locationsView.getSelectionModel().getSelectedItem()));
+        locationsView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> onNameSelected("location_id", locationsView.getSelectionModel().getSelectedItem()));
         refreshViews();
     }
 
     private void refreshViews() {
-        List<TeacherDTO> teachers = dataAccessProvider.getDataAccessContext().getTeacherDAO().getTeachers();
+        List<TeacherDTO> teachers = dataAccessProvider.getDataAccessContext().getTeacherDAO().getAllEntries();
         teachersView.getItems().setAll(teachers);
         teacherComboBox.getItems().addAll(teachers);
 
-        List<StudentGroupDTO> studentGroups = dataAccessProvider.getDataAccessContext().getStudentDAO().getStudentGroups();
+        List<StudentGroupDTO> studentGroups = dataAccessProvider.getDataAccessContext().getStudentDAO().getAllEntries();
         studentGroupsView.getItems().setAll(studentGroups);
         studentGroupComboBox.getItems().setAll(studentGroups);
 
-        List<LocationDTO> locations = dataAccessProvider.getDataAccessContext().getLocationDAO().getLocations();
+        List<LocationDTO> locations = dataAccessProvider.getDataAccessContext().getLocationDAO().getAllEntries();
         locationsView.getItems().setAll(locations);
         locationComboBox.getItems().setAll(locations);
     }
 
-    public void nameSelected(String tableName, SimpleDTO simpleDTO) {
+    public void onNameSelected(String tableName, SimpleDTO simpleDTO) {
         selectedLecture = null;
 
         if (simpleDTO == null) {
@@ -136,12 +138,12 @@ public class Controller {
                 }
 
                 //zet lecture in container
-                TeacherDTO teacherById = dataAccessProvider.getDataAccessContext().getTeacherDAO().getTeacherByID(lec.getTeacher_id());
+                TeacherDTO teacherById = dataAccessProvider.getDataAccessContext().getTeacherDAO().getEntryById(lec.getTeacher_id());
                 if (teacherById == null) {
                     showErrorDialog("One of the lectures uses a TeacherID for which there is no entry in table \"teachers\".");
                     return;
                 }
-                String teachname = dataAccessProvider.getDataAccessContext().getTeacherDAO().getTeacherByID(lec.getTeacher_id()).getName();
+                String teachname = dataAccessProvider.getDataAccessContext().getTeacherDAO().getEntryById(lec.getTeacher_id()).getName();
                 LectureRepresentation lectureRepresentation = new LectureRepresentation(lec.getCourse(), teachname, lec);
 
                 lectureRepresentation.addEventFilter(MouseEvent.MOUSE_PRESSED, event -> {
@@ -166,25 +168,18 @@ public class Controller {
         chooser.getExtensionFilters().addAll(
                 new FileChooser.ExtensionFilter("Sqlite Files (.db)", "*.db"),
                 new FileChooser.ExtensionFilter("All Files", "*.*"));
-        File file = chooser.showOpenDialog(
-                gridPane.getScene().getWindow()
-        );
+        File file = chooser.showOpenDialog(gridPane.getScene().getWindow());
         if (file != null && file.getName().endsWith(".db")) {
             String path = file.getPath();
-            updateDatabasePath(path);
+
             clearTable();
+
+            dataAccessProvider.setDbConnectionString(path);
             initializeGridPaneRows();
             refreshViews();
         } else if (file != null) {
             showErrorDialog("Please choose a file that has the .db extension.");
         }
-    }
-
-    public void updateDatabasePath(String path) {
-        //verander veld in dataAccessContext
-        dataAccessProvider.setDbConnectionString(path);
-        //reinitialize table
-        refreshViews();
     }
 
     public void createDatabase() {
@@ -196,9 +191,9 @@ public class Controller {
         }
 
         FileChooser chooser = new FileChooser();
-        Window parent = gridPane.getScene().getWindow();
-        chooser.setTitle("Create database dialog.");
-        File destinationFile = chooser.showSaveDialog(parent);
+        chooser.setTitle("Create database.");
+        File destinationFile = chooser.showSaveDialog(gridPane.getScene().getWindow());
+
         if (destinationFile != null) {
             String path = destinationFile.getPath().endsWith(".db") ? destinationFile.getPath() : destinationFile.getPath() + ".db";
             dataAccessProvider.setDbConnectionString(path);
@@ -206,7 +201,6 @@ public class Controller {
 
             clearTable();
             initializeGridPaneRows();
-            refreshViews();
         } else {
             return;
         }
@@ -290,47 +284,13 @@ public class Controller {
         updateTableContents(tableName + "_id", id);
     }
 
-    public void deleteLecture(){
-        if (selectedLecture == null){
-            showErrorDialog("A lecture must be selected.");
-            return;
-        }
-
-         if (! dataAccessProvider.getDataAccessContext().getLectureDAO().deleteEntry(selectedLecture.getLectureDTO())){
-             showErrorDialog("Failed to delete lecture.");
-             return;
-         }
-
-         refreshTable();
-    }
-
-    public void editLecture(){
-        if (selectedLecture == null){
-            showErrorDialog("A lecture must be selected");
-            return;
-        }
-
-        LectureInput lectureInput = new LectureInput(studentGroupsView.getItems(), teachersView.getItems(), locationsView.getItems(), starthours, selectedLecture);
-        lectureInput.showAndWait();
-        LectureDTO lectureDTO = lectureInput.getLectureDTO();
-
-        if (lectureDTO != null) {
-            //oude lecture verwijderen
-            dataAccessProvider.getDataAccessContext().getLectureDAO().deleteEntry(selectedLecture.getLectureDTO());
-            selectedLecture = null;
-
-            //adhv nieuwe lectureDTO een entry toevoegen
-            if (dataAccessProvider.getDataAccessContext().getLectureDAO().addEntry(lectureDTO)) {
-                refreshTable();
-            } else {
-                showErrorDialog("Failed to add entry.");
-            }
-        }
-    }
-
     public void createLecture(){
-        LectureInput lectureInput = new LectureInput(studentGroupsView.getItems(), teachersView.getItems(), locationsView.getItems(), starthours, null);
+        LectureInputController controller = new LectureInputController();
+        LectureInput lectureInput = new LectureInput(studentGroupsView.getItems(), teachersView.getItems(), locationsView.getItems(), starthours, controller);
+
+        lectureInput.initOwner(gridPane.getScene().getWindow());
         lectureInput.showAndWait();
+
         LectureDTO lectureDTO = lectureInput.getLectureDTO();
 
         if (lectureDTO != null) {
@@ -343,10 +303,54 @@ public class Controller {
         }
     }
 
+    public void editLecture(){
+        if (selectedLecture == null){
+            showErrorDialog("A lecture must be selected");
+            return;
+        }
+
+        EditLectureInputController controller = new EditLectureInputController(selectedLecture);
+        LectureInput lectureInput = new LectureInput(studentGroupsView.getItems(), teachersView.getItems(), locationsView.getItems(), starthours, controller);
+
+        lectureInput.initOwner(gridPane.getScene().getWindow());
+        lectureInput.showAndWait();
+
+        LectureDTO newLectureDTO = lectureInput.getLectureDTO();
+        LectureDTO selectedLectureDTO = selectedLecture.getLectureDTO();
+
+        if (newLectureDTO != null && ! newLectureDTO.equals(selectedLectureDTO)) {
+            //oude lecture verwijderen
+            dataAccessProvider.getDataAccessContext().getLectureDAO().deleteEntry(selectedLectureDTO);
+            selectedLecture = null;
+
+            //adhv nieuwe lectureDTO een entry toevoegen
+            if (dataAccessProvider.getDataAccessContext().getLectureDAO().addEntry(newLectureDTO)) {
+                refreshTable();
+            } else {
+                showErrorDialog("Failed to add entry.");
+            }
+        }
+    }
+
+    public void deleteLecture(){
+        if (selectedLecture == null){
+            showErrorDialog("A lecture must be selected.");
+            return;
+        }
+
+        if (! dataAccessProvider.getDataAccessContext().getLectureDAO().deleteEntry(selectedLecture.getLectureDTO())){
+            showErrorDialog("Failed to delete lecture.");
+            return;
+        }
+
+        refreshTable();
+    }
+
     public void showErrorDialog(String message){
         Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle("Error Dialog");
+        alert.setTitle("Error.");
         alert.setContentText(message);
+        alert.initOwner(gridPane.getScene().getWindow());
 
         alert.showAndWait();
     }

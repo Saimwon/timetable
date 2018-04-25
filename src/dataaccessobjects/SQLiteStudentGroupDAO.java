@@ -17,11 +17,12 @@ import java.util.List;
 public class SQLiteStudentGroupDAO implements StudentGroupDAO {
     private Connection conn;
     private String tablename = "students";
+
     public SQLiteStudentGroupDAO(Connection conn){
         this.conn = conn;
     }
 
-    public List<StudentGroupDTO> getStudentGroups(){
+    public List<StudentGroupDTO> getAllEntries(){
         try (PreparedStatement statement = conn.prepareStatement("select * from " + tablename + " order by name COLLATE NOCASE")){
             ResultSet resultSet = statement.executeQuery();
             return verwerkResultaat(resultSet);
@@ -31,7 +32,7 @@ public class SQLiteStudentGroupDAO implements StudentGroupDAO {
         }
     }
 
-    public List<StudentGroupDTO> getStudentGroupsByName(String name){
+    public List<StudentGroupDTO> getEntryByName(String name){
         try (PreparedStatement statement = conn.prepareStatement("select * from " + tablename + " where name = ?")){
             statement.setString(1, name);
             ResultSet resultSet = statement.executeQuery();

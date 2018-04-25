@@ -23,7 +23,7 @@ public class SQLiteLocationDAO implements LocationDAO {
     }
 
     @Override
-    public List<LocationDTO> getLocations() {
+    public List<LocationDTO> getAllEntries() {
         try (PreparedStatement statement = conn.prepareStatement("select * from " + tablename + " order by name COLLATE NOCASE")){
             ResultSet resultSet = statement.executeQuery();
             return verwerkResultaat(resultSet);
@@ -34,7 +34,7 @@ public class SQLiteLocationDAO implements LocationDAO {
     }
 
     @Override
-    public List<LocationDTO> getLocationsByName(String name){
+    public List<LocationDTO> getEntryByName(String name){
         try (PreparedStatement statement = conn.prepareStatement("select * from " + tablename + " where name = ?")){
             statement.setString(1, name);
             ResultSet resultSet = statement.executeQuery();

@@ -2,34 +2,33 @@
 Simon Van Braeckel
  */
 
-package lectureinfodialog;
+package datatransferobjects;
 
-public class PeriodDTO implements NameIdDTO {
+public class DayDTO implements NameIdDTO {
     private int Id;
     private String name;
 
-    public PeriodDTO(int periodNr, String period) {
-        this.Id = periodNr;
-        this.name = period;
+    public DayDTO(int dayNr, String day) {
+        this.Id = dayNr;
+        this.name = day;
     }
 
     public int getId() {
         return Id;
     }
 
-    public void setId(int dayNr) {
-        this.Id = dayNr;
+    public void setId(int id) {
+        this.Id = id;
     }
 
     public String getName() {
         return name;
     }
 
-    public void setName(String day) {
+    public void setName(String name) {
         this.name = name;
     }
 
-    @Override
     public String toString(){
         return this.name;
     }

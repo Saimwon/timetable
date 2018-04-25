@@ -5,7 +5,9 @@ Controller voor het venster dat zich opent wanneer je een lecture toevoegt of aa
 
 package lectureinfodialog;
 
+import datatransferobjects.DayDTO;
 import datatransferobjects.LectureDTO;
+import datatransferobjects.PeriodDTO;
 import datatransferobjects.SimpleDTO;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TextField;
@@ -51,6 +53,7 @@ public class LectureInputController {
             }
             teller += 1;
         }
+
         periodChoiceBox.getSelectionModel().selectedItemProperty().addListener(e -> fillDurationChoiceBox(periodChoiceBox.getSelectionModel().getSelectedIndex(), startHours.size()));
         fillAndSelectFirst(studentGroupChoiceBox, studentgroups);
         fillAndSelectFirst(teacherChoiceBox, teachers);

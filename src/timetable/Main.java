@@ -31,7 +31,7 @@ public class Main extends Application {
         primaryStage.show();
     }
 
-    public void setFullScreen(Stage stage){
+    private void setFullScreen(Stage stage){
         Screen screen = Screen.getPrimary();
         Rectangle2D bounds = screen.getVisualBounds();
 
