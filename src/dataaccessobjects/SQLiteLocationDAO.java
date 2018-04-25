@@ -45,6 +45,11 @@ public class SQLiteLocationDAO implements LocationDAO {
         }
     }
 
+    @Override
+    public LocationDTO getEntryById(int id) {
+        return null;
+    }
+
     public List<LocationDTO> verwerkResultaat(ResultSet resultSet){
         List<LocationDTO> result = new ArrayList<>();
         try {

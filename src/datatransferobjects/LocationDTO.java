@@ -4,30 +4,12 @@ Van Braeckel Simon
 
 package datatransferobjects;
 
-public class LocationDTO implements SimpleDTO {
-    private static String tableName = "location";
-    private int id;
-    private String name;
-
+public class LocationDTO extends SimpleeDTO {
     public LocationDTO(int id, String name){
-        this.id = id;
-        this.name = name;
+        super(id, name, "location");
     }
 
-    public String getTableName() {
-        return tableName;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    @Override
-    public String toString() {
-        return name;
+    public LocationDTO(){
+        super("location");
     }
 }

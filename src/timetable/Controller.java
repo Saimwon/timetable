@@ -184,7 +184,9 @@ public class Controller {
 
     public void createDatabase() {
         StartHourDialog startHourDialog = new StartHourDialog();
+        startHourDialog.initOwner(gridPane.getScene().getWindow());
         startHourDialog.showAndWait();
+
         List<Integer[]> startHours = startHourDialog.getStartHours();
         if (startHours == null) { //Dit zou betekenen dat er op cancel is gedrukt in het dialoogvenster
             return;

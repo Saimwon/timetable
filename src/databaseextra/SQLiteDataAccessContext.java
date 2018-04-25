@@ -8,6 +8,7 @@ import dataaccessobjects.*;
 import dataaccessobjects.dataccessinterfaces.*;
 import databasedefinition.SQLiteDatabaseDefiner;
 import databasedefinition.DatabaseDefiner;
+import datatransferobjects.TeacherDTO;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -24,8 +25,8 @@ public class SQLiteDataAccessContext implements DataAccessContext{
     }
 
     @Override
-    public TeacherDAO getTeacherDAO(){
-        return new SQLiteTeacherDAO(conn);
+    public SQLiteSimpleDAO<TeacherDTO> getTeacherDAO(){
+        return new SQLiteSimpleDAO<TeacherDTO>(conn, "teacher");
     }
 
     @Override

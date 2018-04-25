@@ -4,31 +4,12 @@ Van Braeckel Simon
 
 package datatransferobjects;
 
-public class TeacherDTO implements SimpleDTO {
-    private static String tableName = "teacher";
-    private int id;
-    private String name;
-
+public class TeacherDTO extends SimpleeDTO {
     public TeacherDTO(int id, String name){
-        this.id = id;
-        this.name = name;
+        super(id, name, "teacher");
     }
 
-    @Override
-    public String getTableName() {
-        return tableName;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    @Override
-    public String toString() {
-        return name;
+    public TeacherDTO(){
+        super("teacher");
     }
 }

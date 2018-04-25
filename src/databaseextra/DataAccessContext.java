@@ -6,10 +6,11 @@ package databaseextra;
 
 import dataaccessobjects.dataccessinterfaces.*;
 import databasedefinition.DatabaseDefiner;
+import datatransferobjects.TeacherDTO;
 
 public interface DataAccessContext extends AutoCloseable {
     public StudentGroupDAO getStudentDAO();
-    public TeacherDAO getTeacherDAO();
+    public SimpleDAO<TeacherDTO> getTeacherDAO();
     public LocationDAO getLocationDAO();
     public LectureDAO getLectureDAO();
     public PeriodDAO getPeriodDAO();
