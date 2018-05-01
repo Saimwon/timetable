@@ -1,6 +1,76 @@
 Bij open Databank nog checken of databank correct is
-ALLE DAO IMPLEMENTATIES ZIJN BIJNA HETZELFDE
+In SimpleDAO Compiler ding fixen
 
 zorg dat errorvensters vanzelf verdwijnen
 hoogte van accordion moet groter
 voeg knop toe om te kiezen aan welke kant accordion staat
+verwijder apart veld course uit lectureRepresentation
+Zorg dat controller geen dataAccessProvider nodig heeft?
+
+Maak klasse om errors te tonen
+TableModel moet zelf starturen uit DB halen
+
+NU:
+Eerste idee MVC:
+we zetten lectures in de containers, hoe weet view dat hij zich moet refreshen in huidige opbouw?
+   de containers worden constant getoond, er is geen refreshen.
+
+wat we willen:
+	We hebben een abstracte voorstelling in de model klasse 
+	Onze model update zichzelf wanneer controller dat vraagt
+	wanneer onze model zichzelf update zal hij de views informeren
+
+Abstracte voorstelling mogelijkheden:
+	2dim array om de gridpane voor te stellen, met in elk vakje nog een lijst van lectures
+		voor: Duidelijke cohesie met hoe het er uit ziet
+		na: overlopen is traag en je overloopt veel vakjes waar niets in zit
+	map van positie op lijst van lectures
+		voor: bij update van view verwijdert die alles 
+		na: minder duidelijk een tabel
+	
+HOE HET ECHT MOET:
+Onze view bevat allemaal lecturecontainers, in de 2dim array zitten de lijsten van lectures die op de corresponderende plaats staan.
+Elke lijst in 2dim array heeft een listener die zegt tegen de corresponderende LectureContainer dat hij zich moet updaten met wat er in die lijst zit.
+	Wat steken we precies in de lijst? hebben we daar al een klasse voor?
+		jep, lectureRepresentation
+
+Try 2:
+2dim array van lijsten van LectureRepresentations
+
+methoden:
+Array initialiseren -> wanneer er een nieuwe databank wordt gemaakt of geopened
+	-> juist lengte array maken, lijsten in steken, luisteraars toevoegen
+Info ophalen uit db en in model zetten
+
+
+
+oke we hebben een probleem. We hebben nu luisteraars die 
+Onze view is de enige luisteraar die we overal aan hangen. Die gaat dus meerdere keren ge-invalidate worden bij updateTableContents
+En die wordt ook ge-invalidate bij
+
+model
+zegt in setrows dat de rijen zijn veranderd aan de view
+
+view
+
+DUS:
+View is enige luisteraar
+--> invalidated: vraag starturen op, anders dan huidig: refresh rijen en shit
+		zelfde als huidig: vraag tabel op, overloop alles en zet juiste lectures in gridpane
+Observable lists krijgen toch eigen luisteraars!!!!!!!!!
+invalidated van TableView:
+hou starturen bij in Model, add View als luisteraar aan model, doe FireInvalidationEvent in setRows
+
+invalidated in view:
+wordt opgeroepen wanneer: het aantal rijen verandert in het model
+moet doen: lecturerepresentations en starturen in zelf zetten en lecturerepresentations registreren als luisteraars bij gridpanemodel
+
+
+opties voor view:
+in model een lijst van starturen bijhouden en view daarnaar doen luisteren
+NEE dat is niet nodig
+De view model wordt enkel geNotified wanneer de starturen veranderen dus
+
+
+veld voor model nodig in view
+

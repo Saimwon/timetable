@@ -4,19 +4,14 @@ Van Braeckel Simon
 
 package timetable;
 
-import dataaccessobjects.dataccessinterfaces.LectureDAO;
 import databaseextra.DataAccessProvider;
 import databaseextra.SQLiteDataAccessProvider;
 import dataaccessobjects.dataccessinterfaces.SimpleDAO;
 import datatransferobjects.*;
 import guielements.LectureRepresentation;
 import guielements.LectureContainer;
-import guielements.MyTable;
 import javafx.scene.control.*;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.GridPane;
 import javafx.stage.FileChooser;
-import javafx.stage.Window;
 import lectureinfodialog.EditLectureInputController;
 import lectureinfodialog.LectureInput;
 import lectureinfodialog.LectureInputController;
@@ -26,13 +21,14 @@ import java.io.File;
 import java.util.*;
 
 public class Controller {
+    private TimetableModel timetableModel;
+
     private DataAccessProvider dataAccessProvider;
-    private Window mainWindow;
 
     public TextField newEntryTextField;
     public Button newEntryButton;
     public Button renameEntryButton;
-    public MyTable gridPane;
+    public TimetableView gridPane;
     public Accordion accordion;
     public ListView<SimpleDTO> studentGroupsView;
     public ListView<SimpleDTO> teachersView;
@@ -50,20 +46,16 @@ public class Controller {
 
     public void initialize() {
         dataAccessProvider = new SQLiteDataAccessProvider();
+        timetableModel = new TimetableModel(dataAccessProvider.getDataAccessContext().getPeriodDAO().getStartTimes(), dataAccessProvider);
+        gridPane.setModel(timetableModel);
         selectedLecture = null;
-        initializeGridPaneRows();
+        timetableModel.updateStarthours();
 
         initializeViews();
         containerMap = new HashMap<>();
     }
-
-    public void initializeGridPaneRows() {
-        List<String> startHours = dataAccessProvider.getDataAccessContext().getPeriodDAO().getStartTimes();
-        starthours = startHours;
-        gridPane.initializeStartHours(startHours);
-    }
-
-    public void initializeViews() {
+    
+    private void initializeViews() {
         teachersView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> onNameSelected("teacher_id", teachersView.getSelectionModel().getSelectedItem()));
 
         studentGroupsView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> onNameSelected("students_id", studentGroupsView.getSelectionModel().getSelectedItem()));
@@ -86,7 +78,7 @@ public class Controller {
         locationComboBox.getItems().setAll(locations);
     }
 
-    public void onNameSelected(String tableName, SimpleDTO simpleDTO) {
+    private void onNameSelected(String tableName, SimpleDTO simpleDTO) {
         selectedLecture = null;
 
         if (simpleDTO == null) {
@@ -96,70 +88,74 @@ public class Controller {
         //doe nog iets?
     }
 
-    public void clearTable() {
+    private void clearTable() {
         gridPane.getChildren().removeAll(containerMap.values());
     }
 
-    public void refreshTable(){
+    private void refreshTable(){
         updateTableContents(lastColumnName, lastId);
     }
 
     private String lastColumnName;
     private int lastId;
-    public void updateTableContents(String columnName, int id) {
-        lastColumnName = columnName;
-        lastId = id;
+    private void updateTableContents(String columnName, int id) {
+//gelievee het selecteren van lectures nog niet te breken
+        timetableModel.updateTableContents(columnName, id);
 
-        LectureDAO lectureDAO = dataAccessProvider.getDataAccessContext().getLectureDAO();
-        List<LectureDTO> lectureList = lectureDAO.getLecturesFromColumnById(columnName, id);
-        //clear gridpane containerobjecten
-        clearTable();
-        //clear map
-        containerMap = new HashMap<>();
-        for (LectureDTO lec : lectureList) {
-            //loop over duration
-            //als er nog geen entry is in de containermap voor die positie:
-            //nieuwe lesuurcontainer maken en in map steken
-            for (int i = 0; i < lec.getDuration(); i++) {
-                int row = lec.getDay();
-                int column = lec.getFirst_block() + i;
-
-                //key voor in map, we maken er een string van zodat hashen werkt.
-                String positie = "" + row + column;
-
-                LectureContainer container = new LectureContainer();
-                if (!containerMap.containsKey(positie)) {
-                    containerMap.put(positie, container);
-                    //zet container in grid
-                    GridPane.setConstraints(container, row, column);
-                    gridPane.getChildren().add(container);
-                } else {
-                    container = containerMap.get(positie);
-                }
-
-                //zet lecture in container
-                TeacherDTO teacherById = dataAccessProvider.getDataAccessContext().getTeacherDAO().getEntryById(lec.getTeacher_id());
-                if (teacherById == null) {
-                    showErrorDialog("One of the lectures uses a TeacherID for which there is no entry in table \"teachers\".");
-                    return;
-                }
-                String teachname = dataAccessProvider.getDataAccessContext().getTeacherDAO().getEntryById(lec.getTeacher_id()).getName();
-                LectureRepresentation lectureRepresentation = new LectureRepresentation(lec.getCourse(), teachname, lec);
-
-                lectureRepresentation.addEventFilter(MouseEvent.MOUSE_PRESSED, event -> {
-                    //verwijder de styleclass van de vorige geselecteerde lecture
-                    if (selectedLecture != null) {
-                        selectedLecture.getStyleClass().remove("selectedlecture");
-                    }
-                    //update "selectedLecture" variabele en voeg stijlklasse toe
-                    selectedLecture = (LectureRepresentation) event.getSource();
-                    selectedLecture.getStyleClass().add("selectedlecture");
-                });
-
-                container.addLecture(lectureRepresentation);
-                container.notifyOfChange();
-            }
-        }
+//        lastColumnName = columnName;
+//        lastId = id;
+//
+//        LectureDAO lectureDAO = dataAccessProvider.getDataAccessContext().getLectureDAO();
+//        List<LectureDTO> lectureList = lectureDAO.getLecturesFromColumnById(columnName, id);
+//        //clear gridpane containerobjecten
+//        clearTable();
+//        //clear map
+//        containerMap = new HashMap<>();
+//        for (LectureDTO lectureDTO : lectureList) {
+//            //loop over duration
+//            //als er nog geen entry is in de containermap voor die positie:
+//            //nieuwe lesuurcontainer maken en in map steken
+//
+//            for (int i = 0; i < lectureDTO.getDuration(); i++) {
+//                int row = lectureDTO.getDay();
+//                int column = lectureDTO.getFirst_block() + i;
+//
+//                //key voor in map, we maken er een string van zodat hashen werkt.
+//                String positie = "" + row + column;
+//
+//                LectureContainer container = new LectureContainer();
+//                if (!containerMap.containsKey(positie)) {
+//                    containerMap.put(positie, container);
+//                    //zet container in grid
+//                    GridPane.setConstraints(container, row, column);
+//                    gridPane.getChildren().add(container);
+//                } else {
+//                    container = containerMap.get(positie);
+//                }
+//
+//                //zet lecture in container
+//                TeacherDTO teacherById = dataAccessProvider.getDataAccessContext().getTeacherDAO().getEntryById(lectureDTO.getTeacher_id());
+//                if (teacherById == null) {
+//                    showErrorDialog("One of the lectures uses a TeacherID for which there is no entry in table \"teachers\".");
+//                    return;
+//                }
+//                String teachname = dataAccessProvider.getDataAccessContext().getTeacherDAO().getEntryById(lectureDTO.getTeacher_id()).getName();
+//                LectureRepresentation lectureRepresentation = new LectureRepresentation(lectureDTO.getCourse(), teachname, lectureDTO);
+//
+//                lectureRepresentation.addEventFilter(MouseEvent.MOUSE_PRESSED, event -> {
+//                    //verwijder de styleclass van de vorige geselecteerde lecture
+//                    if (selectedLecture != null) {
+//                        selectedLecture.getStyleClass().remove("selectedlecture");
+//                    }
+//                    //update "selectedLecture" variabele en voeg stijlklasse toe
+//                    selectedLecture = (LectureRepresentation) event.getSource();
+//                    selectedLecture.getStyleClass().add("selectedlecture");
+//                });
+//
+//                container.addLecture(lectureRepresentation);
+//                container.notifyOfChange();
+//            }
+//        }
     }
 
     public void openDatabase() {
@@ -175,7 +171,7 @@ public class Controller {
             clearTable();
 
             dataAccessProvider.setDbConnectionString(path);
-            initializeGridPaneRows();
+            timetableModel.updateStarthours();
             refreshViews();
         } else if (file != null) {
             showErrorDialog("Please choose a file that has the .db extension.");
@@ -202,9 +198,7 @@ public class Controller {
             dataAccessProvider.getDataAccessContext().getDatabaseDefiner().define(startHours);
 
             clearTable();
-            initializeGridPaneRows();
-        } else {
-            return;
+            timetableModel.updateStarthours();
         }
     }
 
@@ -348,7 +342,7 @@ public class Controller {
         refreshTable();
     }
 
-    public void showErrorDialog(String message){
+    private void showErrorDialog(String message){
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle("Error.");
         alert.setContentText(message);

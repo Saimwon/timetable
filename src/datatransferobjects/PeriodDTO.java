@@ -6,11 +6,11 @@ package datatransferobjects;
 
 public class PeriodDTO implements NameIdDTO {
     private int Id;
-    private String name;
+    private String startTime;
 
     public PeriodDTO(int periodNr, String period) {
         this.Id = periodNr;
-        this.name = period;
+        this.startTime = period;
     }
 
     public int getId() {
@@ -22,15 +22,15 @@ public class PeriodDTO implements NameIdDTO {
     }
 
     public String getName() {
-        return name;
+        return startTime;
     }
 
-    public void setName(String day) {
-        this.name = name;
+    public void setName(String starttime) {
+        this.startTime = starttime;
     }
 
     @Override
     public String toString(){
-        return this.name;
+        return this.startTime;
     }
 }

@@ -12,6 +12,6 @@ import java.util.List;
 Interface waarmee alle interactie met de students tabel in de DB gebeurt
  */
 public interface StudentGroupDAO extends SimpleDAO<StudentGroupDTO> {
-    public List<StudentGroupDTO> getAllEntries();
-    public List<StudentGroupDTO> getEntryByName(String name);
+    List<StudentGroupDTO> getAllEntries();
+    List<StudentGroupDTO> getEntryByName(String name);
 }

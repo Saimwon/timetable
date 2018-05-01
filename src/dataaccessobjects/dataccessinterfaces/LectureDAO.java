@@ -13,8 +13,8 @@ import datatransferobjects.LectureDTO;
 import java.util.List;
 
 public interface LectureDAO {
-    public List<LectureDTO> getLecturesFromColumnById(String columnname, int id);
-    public boolean addEntry(LectureDTO lectureDTO);
-    public boolean deleteEntry(LectureDTO lectureDTO);
-    public boolean lectureExists(LectureDTO lectureDTO);
+    List<LectureDTO> getLecturesFromColumnById(String columnname, int id);
+    boolean addEntry(LectureDTO lectureDTO);
+    boolean deleteEntry(LectureDTO lectureDTO);
+    boolean lectureExists(LectureDTO lectureDTO);
 }

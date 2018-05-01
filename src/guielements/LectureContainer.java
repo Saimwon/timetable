@@ -4,13 +4,13 @@ Van Braeckel Simon
 
 package guielements;
 
+import javafx.beans.InvalidationListener;
+import javafx.beans.Observable;
 import javafx.geometry.Pos;
-import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.VBox;
 
 public class LectureContainer extends VBox {
-    private ScrollPane scrollPane; //Dit is een veld zodat je gemakkelijk op het eerste zicht ziet dat dit component ook een scrollpane bevat
     private VBox contentBox;
 
     public LectureContainer(){
@@ -19,8 +19,7 @@ public class LectureContainer extends VBox {
         this.contentBox = new VBox();
         contentBox.setAlignment(Pos.CENTER);
 
-
-        this.scrollPane = new ScrollPane();
+        ScrollPane scrollPane = new ScrollPane();
         scrollPane.setFitToWidth(true);
         scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
         scrollPane.setHvalue(0.5);
@@ -34,11 +33,10 @@ public class LectureContainer extends VBox {
     public void notifyOfChange(){
         int amounfOfChildren = contentBox.getChildren().size();
         if (amounfOfChildren > 1){
-            this.getStyleClass().clear();
+            this.getStyleClass().removeAll("correctlecture");
             this.getStyleClass().add("incorrectlecture");
-        }
-        if (amounfOfChildren <= 1){
-            this.getStyleClass().clear();
+        } else if (amounfOfChildren == 1){
+            this.getStyleClass().removeAll("incorrectlecture");
             this.getStyleClass().add("correctlecture");
         }
     }

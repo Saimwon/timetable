@@ -8,30 +8,32 @@ import dataaccessobjects.*;
 import dataaccessobjects.dataccessinterfaces.*;
 import databasedefinition.SQLiteDatabaseDefiner;
 import databasedefinition.DatabaseDefiner;
+import datatransferobjects.LocationDTO;
+import datatransferobjects.StudentGroupDTO;
 import datatransferobjects.TeacherDTO;
 
 import java.sql.Connection;
 import java.sql.SQLException;
 
 public class SQLiteDataAccessContext implements DataAccessContext{
-    private Connection conn;
+    private final Connection conn;
     public SQLiteDataAccessContext(Connection conn){
         this.conn = conn;
     }
 
     @Override
-    public StudentGroupDAO getStudentDAO(){
-        return new SQLiteStudentGroupDAO(conn);
+    public SQLiteSimpleDAO<StudentGroupDTO> getStudentDAO(){
+        return new SQLiteSimpleDAO<>(conn, "students");
     }
 
     @Override
     public SQLiteSimpleDAO<TeacherDTO> getTeacherDAO(){
-        return new SQLiteSimpleDAO<TeacherDTO>(conn, "teacher");
+        return new SQLiteSimpleDAO<>(conn, "teacher");
     }
 
     @Override
-    public LocationDAO getLocationDAO(){
-        return new SQLiteLocationDAO(conn);
+    public SQLiteSimpleDAO<LocationDTO> getLocationDAO(){
+        return new SQLiteSimpleDAO<>(conn, "location");
     }
 
     @Override

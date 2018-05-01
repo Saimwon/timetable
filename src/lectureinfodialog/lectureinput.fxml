@@ -7,64 +7,48 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" stylesheets="@../timetable/styles.css" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
-   <children>
-      <HBox prefHeight="16.0" prefWidth="600.0">
-         <children>
-            <Label text="StudentGroup" />
-            <ChoiceBox fx:id="studentGroupChoiceBox" prefWidth="150.0" />
-            <Label text="or add new:" />
-            <TextField />
-            <Button mnemonicParsing="false" text="+" />
-         </children>
-      </HBox>
-      <HBox prefHeight="11.0" prefWidth="600.0">
-         <children>
-            <Label text="Teacher" />
-            <ChoiceBox fx:id="teacherChoiceBox" prefWidth="150.0" />
-            <Label text="or add new:" />
-            <TextField />
-            <Button mnemonicParsing="false" text="+" />
-         </children>
-      </HBox>
-      <HBox prefHeight="5.0" prefWidth="600.0">
-         <children>
-            <Label text="Location" />
-            <ChoiceBox fx:id="locationChoiceBox" prefWidth="150.0" />
-            <Label text="or add new:" />
-            <TextField />
-            <Button mnemonicParsing="false" text="+" />
-         </children>
-      </HBox>
-      <HBox prefHeight="6.0" prefWidth="600.0">
-         <children>
-            <Label text="Course name" />
-            <TextField fx:id="courseNameTextField" />
-         </children>
-      </HBox>
-      <HBox prefHeight="0.0" prefWidth="600.0">
-         <children>
-            <Label text="Day" />
-            <ChoiceBox fx:id="dayChoiceBox" prefWidth="150.0" />
-         </children>
-      </HBox>
-      <HBox prefHeight="2.0" prefWidth="600.0">
-         <children>
-            <Label text="Period" />
-            <ChoiceBox fx:id="periodChoiceBox" prefWidth="150.0" />
-         </children>
-      </HBox>
-      <HBox prefHeight="0.0" prefWidth="600.0">
-         <children>
-            <Label text="Duration # periods" />
-            <ChoiceBox fx:id="durationChoiceBox" prefWidth="150.0" />
-         </children>
-      </HBox>
-      <HBox alignment="CENTER_RIGHT" prefHeight="24.0" prefWidth="600.0">
-         <children>
-            <Button mnemonicParsing="false" onAction="#save" text="Save" />
-            <Button mnemonicParsing="false" onAction="#cancel" text="Cancel" />
-         </children>
-      </HBox>
-   </children>
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0"
+      prefWidth="600.0" stylesheets="@../timetable/styles.css" xmlns="http://javafx.com/javafx/8.0.141"
+      xmlns:fx="http://javafx.com/fxml/1">
+    <HBox prefHeight="16.0" prefWidth="600.0">
+        <Label text="StudentGroup"/>
+        <ChoiceBox fx:id="studentGroupChoiceBox" prefWidth="150.0"/>
+        <Label text="or add new:"/>
+        <TextField/>
+        <Button mnemonicParsing="false" text="+"/>
+    </HBox>
+    <HBox prefHeight="11.0" prefWidth="600.0">
+        <Label text="Teacher"/>
+        <ChoiceBox fx:id="teacherChoiceBox" prefWidth="150.0"/>
+        <Label text="or add new:"/>
+        <TextField/>
+        <Button mnemonicParsing="false" text="+"/>
+    </HBox>
+    <HBox prefHeight="5.0" prefWidth="600.0">
+        <Label text="Location"/>
+        <ChoiceBox fx:id="locationChoiceBox" prefWidth="150.0"/>
+        <Label text="or add new:"/>
+        <TextField/>
+        <Button mnemonicParsing="false" text="+"/>
+    </HBox>
+    <HBox prefHeight="6.0" prefWidth="600.0">
+        <Label text="Course name"/>
+        <TextField fx:id="courseNameTextField"/>
+    </HBox>
+    <HBox prefHeight="0.0" prefWidth="600.0">
+        <Label text="Day"/>
+        <ChoiceBox fx:id="dayChoiceBox" prefWidth="150.0"/>
+    </HBox>
+    <HBox prefHeight="2.0" prefWidth="600.0">
+        <Label text="Period"/>
+        <ChoiceBox fx:id="periodChoiceBox" prefWidth="150.0"/>
+    </HBox>
+    <HBox prefHeight="0.0" prefWidth="600.0">
+        <Label text="Duration # periods"/>
+        <ChoiceBox fx:id="durationChoiceBox" prefWidth="150.0"/>
+    </HBox>
+    <HBox alignment="CENTER_RIGHT" prefHeight="24.0" prefWidth="600.0">
+        <Button mnemonicParsing="false" onAction="#save" text="Save"/>
+        <Button mnemonicParsing="false" onAction="#cancel" text="Cancel"/>
+    </HBox>
 </VBox>

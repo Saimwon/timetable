@@ -13,7 +13,6 @@ import java.util.List;
 public class LectureRepresentation extends VBox {
     private String teacherName;
     private String courseName;
-    private List<String> infoList;
     private LectureDTO lectureDTO;
 
     public LectureRepresentation(String name1, String profName1, LectureDTO lectureDTO){

@@ -35,20 +35,20 @@ public class EditLectureInputController extends LectureInputController{
     }
 
     @Override
-    protected void fillAndSelectFirst(ChoiceBox choiceBox, List content){
+    protected <T> void fillAndSelectFirst(ChoiceBox<T> choiceBox, List<T> content) {
         choiceBox.getItems().addAll(content);
     }
 
     @Override
     public LectureDTO makeLectureDTO(){
-        LectureDTO lectureDTO = new LectureDTO(studentGroupChoiceBox.getSelectionModel().getSelectedItem() == null ? selectedLecture.getLectureDTO().getStudent_id() : studentGroupChoiceBox.getSelectionModel().getSelectedItem().getId(),
-                teacherChoiceBox.getSelectionModel().getSelectedItem() == null ? selectedLecture.getLectureDTO().getTeacher_id() : teacherChoiceBox.getSelectionModel().getSelectedItem().getId(),
-                locationChoiceBox.getSelectionModel().getSelectedItem() == null ? selectedLecture.getLectureDTO().getLocation_id() : locationChoiceBox.getSelectionModel().getSelectedItem().getId(),
-                courseNameTextField.getText().equals("") ? selectedLecture.getCourseName() : courseNameTextField.getText(),
-                dayChoiceBox.getSelectionModel().getSelectedItem() == null ? selectedLecture.getLectureDTO().getDay() : dayChoiceBox.getSelectionModel().getSelectedItem().getId(),
-                periodChoiceBox.getSelectionModel().getSelectedItem() == null ? selectedLecture.getLectureDTO().getFirst_block() : periodChoiceBox.getSelectionModel().getSelectedItem().getId(),
-                durationChoiceBox.getSelectionModel().getSelectedItem() == null ? selectedLecture.getLectureDTO().getDuration() : durationChoiceBox.getSelectionModel().getSelectedItem());
+        int student_id = studentGroupChoiceBox.getSelectionModel().getSelectedItem() == null ? selectedLecture.getLectureDTO().getStudent_id() : studentGroupChoiceBox.getSelectionModel().getSelectedItem().getId();
+        int teacher_id = teacherChoiceBox.getSelectionModel().getSelectedItem() == null ? selectedLecture.getLectureDTO().getTeacher_id() : teacherChoiceBox.getSelectionModel().getSelectedItem().getId();
+        int location_id = locationChoiceBox.getSelectionModel().getSelectedItem() == null ? selectedLecture.getLectureDTO().getLocation_id() : locationChoiceBox.getSelectionModel().getSelectedItem().getId();
+        String courseName = courseNameTextField.getText().equals("") ? selectedLecture.getCourseName() : courseNameTextField.getText();
+        int day = dayChoiceBox.getSelectionModel().getSelectedItem() == null ? selectedLecture.getLectureDTO().getDay() : dayChoiceBox.getSelectionModel().getSelectedItem().getId();
+        int period = periodChoiceBox.getSelectionModel().getSelectedItem() == null ? selectedLecture.getLectureDTO().getFirst_block() : periodChoiceBox.getSelectionModel().getSelectedItem().getId();
+        int duration = durationChoiceBox.getSelectionModel().getSelectedItem() == null ? selectedLecture.getLectureDTO().getDuration() : durationChoiceBox.getSelectionModel().getSelectedItem();
 
-        return lectureDTO;
+        return new LectureDTO(student_id, teacher_id, location_id, courseName, day, period, duration);
     }
 }

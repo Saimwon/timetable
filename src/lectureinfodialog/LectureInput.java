@@ -6,7 +6,6 @@ package lectureinfodialog;
 
 import datatransferobjects.LectureDTO;
 import datatransferobjects.SimpleDTO;
-import guielements.LectureRepresentation;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;

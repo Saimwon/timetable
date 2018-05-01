@@ -5,31 +5,28 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox stylesheets="@../timetable/styles.css" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="starthourdialog.StartHourDialogController">
-   <children>
-      <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0">
-         <children>
-            <VBox fx:id="textFieldContainer" alignment="CENTER" prefHeight="30.0" prefWidth="195.0">
-               <VBox.margin>
-                  <Insets />
-               </VBox.margin></VBox>
-            <Button mnemonicParsing="false" onAction="#addTextField" text="+">
-               <VBox.margin>
-                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-               </VBox.margin></Button>
-         </children>
-      </VBox>
-      <HBox alignment="CENTER_RIGHT" prefHeight="5.0" prefWidth="195.0">
-         <children>
-            <Button mnemonicParsing="false" onAction="#save" text="Save" />
-            <Button mnemonicParsing="false" onAction="#cancel" text="Cancel" />
-         </children>
-         <VBox.margin>
-            <Insets />
-         </VBox.margin>
-         <padding>
-            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-         </padding>
-      </HBox>
-   </children>
+<VBox stylesheets="@../timetable/styles.css" xmlns="http://javafx.com/javafx/8.0.141"
+      xmlns:fx="http://javafx.com/fxml/1" fx:controller="starthourdialog.StartHourDialogController">
+    <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0">
+        <VBox fx:id="textFieldContainer" alignment="CENTER" prefHeight="30.0" prefWidth="195.0">
+            <VBox.margin>
+                <Insets/>
+            </VBox.margin>
+        </VBox>
+        <Button mnemonicParsing="false" onAction="#addTextField" text="+">
+            <VBox.margin>
+                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+            </VBox.margin>
+        </Button>
+    </VBox>
+    <HBox alignment="CENTER_RIGHT" prefHeight="5.0" prefWidth="195.0">
+        <VBox.margin>
+            <Insets/>
+        </VBox.margin>
+        <padding>
+            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
+        </padding>
+        <Button mnemonicParsing="false" onAction="#save" text="Save"/>
+        <Button mnemonicParsing="false" onAction="#cancel" text="Cancel"/>
+    </HBox>
 </VBox>

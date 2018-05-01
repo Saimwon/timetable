@@ -15,14 +15,14 @@ import java.util.List;
 Klasse die instaat voor de databankdefinitie wanneer er een nieuwe databank geopend wordt in de applicatie.
  */
 public class SQLiteDatabaseDefiner implements DatabaseDefiner {
-    public static String[] tabellen = {"students", "location", "teacher"};
-    public static String[] createQuerys = {"create table period   ('id' integer primary key, 'hour', 'minute')",
+    private static String[] tabellen = {"students", "location", "teacher"};
+    private static String[] createQuerys = {"create table period   ('id' integer primary key, 'hour', 'minute')",
             "create table students ('id' integer primary key, 'name')",
             "create table location ('id' integer primary key, 'name')",
             "create table teacher('id' integer primary key, 'name')",
 
             "create table lecture  ('students_id', 'teacher_id', 'location_id', 'course', 'day', 'first_block', 'duration')"};
-    public static String[] dropQuerys = {"drop table period",
+    private static String[] dropQuerys = {"drop table period",
             "drop table students",
             "drop table location",
             "drop table teacher",
@@ -48,7 +48,7 @@ public class SQLiteDatabaseDefiner implements DatabaseDefiner {
     public void define(List<Integer[]> startHours){
         try {
             execute(dropQuerys);
-        } catch (SQLException e){}
+        } catch (SQLException ignored){}
 
         try {
             execute(createQuerys);

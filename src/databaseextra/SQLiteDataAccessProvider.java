@@ -14,31 +14,17 @@ public class SQLiteDataAccessProvider implements DataAccessProvider{
         dbConnectionString = "jdbc:sqlite::resource:timetable/lectures.db";
     }
 
-    public Connection makeConnection(){
+    private Connection makeConnection(){
         try {
-            Connection connection = DriverManager.getConnection(dbConnectionString);
-            return connection;
+            return DriverManager.getConnection(dbConnectionString);
         } catch (Exception e){
             e.printStackTrace();
             return null;
         }
     }
 
-    public void makeNewDatabase(String path){
-        this.setDbConnectionString(path);
-        makeDatabase();
-    }
-
-    private void makeDatabase(){
-
-    }
-
     public void setDbConnectionString(String path){
         this.dbConnectionString = "jdbc:sqlite:" + path;
-    }
-
-    public String getDbConnectionString(){
-        return dbConnectionString;
     }
 
     public DataAccessContext getDataAccessContext(){

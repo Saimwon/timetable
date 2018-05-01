@@ -5,7 +5,6 @@ Van Braeckel Simon
 package dataaccessobjects;
 
 import dataaccessobjects.dataccessinterfaces.LectureDAO;
-import dataaccessobjects.dataccessinterfaces.SimpleDAO;
 import datatransferobjects.LectureDTO;
 
 import java.sql.Connection;
@@ -16,7 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SQLiteLectureDAO implements LectureDAO{
-    private Connection conn;
+    private final Connection conn;
 
     public SQLiteLectureDAO(Connection conn){
         this.conn = conn;
@@ -35,7 +34,7 @@ public class SQLiteLectureDAO implements LectureDAO{
         }
     }
 
-    public List<LectureDTO> verwerkResultaat(ResultSet resultSet){
+    private List<LectureDTO> verwerkResultaat(ResultSet resultSet){
         List<LectureDTO> result = new ArrayList<>();
         try {
             while (resultSet.next()) {
@@ -51,8 +50,6 @@ public class SQLiteLectureDAO implements LectureDAO{
 
     @Override
     public boolean lectureExists(LectureDTO lectureDTO){
-        ResultSet resultSet = null;
-
         try (PreparedStatement statement = conn.prepareStatement(
                 "SELECT * FROM lecture WHERE students_id = ? AND teacher_id = ? AND location_id = ? AND course = ? AND day = ? AND first_block = ? and duration = ?"
         )) {
@@ -63,7 +60,7 @@ public class SQLiteLectureDAO implements LectureDAO{
             statement.setInt(5, lectureDTO.getDay());
             statement.setInt(6, lectureDTO.getFirst_block());
             statement.setInt(7, lectureDTO.getDuration());
-            resultSet = statement.executeQuery();
+            ResultSet resultSet = statement.executeQuery();
 
             return resultSet.next();
         } catch (SQLException ex) {

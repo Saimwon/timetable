@@ -1,141 +1,92 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.Accordion?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.ListView?>
-<?import javafx.scene.control.TitledPane?>
-<?import javafx.scene.layout.BorderPane?>
-<?import javafx.scene.layout.ColumnConstraints?>
-<?import javafx.scene.layout.GridPane?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.RowConstraints?>
-
 <?import guielements.MyTable?>
-<?import javafx.scene.layout.VBox?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.MenuBar?>
-<?import javafx.scene.control.Menu?>
-<?import javafx.scene.control.MenuItem?>
-<?import javafx.scene.control.ComboBox?>
-<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import timetable.TimetableView?>
 <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" stylesheets="@styles.css" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="timetable.Controller">
    <center>
-      <MyTable fx:id="gridPane" alignment="TOP_CENTER" gridLinesVisible="true">
-        <columnConstraints>
-            <ColumnConstraints hgrow="SOMETIMES" maxWidth="70" minWidth="10.0" prefWidth="100.0" />
-            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-        </columnConstraints>
-         <children>
-            <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="1">
-               <children>
-                  <Label text="Monday" textAlignment="CENTER" />
-               </children>
-            </HBox>
-            <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
-               <children>
-                  <Label text="Start" textAlignment="CENTER" />
-               </children>
-            </HBox>
-            <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="2">
-               <children>
-                  <Label text="Tuesday" textAlignment="CENTER" />
-               </children>
-            </HBox>
-            <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="3">
-               <children>
-                  <Label text="Wednesday" textAlignment="CENTER" />
-               </children>
-            </HBox>
-            <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="4">
-               <children>
-                  <Label text="Thursday" textAlignment="CENTER" />
-               </children>
-            </HBox>
-            <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="5">
-               <children>
-                  <Label text="Friday" textAlignment="CENTER" />
-               </children>
-            </HBox>
-         </children>
-      </MyTable>
+       <TimetableView fx:id="gridPane" alignment="TOP_CENTER" gridLinesVisible="true">
+           <columnConstraints>
+               <ColumnConstraints hgrow="SOMETIMES" maxWidth="70" minWidth="10.0" prefWidth="100.0"/>
+               <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
+               <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
+               <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
+               <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
+               <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
+           </columnConstraints>
+           <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="1">
+               <Label text="Monday" textAlignment="CENTER"/>
+           </HBox>
+           <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
+               <Label text="Start" textAlignment="CENTER"/>
+           </HBox>
+           <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="2">
+               <Label text="Tuesday" textAlignment="CENTER"/>
+           </HBox>
+           <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="3">
+               <Label text="Wednesday" textAlignment="CENTER"/>
+           </HBox>
+           <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="4">
+               <Label text="Thursday" textAlignment="CENTER"/>
+           </HBox>
+           <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="5">
+               <Label text="Friday" textAlignment="CENTER"/>
+           </HBox>
+       </TimetableView>
    </center>
     <right>
         <VBox BorderPane.alignment="CENTER">
-            <children>
-                <Accordion fx:id="accordion">
-                    <panes>
-                        <TitledPane fx:id="studentGroupsTitledPane" animated="true" text="Studentgroups">
-                            <content>
-                                <ListView fx:id="studentGroupsView" />
-                            </content>
-                        </TitledPane>
-                        <TitledPane fx:id="teachersTitledPane" animated="true" text="Teachers">
-                            <content>
-                                <ListView fx:id="teachersView" />
-                            </content>
-                        </TitledPane>
-                        <TitledPane fx:id="locationsTitledPane" animated="true" text="Locations">
-                            <content>
-                                <ListView fx:id="locationsView" />
-                            </content>
-                        </TitledPane>
-                    </panes>
-                </Accordion>
-                <HBox prefHeight="22.0" prefWidth="250.0">
-                    <children>
-                        <TextField fx:id="newEntryTextField" prefHeight="27.0" prefWidth="249.0" />
-                    </children>
-                </HBox>
-                <HBox alignment="BOTTOM_CENTER" prefHeight="21.0" prefWidth="202.0">
-                    <children>
-                        <Button fx:id="newEntryButton" mnemonicParsing="false" text="New" onAction="#newEntry"/>
-                        <Button fx:id="renameEntryButton" mnemonicParsing="false" text="Rename Selected" onAction="#renameEntry"/>
-                    </children>
-                </HBox>
-            </children>
+            <Accordion fx:id="accordion">
+                <panes>
+                    <TitledPane fx:id="studentGroupsTitledPane" animated="true" text="Studentgroups">
+                        <ListView fx:id="studentGroupsView"/>
+                    </TitledPane>
+                    <TitledPane fx:id="teachersTitledPane" animated="true" text="Teachers">
+                        <ListView fx:id="teachersView"/>
+                    </TitledPane>
+                    <TitledPane fx:id="locationsTitledPane" animated="true" text="Locations">
+                        <ListView fx:id="locationsView"/>
+                    </TitledPane>
+                </panes>
+            </Accordion>
+            <HBox prefHeight="22.0" prefWidth="250.0">
+                <TextField fx:id="newEntryTextField" prefHeight="27.0" prefWidth="249.0"/>
+            </HBox>
+            <HBox alignment="BOTTOM_CENTER" prefHeight="21.0" prefWidth="202.0">
+                <Button fx:id="newEntryButton" mnemonicParsing="false" text="New" onAction="#newEntry"/>
+                <Button fx:id="renameEntryButton" mnemonicParsing="false" text="Rename Selected"
+                        onAction="#renameEntry"/>
+            </HBox>
         </VBox>
     </right>
     <top>
         <MenuBar BorderPane.alignment="CENTER">
-            <menus>
-                <Menu mnemonicParsing="false" text="File">
-                    <items>
-                        <MenuItem mnemonicParsing="false" text="Open Database" onAction="#openDatabase"/>
-                        <MenuItem mnemonicParsing="false" text="Create Database" onAction="#createDatabase"/>
-                    </items>
-                </Menu>
-                <Menu mnemonicParsing="false" text="Edit">
-                    <items>
-                        <MenuItem mnemonicParsing="false" text="Add New Lecture" onAction="#createLecture"/>
-                        <MenuItem mnemonicParsing="false" text="Edit Selected Lecture" onAction="#editLecture"/>
-                        <MenuItem mnemonicParsing="false" text="Delete Selected Lecture" onAction="#deleteLecture"/>
-                    </items>
-                </Menu>
-                <Menu mnemonicParsing="false" text="Help">
-                    <items>
-                        <MenuItem mnemonicParsing="false" text="About" />
-                    </items>
-                </Menu>
-            </menus>
+            <Menu mnemonicParsing="false" text="File">
+                <MenuItem mnemonicParsing="false" text="Open Database" onAction="#openDatabase"/>
+                <MenuItem mnemonicParsing="false" text="Create Database" onAction="#createDatabase"/>
+            </Menu>
+            <Menu mnemonicParsing="false" text="Edit">
+                <MenuItem mnemonicParsing="false" text="Add New Lecture" onAction="#createLecture"/>
+                <MenuItem mnemonicParsing="false" text="Edit Selected Lecture" onAction="#editLecture"/>
+                <MenuItem mnemonicParsing="false" text="Delete Selected Lecture" onAction="#deleteLecture"/>
+            </Menu>
+            <Menu mnemonicParsing="false" text="Help">
+                <MenuItem mnemonicParsing="false" text="About"/>
+            </Menu>
         </MenuBar>
     </top>
     <bottom>
         <HBox prefHeight="21.0" prefWidth="600.0" BorderPane.alignment="CENTER">
-            <children>
-                <ComboBox fx:id="studentGroupComboBox" prefWidth="150.0" promptText="StudentGroup" />
-                <ComboBox fx:id="locationComboBox" prefWidth="150.0" promptText="Location" />
-                <ComboBox fx:id="teacherComboBox" prefWidth="150.0" promptText="Teacher" />
-                <Label text="CourseName" />
-                <TextField fx:id="courseNameTextField" />
-                <ComboBox fx:id="dayComboBox" prefWidth="150.0" promptText="Day" />
-                <ComboBox fx:id="startTimeComboBox" prefWidth="150.0" promptText="StartTime" />
-                <ComboBox fx:id="durationComboBox" prefWidth="150.0" promptText="Duration" />
-                <Button fx:id="addLectureButton" mnemonicParsing="false" text="Add Lecture" />
-            </children>
+            <ComboBox fx:id="studentGroupComboBox" prefWidth="150.0" promptText="StudentGroup"/>
+            <ComboBox fx:id="locationComboBox" prefWidth="150.0" promptText="Location"/>
+            <ComboBox fx:id="teacherComboBox" prefWidth="150.0" promptText="Teacher"/>
+            <Label text="CourseName"/>
+            <TextField fx:id="courseNameTextField"/>
+            <ComboBox fx:id="dayComboBox" prefWidth="150.0" promptText="Day"/>
+            <ComboBox fx:id="startTimeComboBox" prefWidth="150.0" promptText="StartTime"/>
+            <ComboBox fx:id="durationComboBox" prefWidth="150.0" promptText="Duration"/>
+            <Button fx:id="addLectureButton" mnemonicParsing="false" text="Add Lecture"/>
         </HBox>
     </bottom>
 </BorderPane>

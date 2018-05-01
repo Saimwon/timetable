@@ -5,6 +5,8 @@ Van Braeckel Simon
 package guielements;
 
 
+import javafx.beans.InvalidationListener;
+import javafx.beans.Observable;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
@@ -15,17 +17,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MyTable extends GridPane {
-    public List<HBox> hboxLijst;
+    private List<HBox> hboxLijst;
 
     public MyTable(){
         hboxLijst = new ArrayList<>();
     }
 
-
     public void initializeStartHours(List<String> startUren){
         //maak eerste kolom leeg
         this.getChildren().removeAll(hboxLijst);
-        //maak leeg
+        //verwijder rowconstraints
         this.getRowConstraints().clear();
         //voeg eerst toe om de eerste rij klein te maken
         RowConstraints firstRow = new RowConstraints();
@@ -54,5 +55,4 @@ public class MyTable extends GridPane {
             teller++;
         }
     }
-
 }

@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
+@SuppressWarnings("WeakerAccess")
 public class StartHourDialogController {
     private List<TextField[]> times;
     private StartHourDialog startHourDialog;
@@ -86,15 +87,12 @@ public class StartHourDialogController {
             return;
         }
 
-        //Sorteer lijst van strings oplopend en geef hem terug
-        result.sort(new Comparator<Integer[]>() {
-            @Override
-            public int compare(Integer[] o1, Integer[] o2) {
-                if (o1[0] == o2[0]){
-                    return o1[1] - o2[1];
-                } else {
-                    return o1[0] - o2[0];
-                }
+        //Sorteer lijst van starttijden oplopend
+        result.sort((o1, o2) -> {
+            if (o1[0].equals(o2[0])){
+                return o1[1] - o2[1];
+            } else {
+                return o1[0] - o2[0];
             }
         });
 

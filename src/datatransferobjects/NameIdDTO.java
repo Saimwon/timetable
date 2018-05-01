@@ -5,7 +5,7 @@ Simon Van Braeckel
 package datatransferobjects;
 
 public interface NameIdDTO {
-    public int getId();
+    int getId();
 
-    public String getName();
+    String getName();
 }

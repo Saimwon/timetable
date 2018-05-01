@@ -4,7 +4,10 @@ Simon Van Braeckel
 package dataaccessobjects;
 
 import dataaccessobjects.dataccessinterfaces.SimpleDAO;
-import datatransferobjects.*;
+import datatransferobjects.LocationDTO;
+import datatransferobjects.SimpleeDTO;
+import datatransferobjects.StudentGroupDTO;
+import datatransferobjects.TeacherDTO;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -15,42 +18,42 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.function.Supplier;
 
-public class SQLiteSimpleDAO<T extends SimpleeDTO> implements SimpleDAO{
+public class SQLiteSimpleDAO<T extends SimpleeDTO> implements SimpleDAO<T> {
     private Connection conn;
     private String tablename;
 
-    public SQLiteSimpleDAO(Connection conn, String tablename){
+    public SQLiteSimpleDAO(Connection conn, String tablename) {
         this.conn = conn;
         this.tablename = tablename;
     }
 
     @Override
     public List<T> getAllEntries() {
-        try (PreparedStatement statement = conn.prepareStatement("select * from " + tablename + " order by name COLLATE NOCASE")){
+        try (PreparedStatement statement = conn.prepareStatement("select * from " + tablename + " order by name COLLATE NOCASE")) {
             ResultSet resultSet = statement.executeQuery();
             return verwerkResultaat(resultSet);
-        } catch (SQLException e){
+        } catch (SQLException e) {
             e.printStackTrace();
             return null;
         }
     }
 
     @Override
-    public List<T> getEntryByName(String name){
-        try (PreparedStatement statement = conn.prepareStatement("select * from " + tablename + " where name = ?")){
+    public List<T> getEntryByName(String name) {
+        try (PreparedStatement statement = conn.prepareStatement("select * from " + tablename + " where name = ?")) {
             statement.setString(1, name);
             ResultSet resultSet = statement.executeQuery();
             return verwerkResultaat(resultSet);
-        } catch (SQLException e){
+        } catch (SQLException e) {
             e.printStackTrace();
             return null;
         }
     }
 
-    public List<T> verwerkResultaat(ResultSet resultSet){
-        HashMap<String, Supplier<T>> dataTransferObjects = new HashMap<String, Supplier<T>>();
+    private List<T> verwerkResultaat(ResultSet resultSet) {
+        HashMap<String, Supplier<T>> dataTransferObjects = new HashMap<>();
 
-        dataTransferObjects.put("teacher", () -> (T) new TeacherDTO()); //TODO gebruik dit en zie of het crasht
+        dataTransferObjects.put("teacher", () -> (T) new TeacherDTO()); //TODO schrijf dit op een manier waar je niet moet casten.
         dataTransferObjects.put("location", () -> (T) new LocationDTO());
         dataTransferObjects.put("students", () -> (T) new StudentGroupDTO());
 
@@ -63,7 +66,7 @@ public class SQLiteSimpleDAO<T extends SimpleeDTO> implements SimpleDAO{
 
                 result.add(dataTransferObject);
             }
-        } catch (SQLException e){
+        } catch (SQLException e) {
             e.printStackTrace();
             return null;
         }
@@ -71,7 +74,7 @@ public class SQLiteSimpleDAO<T extends SimpleeDTO> implements SimpleDAO{
     }
 
     @Override
-    public boolean addEntry(String name){
+    public boolean addEntry(String name) {
         //Voeg nieuwe entry toe aan DB
         try (PreparedStatement statement = conn.prepareStatement(
                 "INSERT INTO " + tablename + "(name) VALUES (?)"
@@ -86,7 +89,7 @@ public class SQLiteSimpleDAO<T extends SimpleeDTO> implements SimpleDAO{
     }
 
     @Override
-    public boolean renameEntry(int id, String newName){
+    public boolean renameEntry(int id, String newName) {
         //Voeg nieuwe entry toe aan DB
         try (PreparedStatement statement = conn.prepareStatement(
                 "UPDATE " + tablename + " SET name = ? WHERE id = ?")) {
@@ -100,18 +103,17 @@ public class SQLiteSimpleDAO<T extends SimpleeDTO> implements SimpleDAO{
         return true;
     }
 
-
-    public T getEntryById(int teacher_id){
-        try (PreparedStatement statement = conn.prepareStatement("select * from " + tablename + " where id = ? order by name")){
+    public T getEntryById(int teacher_id) {
+        try (PreparedStatement statement = conn.prepareStatement("select * from " + tablename + " where id = ? order by name")) {
             statement.setInt(1, teacher_id);
             ResultSet resultSet = statement.executeQuery();
             List<T> teachers = verwerkResultaat(resultSet);
-            if (teachers.size() != 0) {
+            if (teachers != null && teachers.size() != 0) {
                 return teachers.get(0);
             } else {
                 return null;
             }
-        } catch (SQLException e){
+        } catch (SQLException e) {
             e.printStackTrace();
             return null;
         }

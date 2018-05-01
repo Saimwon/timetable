@@ -9,13 +9,13 @@ public class SimpleeDTO implements SimpleDTO {
     private int id;
     private String name;
 
-    public SimpleeDTO(int id, String name, String tableName){
+    SimpleeDTO(int id, String name, String tableName){
         this.id = id;
         this.name = name;
         this.tableName = tableName;
     }
 
-    public SimpleeDTO(String tableName){
+    SimpleeDTO(String tableName){
         this.id = -1;
         this.name = "";
         this.tableName = tableName;

@@ -62,12 +62,12 @@ public class LectureInputController {
         fillAndSelectFirst(periodChoiceBox, periods);
     }
 
-    protected void fillAndSelectFirst(ChoiceBox choiceBox, List content){
+    protected <T> void fillAndSelectFirst(ChoiceBox<T> choiceBox, List<T> content){
         choiceBox.getItems().addAll(content);
         choiceBox.getSelectionModel().selectFirst();
     }
 
-    protected void fillDurationChoiceBox(int selectedPeriodNr, int maxPeriodNr){
+    private void fillDurationChoiceBox(int selectedPeriodNr, int maxPeriodNr){
         durationChoiceBox.getItems().clear();
 
         for (int i = 1; i <= maxPeriodNr-selectedPeriodNr+1; i++){
@@ -86,6 +86,7 @@ public class LectureInputController {
         lectureInput.close();
     }
 
+    @SuppressWarnings("UnnecessaryLocalVariable")
     public LectureDTO makeLectureDTO(){
         LectureDTO lectureDTO = new LectureDTO(studentGroupChoiceBox.getSelectionModel().getSelectedItem().getId(),
                 teacherChoiceBox.getSelectionModel().getSelectedItem().getId(),

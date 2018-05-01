@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SQLitePeriodDAO implements PeriodDAO {
-    private Connection conn;
+    private final Connection conn;
 
     public SQLitePeriodDAO(Connection conn){
         this.conn = conn;
@@ -31,7 +31,7 @@ public class SQLitePeriodDAO implements PeriodDAO {
         }
     }
 
-    public List<String> verwerkResultaat(ResultSet resultSet) {
+    private List<String> verwerkResultaat(ResultSet resultSet) {
         List<String> result = new ArrayList<>();
         try {
             while (resultSet.next()) {
