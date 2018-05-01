@@ -4,15 +4,17 @@ Simon Van Braeckel
 
 package timetable;
 
+import guielements.LectureContainer;
+import guielements.LectureRepresentation;
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
+import javafx.collections.ObservableList;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.RowConstraints;
 
-import java.sql.Time;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -65,13 +67,21 @@ public class TimetableView extends GridPane implements InvalidationListener {
 
     @Override
     public void invalidated(Observable observable) {
-        //setRows is opgeroepen in model DUS:
-        //starturen opvragen
         List<String> startHours = timetableModel.getStartHours();
-        // initializegridpane rows zoals uit controller oproepen
+
         initializeStartHours(startHours);
-        // elke cel vullen met lectureContainer en die lecturecontainer registreren bij juist cel in Model
-        //
-        //
+
+        List<List<ObservableList<LectureRepresentation>>> table = timetableModel.getTable();
+
+        for (int i = 0; i < table.size(); i++){
+            List<ObservableList<LectureRepresentation>> kolom = table.get(i);
+            for (int j = 0; j < kolom.size(); j++){
+                LectureContainer lectureContainer = new LectureContainer();
+                lectureContainer.setModel(kolom.get(j));
+
+                GridPane.setConstraints(lectureContainer, i+1, j+1);
+                this.getChildren().add(lectureContainer);
+            }
+        }
     }
 }

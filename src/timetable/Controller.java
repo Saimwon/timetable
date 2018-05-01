@@ -12,6 +12,7 @@ import guielements.LectureRepresentation;
 import guielements.LectureContainer;
 import javafx.scene.control.*;
 import javafx.stage.FileChooser;
+import lectureinfodialog.EditLectureInput;
 import lectureinfodialog.EditLectureInputController;
 import lectureinfodialog.LectureInput;
 import lectureinfodialog.LectureInputController;
@@ -34,7 +35,6 @@ public class Controller {
     public ListView<SimpleDTO> teachersView;
     public ListView<SimpleDTO> locationsView;
     private Map<String, LectureContainer> containerMap;
-    private List<String> starthours;
 
     //Alles ivm toevoegbar van lectures onderaan de applicatie
     public ComboBox<StudentGroupDTO> studentGroupComboBox;
@@ -46,7 +46,7 @@ public class Controller {
 
     public void initialize() {
         dataAccessProvider = new SQLiteDataAccessProvider();
-        timetableModel = new TimetableModel(dataAccessProvider.getDataAccessContext().getPeriodDAO().getStartTimes(), dataAccessProvider);
+        timetableModel = new TimetableModel(dataAccessProvider.getDataAccessContext().getPeriodDAO().getStartTimes(), dataAccessProvider, this);
         gridPane.setModel(timetableModel);
         selectedLecture = null;
         timetableModel.updateStarthours();
@@ -54,7 +54,7 @@ public class Controller {
         initializeViews();
         containerMap = new HashMap<>();
     }
-    
+
     private void initializeViews() {
         teachersView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> onNameSelected("teacher_id", teachersView.getSelectionModel().getSelectedItem()));
 
@@ -100,6 +100,7 @@ public class Controller {
     private int lastId;
     private void updateTableContents(String columnName, int id) {
 //gelievee het selecteren van lectures nog niet te breken
+        //TODO: Fix selecteren van lectures
         timetableModel.updateTableContents(columnName, id);
 
 //        lastColumnName = columnName;
@@ -147,6 +148,7 @@ public class Controller {
 //                    if (selectedLecture != null) {
 //                        selectedLecture.getStyleClass().remove("selectedlecture");
 //                    }
+
 //                    //update "selectedLecture" variabele en voeg stijlklasse toe
 //                    selectedLecture = (LectureRepresentation) event.getSource();
 //                    selectedLecture.getStyleClass().add("selectedlecture");
@@ -156,6 +158,18 @@ public class Controller {
 //                container.notifyOfChange();
 //            }
 //        }
+    }
+
+    public void updateSelectedLecture(LectureRepresentation lectureRepresentation){
+        if (selectedLecture != null) {
+            for (LectureRepresentation lecture : selectedLecture.getLectureGroup()) {
+                lecture.getStyleClass().remove("selectedlecture");
+            }
+        }
+        this.selectedLecture = lectureRepresentation;
+        for (LectureRepresentation lecture : lectureRepresentation.getLectureGroup()) {
+            lecture.getStyleClass().add("selectedlecture");
+        }
     }
 
     public void openDatabase() {
@@ -183,8 +197,8 @@ public class Controller {
         startHourDialog.initOwner(gridPane.getScene().getWindow());
         startHourDialog.showAndWait();
 
-        List<Integer[]> startHours = startHourDialog.getStartHours();
-        if (startHours == null) { //Dit zou betekenen dat er op cancel is gedrukt in het dialoogvenster
+        List<Integer[]> newStartHours = startHourDialog.getStartHours();
+        if (newStartHours == null) { //Dit zou betekenen dat er op cancel is gedrukt in het dialoogvenster
             return;
         }
 
@@ -195,7 +209,7 @@ public class Controller {
         if (destinationFile != null) {
             String path = destinationFile.getPath().endsWith(".db") ? destinationFile.getPath() : destinationFile.getPath() + ".db";
             dataAccessProvider.setDbConnectionString(path);
-            dataAccessProvider.getDataAccessContext().getDatabaseDefiner().define(startHours);
+            dataAccessProvider.getDataAccessContext().getDatabaseDefiner().define(newStartHours);
 
             clearTable();
             timetableModel.updateStarthours();
@@ -281,13 +295,12 @@ public class Controller {
     }
 
     public void createLecture(){
-        LectureInputController controller = new LectureInputController();
-        LectureInput lectureInput = new LectureInput(studentGroupsView.getItems(), teachersView.getItems(), locationsView.getItems(), starthours, controller);
+        LectureInput lectureInput = new LectureInput(studentGroupsView.getItems(), teachersView.getItems(), locationsView.getItems(), timetableModel.getStartHours(), new LectureInputController());
 
         lectureInput.initOwner(gridPane.getScene().getWindow());
         lectureInput.showAndWait();
 
-        LectureDTO lectureDTO = lectureInput.getLectureDTO();
+        LectureDTO lectureDTO = lectureInput.getResultLectureDTO();
 
         if (lectureDTO != null) {
             //adhv deze lectureDTO een entry toevoegen
@@ -301,18 +314,25 @@ public class Controller {
 
     public void editLecture(){
         if (selectedLecture == null){
-            showErrorDialog("A lecture must be selected");
-            return;
+            showErrorDialog("A lecture must be selected.");
         }
+        editLecture(selectedLecture);
+    }
 
-        EditLectureInputController controller = new EditLectureInputController(selectedLecture);
-        LectureInput lectureInput = new LectureInput(studentGroupsView.getItems(), teachersView.getItems(), locationsView.getItems(), starthours, controller);
+    public void editLecture(LectureRepresentation source){
+        //Zoek of er verbonden lectures zijn
+        List<LectureRepresentation> lectureGroup = source.getLectureGroup();
+
+        //Vraag of user alle, of enkel deze lecture wilt aanpassen
+
+        LectureInput lectureInput = new EditLectureInput(studentGroupsView.getItems(), teachersView.getItems(),
+                locationsView.getItems(), timetableModel.getStartHours(), source);
 
         lectureInput.initOwner(gridPane.getScene().getWindow());
         lectureInput.showAndWait();
 
-        LectureDTO newLectureDTO = lectureInput.getLectureDTO();
-        LectureDTO selectedLectureDTO = selectedLecture.getLectureDTO();
+        LectureDTO newLectureDTO = lectureInput.getResultLectureDTO();
+        LectureDTO selectedLectureDTO = source.getLectureDTO();
 
         if (newLectureDTO != null && ! newLectureDTO.equals(selectedLectureDTO)) {
             //oude lecture verwijderen
@@ -342,12 +362,9 @@ public class Controller {
         refreshTable();
     }
 
-    private void showErrorDialog(String message){
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle("Error.");
-        alert.setContentText(message);
-        alert.initOwner(gridPane.getScene().getWindow());
 
-        alert.showAndWait();
+    private void showErrorDialog(String message){
+        TimedErrorDialog timedErrorDialog = new TimedErrorDialog(message, gridPane.getScene().getWindow());
+        timedErrorDialog.showAndWait();
     }
 }

@@ -54,7 +54,7 @@ public class LectureInputController {
             teller += 1;
         }
 
-        periodChoiceBox.getSelectionModel().selectedItemProperty().addListener(e -> fillDurationChoiceBox(periodChoiceBox.getSelectionModel().getSelectedIndex(), startHours.size()));
+        periodChoiceBox.getSelectionModel().selectedItemProperty().addListener(e -> fillDurationChoiceBox(periodChoiceBox.getSelectionModel().getSelectedIndex(), startHours.size()-1));
         fillAndSelectFirst(studentGroupChoiceBox, studentgroups);
         fillAndSelectFirst(teacherChoiceBox, teachers);
         fillAndSelectFirst(locationChoiceBox, locations);
@@ -82,7 +82,7 @@ public class LectureInputController {
             return;
         }
 
-        lectureInput.setLectureDTO(makeLectureDTO());
+        lectureInput.setResultLectureDTO(makeLectureDTO());
         lectureInput.close();
     }
 

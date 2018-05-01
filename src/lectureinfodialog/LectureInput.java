@@ -15,10 +15,10 @@ import java.io.IOException;
 import java.util.List;
 
 public class LectureInput extends Stage {
-    private LectureDTO lectureDTO;
+    private LectureDTO resultLectureDTO;
 
     public LectureInput(List<SimpleDTO> studentgroups, List<SimpleDTO> teachers, List<SimpleDTO> locations, List<String> startHours, LectureInputController controller){
-        lectureDTO = null;
+        resultLectureDTO = null;
 
         FXMLLoader loader = new FXMLLoader(getClass().getResource("lectureinput.fxml"));
         loader.setController(controller);
@@ -39,11 +39,11 @@ public class LectureInput extends Stage {
         controller.fillChoiceBoxes(studentgroups, teachers, locations, startHours);
     }
 
-    public LectureDTO getLectureDTO() {
-        return lectureDTO;
+    public LectureDTO getResultLectureDTO() {
+        return resultLectureDTO;
     }
 
-    public void setLectureDTO(LectureDTO lectureDTO) {
-        this.lectureDTO = lectureDTO;
+    public void setResultLectureDTO(LectureDTO resultLectureDTO) {
+        this.resultLectureDTO = resultLectureDTO;
     }
 }

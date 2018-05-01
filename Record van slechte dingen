@@ -11,66 +11,40 @@ Maak klasse om errors te tonen
 TableModel moet zelf starturen uit DB halen
 
 NU:
-Eerste idee MVC:
-we zetten lectures in de containers, hoe weet view dat hij zich moet refreshen in huidige opbouw?
-   de containers worden constant getoond, er is geen refreshen.
-
-wat we willen:
-	We hebben een abstracte voorstelling in de model klasse 
-	Onze model update zichzelf wanneer controller dat vraagt
-	wanneer onze model zichzelf update zal hij de views informeren
-
-Abstracte voorstelling mogelijkheden:
-	2dim array om de gridpane voor te stellen, met in elk vakje nog een lijst van lectures
-		voor: Duidelijke cohesie met hoe het er uit ziet
-		na: overlopen is traag en je overloopt veel vakjes waar niets in zit
-	map van positie op lijst van lectures
-		voor: bij update van view verwijdert die alles 
-		na: minder duidelijk een tabel
-	
-HOE HET ECHT MOET:
-Onze view bevat allemaal lecturecontainers, in de 2dim array zitten de lijsten van lectures die op de corresponderende plaats staan.
-Elke lijst in 2dim array heeft een listener die zegt tegen de corresponderende LectureContainer dat hij zich moet updaten met wat er in die lijst zit.
-	Wat steken we precies in de lijst? hebben we daar al een klasse voor?
-		jep, lectureRepresentation
-
-Try 2:
-2dim array van lijsten van LectureRepresentations
-
-methoden:
-Array initialiseren -> wanneer er een nieuwe databank wordt gemaakt of geopened
-	-> juist lengte array maken, lijsten in steken, luisteraars toevoegen
-Info ophalen uit db en in model zetten
+Lectures selecteren implementeren
+Hoe:
+eventfilter in lectureRepresentation
+doet:
+ Selectedlecture in Model aanpassen
 
 
+Nu beslissen wat we doen met het klikken op lectures
+1) Klik erop en doe edit lecture
+v: 
+n:meer klikken
+  selecteren van lectures is niet mooi
+   
+2) klik erop en edit lecture venster verschijnt
+v:voelt sneller, minder klikjes
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> kan ook op lege container klikken en new lecture verschijnt!!!!!!
+n:je ziet selectedlecture niet dus je weet niet ofje meerdere lectures edit
 
-oke we hebben een probleem. We hebben nu luisteraars die 
-Onze view is de enige luisteraar die we overal aan hangen. Die gaat dus meerdere keren ge-invalidate worden bij updateTableContents
-En die wordt ook ge-invalidate bij
+details:
+Je kan zien welke lectures je allemaal aan het editen bent. bv zoeken naar gerelateerde lectures?
+hoe zoeken naar alle lectures met zelfde lectureDTO?
+ Lijst bijhouden van lectures per samenhang -> Die in 1 geheel gemaakt zijn
+ Bij edit lectures kiezen of je 1 of allemaal in 1 keer edita
 
-model
-zegt in setrows dat de rijen zijn veranderd aan de view
+gerelateerde lectures bijhouden, lijst van wat?
+lectureRepresentation
 
-view
+Probleem met groeperen van lectures:
+We moeten lectures koppelen op niveau van de databank zelf om bij edit of delete te laten kiezen tussen enkel de geselecteerde lecture of alle lectures
 
-DUS:
-View is enige luisteraar
---> invalidated: vraag starturen op, anders dan huidig: refresh rijen en shit
-		zelfde als huidig: vraag tabel op, overloop alles en zet juiste lectures in gridpane
-Observable lists krijgen toch eigen luisteraars!!!!!!!!!
-invalidated van TableView:
-hou starturen bij in Model, add View als luisteraar aan model, doe FireInvalidationEvent in setRows
-
-invalidated in view:
-wordt opgeroepen wanneer: het aantal rijen verandert in het model
-moet doen: lecturerepresentations en starturen in zelf zetten en lecturerepresentations registreren als luisteraars bij gridpanemodel
+NU:
+Klik op lectureContainer implementeren (create lecture op die plaats)
+Rechterklik op lectures implementeren (Kiezen voor delete of edit)
+	of bij edit een deleteknop zetten
 
 
-opties voor view:
-in model een lijst van starturen bijhouden en view daarnaar doen luisteren
-NEE dat is niet nodig
-De view model wordt enkel geNotified wanneer de starturen veranderen dus
-
-
-veld voor model nodig in view
 

@@ -20,15 +20,18 @@ public class TimetableModel implements Observable {
     private DataAccessProvider dataAccessProvider;
     private static int AANTAL_DAGEN = 5;
     private List<String> startHours;
+    private Controller controller;
 
+    private List<List<LectureRepresentation>> lectureGroups;
     private List<List<ObservableList<LectureRepresentation>>> table;
 
 //moet in initialize al de juiste kolommen toevoegen
-    public TimetableModel(List<String> startUren, DataAccessProvider dataAccessProvider){
+    public TimetableModel(List<String> startUren, DataAccessProvider dataAccessProvider, Controller controller){
+        this.controller = controller;
         this.startHours = startUren;
-
         this.dataAccessProvider = dataAccessProvider;
 
+        this.lectureGroups = new ArrayList<>();
         table = new ArrayList<>();
         //steek kolommen in table
         for (int i = 0; i < AANTAL_DAGEN; i++){
@@ -49,6 +52,7 @@ public class TimetableModel implements Observable {
         this.startHours = startHours;
 
         for (int j = 0; j < table.size(); j ++) {
+            table.get(j).clear();
             for (int i = 0; i < startUren.size(); i++) {
                 ObservableList<LectureRepresentation> observableList = FXCollections.observableArrayList();
 
@@ -62,38 +66,46 @@ public class TimetableModel implements Observable {
     private String lastColumnName;
     private int lastId;
     public void updateTableContents(String columnName, int id){
+        /*
+        Wat moet er hier nog gebeuren?
+        Waar maken we de lijsten aan en delen we lectures op in deelLectures?
+         */
+
+
         lastColumnName = columnName;
         lastId = id;
 
         LectureDAO lectureDAO = dataAccessProvider.getDataAccessContext().getLectureDAO();
         List<LectureDTO> lectureList = lectureDAO.getLecturesFromColumnById(columnName, id);
 
-        clearTable();
-        //clear map
+        clearTableContents();
+
         for (LectureDTO lectureDTO : lectureList) {
+            List<LectureRepresentation> lectureGroup = new ArrayList<>();
+            this.lectureGroups.add(lectureGroup);
             //loop over duration
             for (int i = 0; i < lectureDTO.getDuration(); i++) {
-                int row = lectureDTO.getDay();
-                int column = lectureDTO.getFirst_block() + i;
+                int row = lectureDTO.getFirst_block() + i;
+                int column = lectureDTO.getDay();
 
-                //zet lecture in container
                 TeacherDTO teacherById = dataAccessProvider.getDataAccessContext().getTeacherDAO().getEntryById(lectureDTO.getTeacher_id());
                 if (teacherById == null) {
 //showErrorDialog("One of the lectures uses a TeacherID for which there is no entry in table \"teachers\".");
-                    return;
+                    continue;
                 }
 
                 //zet lecture in lijst
+                LectureRepresentation lectureRepresentation = new LectureRepresentation(lectureDTO.getCourse(), teacherById.getName(), lectureDTO, controller);
+                lectureRepresentation.setLectureGroup(lectureGroup);
 
-                table.get(row-1).get(column-1).add(new LectureRepresentation(lectureDTO.getCourse(), teacherById.getName(), lectureDTO));
+                table.get(column-1).get(row-1).add(lectureRepresentation);
+                lectureGroup.add(lectureRepresentation);
             }
-            String teachname = dataAccessProvider.getDataAccessContext().getTeacherDAO().getEntryById(lectureDTO.getTeacher_id()).getName();
-            LectureRepresentation lectureRepresentation = new LectureRepresentation(lectureDTO.getCourse(), teachname, lectureDTO);
         }
         checkTable();
     }
 
-    private void clearTable(){
+    private void clearTableContents(){
         for (List<ObservableList<LectureRepresentation>> column: table){
             for (ObservableList<LectureRepresentation> observableList : column){
                 observableList.clear();
@@ -112,7 +124,9 @@ public class TimetableModel implements Observable {
         }
     }
 
-
+    public List<List<ObservableList<LectureRepresentation>>> getTable(){
+        return this.table;
+    }
 
 
     //Luisteraargerelateerde dingen:
