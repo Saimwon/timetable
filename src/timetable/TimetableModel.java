@@ -26,20 +26,20 @@ public class TimetableModel implements Observable {
     private List<List<ObservableList<LectureRepresentation>>> table;
 
 //moet in initialize al de juiste kolommen toevoegen
-    public TimetableModel(List<String> startUren, DataAccessProvider dataAccessProvider, Controller controller){
-        this.controller = controller;
-        this.startHours = startUren;
+    public TimetableModel(DataAccessProvider dataAccessProvider, Controller controller){
         this.dataAccessProvider = dataAccessProvider;
+        this.startHours = dataAccessProvider.getDataAccessContext().getPeriodDAO().getStartTimes();
+        this.controller = controller;
 
         this.lectureGroups = new ArrayList<>();
+
         table = new ArrayList<>();
         //steek kolommen in table
         for (int i = 0; i < AANTAL_DAGEN; i++){
             table.add(new ArrayList<>());
         }
 
-        //Steek in elke arraylist het starturen aantal observablelists
-        setStartHours(startUren);
+        this.setStartHours(this.startHours);
     }
 
     public void updateStarthours(){

@@ -46,4 +46,20 @@ public class SimpleeDTO implements SimpleDTO {
     public String toString() {
         return name;
     }
+
+    //equals methode toevoegen
+    @Override
+    public boolean equals(Object o2) {
+        if (o2 == null) {
+            return false;
+        }
+        if (!SimpleeDTO.class.isAssignableFrom(o2.getClass())) {
+            return false;
+        }
+        final SimpleeDTO other = (SimpleeDTO) o2;
+        if ((this.name == null) ? (other.name != null) : !this.name.equals(other.name)) {
+            return false;
+        }
+        return (this.id != other.id);
+    }
 }

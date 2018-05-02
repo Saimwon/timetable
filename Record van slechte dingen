@@ -1,3 +1,5 @@
+Mooi venster tonen bij opstarten van programma
+
 Bij open Databank nog checken of databank correct is
 In SimpleDAO Compiler ding fixen
 
@@ -10,41 +12,19 @@ Zorg dat controller geen dataAccessProvider nodig heeft?
 Maak klasse om errors te tonen
 TableModel moet zelf starturen uit DB halen
 
-NU:
-Lectures selecteren implementeren
-Hoe:
-eventfilter in lectureRepresentation
-doet:
- Selectedlecture in Model aanpassen
-
-
-Nu beslissen wat we doen met het klikken op lectures
-1) Klik erop en doe edit lecture
-v: 
-n:meer klikken
-  selecteren van lectures is niet mooi
-   
-2) klik erop en edit lecture venster verschijnt
-v:voelt sneller, minder klikjes
->>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> kan ook op lege container klikken en new lecture verschijnt!!!!!!
-n:je ziet selectedlecture niet dus je weet niet ofje meerdere lectures edit
-
-details:
-Je kan zien welke lectures je allemaal aan het editen bent. bv zoeken naar gerelateerde lectures?
-hoe zoeken naar alle lectures met zelfde lectureDTO?
- Lijst bijhouden van lectures per samenhang -> Die in 1 geheel gemaakt zijn
- Bij edit lectures kiezen of je 1 of allemaal in 1 keer edita
-
-gerelateerde lectures bijhouden, lijst van wat?
-lectureRepresentation
 
 Probleem met groeperen van lectures:
 We moeten lectures koppelen op niveau van de databank zelf om bij edit of delete te laten kiezen tussen enkel de geselecteerde lecture of alle lectures
 
 NU:
-Klik op lectureContainer implementeren (create lecture op die plaats)
-Rechterklik op lectures implementeren (Kiezen voor delete of edit)
-	of bij edit een deleteknop zetten
+- Klik op lectureContainer implementeren (create lecture op die plaats)
+	= LC ook eventfilter geven.
+	probleem: - LC moet ook veld hebben dat naar controller verwijst.
+		- LC worden aangemaakt in View -> View heeft ook verwijzing naar controller nodig. Of view moet controller via Model ophalen
+	Wat gebeurt er als je dan op een LR klikt
 
+- Rechterklik op lectures implementeren (Kiezen voor delete of edit)
+	en bij edit een deleteknop zetten
+- MVC uitbreiden voor listviews
 
 

@@ -13,7 +13,6 @@ import guielements.LectureContainer;
 import javafx.scene.control.*;
 import javafx.stage.FileChooser;
 import lectureinfodialog.EditLectureInput;
-import lectureinfodialog.EditLectureInputController;
 import lectureinfodialog.LectureInput;
 import lectureinfodialog.LectureInputController;
 import starthourdialog.StartHourDialog;
@@ -46,7 +45,7 @@ public class Controller {
 
     public void initialize() {
         dataAccessProvider = new SQLiteDataAccessProvider();
-        timetableModel = new TimetableModel(dataAccessProvider.getDataAccessContext().getPeriodDAO().getStartTimes(), dataAccessProvider, this);
+        timetableModel = new TimetableModel(dataAccessProvider, this);
         gridPane.setModel(timetableModel);
         selectedLecture = null;
         timetableModel.updateStarthours();
@@ -160,7 +159,7 @@ public class Controller {
 //        }
     }
 
-    public void updateSelectedLecture(LectureRepresentation lectureRepresentation){
+    public void onLectureSelected(LectureRepresentation lectureRepresentation){
         if (selectedLecture != null) {
             for (LectureRepresentation lecture : selectedLecture.getLectureGroup()) {
                 lecture.getStyleClass().remove("selectedlecture");
@@ -223,7 +222,6 @@ public class Controller {
             return;
         }
 
-
         Map<String, SimpleDAO> titledPaneNameToTableName = new HashMap<>();
         titledPaneNameToTableName.put("Locations", dataAccessProvider.getDataAccessContext().getLocationDAO());
         titledPaneNameToTableName.put("Teachers", dataAccessProvider.getDataAccessContext().getTeacherDAO());
@@ -237,8 +235,14 @@ public class Controller {
         } else {
             //naam v geopende pane vragen en omzetten naar tabelnaam waar we de nieuwe persoon moeten invoegen
             SimpleDAO simpleDAO = titledPaneNameToTableName.get(openedPane.getText());
-            //naam die we moeten toevoegen aan DB
+            //naam die we moeten toevoegen aan DB ophalen
             String nameToAdd = newEntryTextField.getText();
+
+            //Block deze operatie als er al een entry bestaat met deze naam:
+            if (! simpleDAO.getEntryByName(nameToAdd).isEmpty()){
+                showErrorDialog("Entries with duplicate names are not allowed.");
+                return;
+            }
 
             boolean addingEntryWasSucces = simpleDAO.addEntry(nameToAdd);
             if (! addingEntryWasSucces){
@@ -320,11 +324,6 @@ public class Controller {
     }
 
     public void editLecture(LectureRepresentation source){
-        //Zoek of er verbonden lectures zijn
-        List<LectureRepresentation> lectureGroup = source.getLectureGroup();
-
-        //Vraag of user alle, of enkel deze lecture wilt aanpassen
-
         LectureInput lectureInput = new EditLectureInput(studentGroupsView.getItems(), teachersView.getItems(),
                 locationsView.getItems(), timetableModel.getStartHours(), source);
 
@@ -362,9 +361,8 @@ public class Controller {
         refreshTable();
     }
 
-
     private void showErrorDialog(String message){
-        TimedErrorDialog timedErrorDialog = new TimedErrorDialog(message, gridPane.getScene().getWindow());
+        ErrorDialog timedErrorDialog = new ErrorDialog(message, gridPane.getScene().getWindow());
         timedErrorDialog.showAndWait();
     }
 }

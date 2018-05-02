@@ -6,6 +6,7 @@ package guielements;
 
 import datatransferobjects.LectureDTO;
 import javafx.scene.control.Label;
+import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import timetable.Controller;
@@ -21,13 +22,14 @@ public class LectureRepresentation extends VBox {
     private LectureDTO lectureDTO;
     private Controller controller;
 
-    public LectureRepresentation(String name1, String profName1, LectureDTO lectureDTO, Controller controller, List<LectureRepresentation> lectureGroup){
+    public LectureRepresentation(String name1, String profName1, LectureDTO lectureDTO,
+                                 Controller controller, List<LectureRepresentation> lectureGroup){
         this(name1, profName1, lectureDTO, controller);
         this.setLectureGroup(lectureGroup);
     }
 
     public LectureRepresentation(String name1, String profName1, LectureDTO lectureDTO, Controller controller){
-        this.lectureGroup = lectureGroup;
+        this.lectureGroup = new ArrayList<>();
 
         this.controller = controller;
         this.lectureDTO = lectureDTO;
@@ -38,10 +40,14 @@ public class LectureRepresentation extends VBox {
         initialize();
 
 
-        this.addEventFilter(MouseEvent.MOUSE_PRESSED, event -> {
-            controller.updateSelectedLecture(this);
-            controller.editLecture(this);
+        this.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> {
+            if (event.getButton() == MouseButton.PRIMARY) {
+                controller.onLectureSelected(this);
+                controller.editLecture(this);
+            } else if ( 1 == 1){};
         });
+
+
     }
 
     public void setLectureGroup(List<LectureRepresentation> lectureGroup){

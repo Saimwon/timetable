@@ -17,8 +17,8 @@ import java.io.IOException;
 public class Main extends Application {
 
     @Override
-    public void start(Stage primaryStage) throws IOException{
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("sample.fxml"));
+    public void start(Stage primaryStage) throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("mainwindow.fxml"));
 
         Parent root = loader.load();
         primaryStage.setTitle("Timetable");
@@ -26,6 +26,10 @@ public class Main extends Application {
         Scene scene = new Scene(root);
         primaryStage.setScene(scene);
         setFullScreen(primaryStage);
+
+        /*
+        Zorg dat primarystage wordt ingeladen zonder dat er iets aan een databank wordt gevraagd.
+         */
 
         primaryStage.show();
     }

@@ -6,6 +6,6 @@ Gemeenschappelijke interface voor de 3 tabellen in de DB die exact hetzelfde zij
 
 package datatransferobjects;
 
-public interface SimpleDTO extends NameIdDTO{
+public interface SimpleDTO extends NameIdDTO {
     String getTableName();
 }

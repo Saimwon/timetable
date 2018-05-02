@@ -9,8 +9,8 @@ import javafx.stage.Window;
 
 import java.util.concurrent.TimeUnit;
 
-public class TimedErrorDialog extends Alert {
-    public TimedErrorDialog(String message, Window parent){
+public class ErrorDialog extends Alert {
+    public ErrorDialog(String message, Window parent){
         super(Alert.AlertType.ERROR);
         this.setTitle("Error.");
         this.setContentText(message);

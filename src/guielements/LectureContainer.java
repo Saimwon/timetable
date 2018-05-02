@@ -9,15 +9,18 @@ import javafx.beans.Observable;
 import javafx.collections.ObservableList;
 import javafx.geometry.Pos;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
+import timetable.Controller;
 import timetable.TimetableModel;
 
 public class LectureContainer extends VBox implements InvalidationListener {
     private VBox contentBox;
+    private Controller controller;
 
-    private ObservableList<LectureRepresentation> lectureList; //veld nodig voor corresponderende cel om inhoud te kunnen vragen
+    private ObservableList<LectureRepresentation> lectureList; //veld voor corresponderende cel in Model
 
-    public LectureContainer(){
+    public LectureContainer() {//Controller controller){
         this.setFillWidth(true);
 
         this.contentBox = new VBox();
@@ -31,6 +34,14 @@ public class LectureContainer extends VBox implements InvalidationListener {
 
         this.getChildren().add(scrollPane);
         this.getStyleClass().add("lecture");
+
+        this.controller = controller;
+
+//        this.addEventFilter(MouseEvent.MOUSE_PRESSED, event -> {
+//            if (event.getButton() == MouseButton.PRIMARY) {
+//              controller.createLecture();
+//            }
+//        });
     }
 
     public void updateStyleClass(){

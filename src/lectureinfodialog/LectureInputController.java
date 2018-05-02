@@ -38,9 +38,7 @@ public class LectureInputController {
         choiceBoxes.add(durationChoiceBox);
     }
 
-    /*
-    Vult eerst de 3 simpleDTO comboboxes op en maakt daarna een lijst van objecten om in de andere boxes te steken.
-     */
+
     public void fillChoiceBoxes(List<SimpleDTO> studentgroups, List<SimpleDTO> teachers, List<SimpleDTO> locations, List<String> startHours){
         String[] dayNames = new String[]{"Monday", "Tuesday", "Wednesday", "Thursday", "Friday"};
         List<PeriodDTO> periods = new ArrayList<>();
@@ -54,7 +52,8 @@ public class LectureInputController {
             teller += 1;
         }
 
-        periodChoiceBox.getSelectionModel().selectedItemProperty().addListener(e -> fillDurationChoiceBox(periodChoiceBox.getSelectionModel().getSelectedIndex(), startHours.size()-1));
+        periodChoiceBox.getSelectionModel().selectedItemProperty().addListener(e ->
+                fillDurationChoiceBox(periodChoiceBox.getSelectionModel().getSelectedIndex(), startHours.size()-1));
         fillAndSelectFirst(studentGroupChoiceBox, studentgroups);
         fillAndSelectFirst(teacherChoiceBox, teachers);
         fillAndSelectFirst(locationChoiceBox, locations);

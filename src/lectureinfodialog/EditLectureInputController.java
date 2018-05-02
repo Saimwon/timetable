@@ -5,6 +5,8 @@ Simon Van Braeckel
 package lectureinfodialog;
 
 import datatransferobjects.LectureDTO;
+import datatransferobjects.NameIdDTO;
+import datatransferobjects.SimpleDTO;
 import guielements.LectureRepresentation;
 import javafx.scene.control.ChoiceBox;
 
@@ -39,6 +41,26 @@ public class EditLectureInputController extends LectureInputController {
         choiceBox.getItems().addAll(content);
     }
 
+    private void selectChoiceBoxData(){
+        LectureDTO lectureDTO = selectedLecture.getLectureDTO();
+
+        selecteerJuiste(studentGroupChoiceBox, lectureDTO.getStudent_id());
+        selecteerJuiste(teacherChoiceBox, lectureDTO.getTeacher_id());
+        selecteerJuiste(locationChoiceBox, lectureDTO.getLocation_id());
+        selecteerJuiste(dayChoiceBox, lectureDTO.getDay());
+        selecteerJuiste(periodChoiceBox, lectureDTO.getFirst_block());
+        durationChoiceBox.getSelectionModel().select(lectureDTO.getDuration()-1);
+        courseNameTextField.setText(lectureDTO.getCourse());
+    }
+
+    private <T extends NameIdDTO> void selecteerJuiste(ChoiceBox<T> choiceBox, int id){
+        int i = 0;
+        while (i < choiceBox.getItems().size() && choiceBox.getItems().get(i).getId() != id){
+            i++;
+        }
+        choiceBox.getSelectionModel().select(i);
+    }
+
     @Override
     public LectureDTO makeLectureDTO(){
         int student_id = studentGroupChoiceBox.getSelectionModel().getSelectedItem() == null ?
@@ -64,5 +86,10 @@ public class EditLectureInputController extends LectureInputController {
                 durationChoiceBox.getSelectionModel().getSelectedItem();
 
         return new LectureDTO(student_id, teacher_id, location_id, courseName, day, period, duration);
+    }
+
+    public void fillChoiceBoxes(List<SimpleDTO> studentgroups, List<SimpleDTO> teachers, List<SimpleDTO> locations, List<String> startHours){
+        super.fillChoiceBoxes(studentgroups, teachers, locations, startHours);
+        selectChoiceBoxData();
     }
 }
