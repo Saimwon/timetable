@@ -5,10 +5,15 @@ Van Braeckel Simon
 package guielements;
 
 import datatransferobjects.LectureDTO;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
+import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
+import javafx.scene.control.MenuItem;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
+import javafx.stage.WindowEvent;
 import timetable.Controller;
 
 import java.util.ArrayList;
@@ -41,13 +46,33 @@ public class LectureRepresentation extends VBox {
 
 
         this.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> {
-            if (event.getButton() == MouseButton.PRIMARY) {
+            if (event.getButton() != MouseButton.SECONDARY) {
                 controller.onLectureSelected(this);
                 controller.editLecture(this);
-            } else if ( 1 == 1){};
+            } else{
+                controller.onLectureSelected(this);
+                openContextMenu(event.getScreenX(), event.getScreenY());
+            };
         });
+    }
 
+    private void openContextMenu(double x, double y){
+        final ContextMenu contextMenu = new ContextMenu();
 
+        MenuItem item1 = new MenuItem("Edit");
+        item1.setOnAction(new EventHandler<ActionEvent>() {
+            public void handle(ActionEvent e) {
+                System.out.println("Edited");
+            }
+        });
+        MenuItem item2 = new MenuItem("Delete");
+        item2.setOnAction(new EventHandler<ActionEvent>() {
+            public void handle(ActionEvent e) {
+                System.out.println("Deleted");
+            }
+        });
+        contextMenu.getItems().addAll(item1, item2);
+        contextMenu.show(this, x, y);
     }
 
     public void setLectureGroup(List<LectureRepresentation> lectureGroup){

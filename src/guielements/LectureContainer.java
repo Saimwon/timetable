@@ -9,6 +9,7 @@ import javafx.beans.Observable;
 import javafx.collections.ObservableList;
 import javafx.geometry.Pos;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import timetable.Controller;
@@ -36,12 +37,6 @@ public class LectureContainer extends VBox implements InvalidationListener {
         this.getStyleClass().add("lecture");
 
         this.controller = controller;
-
-//        this.addEventFilter(MouseEvent.MOUSE_PRESSED, event -> {
-//            if (event.getButton() == MouseButton.PRIMARY) {
-//              controller.createLecture();
-//            }
-//        });
     }
 
     public void updateStyleClass(){
