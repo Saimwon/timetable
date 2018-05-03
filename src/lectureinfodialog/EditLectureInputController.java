@@ -63,6 +63,14 @@ public class EditLectureInputController extends LectureInputController {
 
     @Override
     public LectureDTO makeLectureDTO(){
+        System.out.println(studentGroupChoiceBox.getSelectionModel().getSelectedItem());
+        System.out.println(teacherChoiceBox.getSelectionModel().getSelectedItem());
+        System.out.println(locationChoiceBox.getSelectionModel().getSelectedItem());
+        System.out.println(courseNameTextField.getText());
+        System.out.println(dayChoiceBox.getSelectionModel().getSelectedItem());
+        System.out.println(periodChoiceBox.getSelectionModel().getSelectedItem());
+        System.out.println(durationChoiceBox.getSelectionModel().getSelectedItem());
+        
         int student_id = studentGroupChoiceBox.getSelectionModel().getSelectedItem() == null ?
                 selectedLecture.getLectureDTO().getStudent_id() :
                 studentGroupChoiceBox.getSelectionModel().getSelectedItem().getId();

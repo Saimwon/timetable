@@ -128,6 +128,10 @@ public class TimetableModel implements Observable {
         return this.table;
     }
 
+    public void refreshTable(){
+        updateTableContents(lastColumnName, lastId);
+    }
+
 
     //Luisteraargerelateerde dingen:
     /**

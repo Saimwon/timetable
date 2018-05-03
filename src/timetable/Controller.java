@@ -91,12 +91,6 @@ public class Controller {
         gridPane.getChildren().removeAll(containerMap.values());
     }
 
-    private void refreshTable(){
-        updateTableContents(lastColumnName, lastId);
-    }
-
-    private String lastColumnName;
-    private int lastId;
     private void updateTableContents(String columnName, int id) {
 //gelievee het selecteren van lectures nog niet te breken
         //TODO: Fix selecteren van lectures
@@ -295,7 +289,7 @@ public class Controller {
             showErrorDialog("Failed to rename entry.");
         }
         refreshViews();
-        updateTableContents(tableName + "_id", id);
+        timetableModel.refreshTable();
     }
 
     public void createLecture(){
@@ -309,7 +303,7 @@ public class Controller {
         if (lectureDTO != null) {
             //adhv deze lectureDTO een entry toevoegen
             if (dataAccessProvider.getDataAccessContext().getLectureDAO().addEntry(lectureDTO)) {
-                refreshTable();
+                timetableModel.refreshTable();
             } else {
                 showErrorDialog("Failed to add entry.");
             }
@@ -340,7 +334,7 @@ public class Controller {
 
             //adhv nieuwe lectureDTO een entry toevoegen
             if (dataAccessProvider.getDataAccessContext().getLectureDAO().addEntry(newLectureDTO)) {
-                refreshTable();
+                timetableModel.refreshTable();
             } else {
                 showErrorDialog("Failed to add entry.");
             }
@@ -358,7 +352,7 @@ public class Controller {
             return;
         }
 
-        refreshTable();
+        timetableModel.refreshTable();
     }
 
     private void showErrorDialog(String message){
