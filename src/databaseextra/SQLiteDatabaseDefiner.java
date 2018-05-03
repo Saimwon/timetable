@@ -1,9 +1,7 @@
 /*
 Simon Van Braeckel
  */
-package databasedefinition;
-
-import databasedefinition.DatabaseDefiner;
+package databaseextra;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -63,33 +61,6 @@ public class SQLiteDatabaseDefiner implements DatabaseDefiner {
                 crash(e);
             }
         }
-//
-//        InputStream fileInputStream = null;
-//        try {
-//            fileInputStream = new FileInputStream("definitioncommands.txt");
-//
-//            InputStreamReader inputStreamReader = new InputStreamReader(fileInputStream);
-//            BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
-//            try {
-//                String line = bufferedReader.readLine();
-//                while (line != null){
-//                    System.out.println("we komen een lijn tegen");
-//                }
-//            } catch (IOException e) {
-//                System.out.println("Error in reading");
-//            }
-//
-//        } catch (FileNotFoundException e){
-//            System.out.println("File was not found.......");
-//            e.printStackTrace();
-//            return;
-//        } finally {
-//            try {
-//                fileInputStream.close();
-//            } catch (IOException | NullPointerException e){
-//                System.out.println("failed closing.");
-//            }
-//        }
     }
 
     private void crash(Exception e){

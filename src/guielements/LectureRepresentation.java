@@ -4,16 +4,17 @@ Van Braeckel Simon
 
 package guielements;
 
+import com.sun.org.apache.xpath.internal.SourceTree;
 import datatransferobjects.LectureDTO;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
+import javafx.scene.input.ContextMenuEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
-import javafx.stage.WindowEvent;
 import timetable.Controller;
 
 import java.util.ArrayList;
@@ -21,6 +22,8 @@ import java.util.List;
 
 public class LectureRepresentation extends VBox {
     private List<LectureRepresentation> lectureGroup;
+
+    private ContextMenu contextMenu;
 
     private String teacherName;
     private String courseName;
@@ -44,35 +47,35 @@ public class LectureRepresentation extends VBox {
 
         initialize();
 
-
+        initializeContextMenu();
         this.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> {
             if (event.getButton() != MouseButton.SECONDARY) {
                 controller.onLectureSelected(this);
                 controller.editLecture(this);
             } else{
                 controller.onLectureSelected(this);
-                openContextMenu(event.getScreenX(), event.getScreenY());
+                contextMenu.hide();
+                contextMenu.show(this, event.getScreenX(), event.getScreenY());
             };
         });
     }
 
-    private void openContextMenu(double x, double y){
-        final ContextMenu contextMenu = new ContextMenu();
+    private void initializeContextMenu(){
+        contextMenu = new ContextMenu();
 
         MenuItem item1 = new MenuItem("Edit");
         item1.setOnAction(new EventHandler<ActionEvent>() {
             public void handle(ActionEvent e) {
-                System.out.println("Edited");
+                controller.editLecture();
             }
         });
         MenuItem item2 = new MenuItem("Delete");
         item2.setOnAction(new EventHandler<ActionEvent>() {
             public void handle(ActionEvent e) {
-                System.out.println("Deleted");
+                controller.deleteLecture();
             }
         });
         contextMenu.getItems().addAll(item1, item2);
-        contextMenu.show(this, x, y);
     }
 
     public void setLectureGroup(List<LectureRepresentation> lectureGroup){

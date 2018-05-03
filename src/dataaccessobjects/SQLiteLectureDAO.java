@@ -117,4 +117,13 @@ public class SQLiteLectureDAO implements LectureDAO{
             return false;
         }
     }
+
+    @Override
+    public boolean tableExists(){
+        try (PreparedStatement statement = conn.prepareStatement("SELECT * FROM lecture")){
+        } catch (SQLException e){
+            return false;
+        }
+        return true;
+    }
 }

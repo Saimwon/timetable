@@ -4,7 +4,6 @@ Van Braeckel Simon
 
 package dataaccessobjects;
 
-import dataaccessobjects.dataccessinterfaces.LocationDAO;
 import datatransferobjects.LocationDTO;
 
 import java.sql.Connection;

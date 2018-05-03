@@ -17,4 +17,5 @@ public interface LectureDAO {
     boolean addEntry(LectureDTO lectureDTO);
     boolean deleteEntry(LectureDTO lectureDTO);
     boolean lectureExists(LectureDTO lectureDTO);
+    boolean tableExists();
 }

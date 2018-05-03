@@ -1,7 +1,7 @@
 /*
 Simon Van Braeckel
  */
-package databasedefinition;
+package databaseextra;
 
 import java.util.List;
 

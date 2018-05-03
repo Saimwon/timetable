@@ -4,6 +4,7 @@ Van Braeckel Simon
 
 package timetable;
 
+import databaseextra.DataAccessContext;
 import databaseextra.DataAccessProvider;
 import databaseextra.SQLiteDataAccessProvider;
 import dataaccessobjects.dataccessinterfaces.SimpleDAO;
@@ -63,18 +64,21 @@ public class Controller {
         refreshViews();
     }
 
-    private void refreshViews() {
-        List<TeacherDTO> teachers = dataAccessProvider.getDataAccessContext().getTeacherDAO().getAllEntries();
+    private boolean refreshViews() {
+        DataAccessContext dataAccessContext = dataAccessProvider.getDataAccessContext();
+
+        List<TeacherDTO> teachers = dataAccessContext.getTeacherDAO().getAllEntries();
+        List<StudentGroupDTO> studentGroups = dataAccessContext.getStudentDAO().getAllEntries();
+        List<LocationDTO> locations = dataAccessContext.getLocationDAO().getAllEntries();
+
+        if (teachers == null || studentGroups == null || locations == null || ! dataAccessContext.getLectureDAO().tableExists()) {
+            return false;
+        }
+
         teachersView.getItems().setAll(teachers);
-        teacherComboBox.getItems().addAll(teachers);
-
-        List<StudentGroupDTO> studentGroups = dataAccessProvider.getDataAccessContext().getStudentDAO().getAllEntries();
         studentGroupsView.getItems().setAll(studentGroups);
-        studentGroupComboBox.getItems().setAll(studentGroups);
-
-        List<LocationDTO> locations = dataAccessProvider.getDataAccessContext().getLocationDAO().getAllEntries();
         locationsView.getItems().setAll(locations);
-        locationComboBox.getItems().setAll(locations);
+        return true;
     }
 
     private void onNameSelected(String tableName, SimpleDTO simpleDTO) {
@@ -173,13 +177,18 @@ public class Controller {
                 new FileChooser.ExtensionFilter("All Files", "*.*"));
         File file = chooser.showOpenDialog(gridPane.getScene().getWindow());
         if (file != null && file.getName().endsWith(".db")) {
-            String path = file.getPath();
+            String oldDatabaseConnectionString = dataAccessProvider.getDbConnectionString();
+            String newPath = file.getPath();
+
+            dataAccessProvider.setDbConnectionString(newPath);
+
+            if (! refreshViews()){
+                showErrorDialog("This is not a valid database.");
+                return;
+            }
 
             clearTable();
-
-            dataAccessProvider.setDbConnectionString(path);
             timetableModel.updateStarthours();
-            refreshViews();
         } else if (file != null) {
             showErrorDialog("Please choose a file that has the .db extension.");
         }

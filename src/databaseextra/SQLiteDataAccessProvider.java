@@ -27,6 +27,10 @@ public class SQLiteDataAccessProvider implements DataAccessProvider{
         this.dbConnectionString = "jdbc:sqlite:" + path;
     }
 
+    public String getDbConnectionString(){
+        return this.dbConnectionString;
+    }
+
     public DataAccessContext getDataAccessContext(){
         return new SQLiteDataAccessContext(makeConnection());
     }

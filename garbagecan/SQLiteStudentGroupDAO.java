@@ -4,7 +4,6 @@ Van Braeckel Simon
 
 package dataaccessobjects;
 
-import dataaccessobjects.dataccessinterfaces.StudentGroupDAO;
 import datatransferobjects.StudentGroupDTO;
 
 import java.sql.Connection;
