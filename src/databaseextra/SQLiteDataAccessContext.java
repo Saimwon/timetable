@@ -23,17 +23,17 @@ public class SQLiteDataAccessContext implements DataAccessContext{
 
     @Override
     public SQLiteSimpleDAO<StudentGroupDTO> getStudentDAO(){
-        return new SQLiteSimpleDAO<>(conn, "students");
+        return new SQLiteSimpleDAO<>(conn, "students", StudentGroupDTO::new);
     }
 
     @Override
     public SQLiteSimpleDAO<TeacherDTO> getTeacherDAO(){
-        return new SQLiteSimpleDAO<>(conn, "teacher");
+        return new SQLiteSimpleDAO<>(conn, "teacher", TeacherDTO::new);
     }
 
     @Override
     public SQLiteSimpleDAO<LocationDTO> getLocationDAO(){
-        return new SQLiteSimpleDAO<>(conn, "location");
+        return new SQLiteSimpleDAO<>(conn, "location", LocationDTO::new);
     }
 
     @Override

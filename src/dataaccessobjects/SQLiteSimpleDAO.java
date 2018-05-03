@@ -4,27 +4,25 @@ Simon Van Braeckel
 package dataaccessobjects;
 
 import dataaccessobjects.dataccessinterfaces.SimpleDAO;
-import datatransferobjects.LocationDTO;
-import datatransferobjects.SimpleeDTO;
-import datatransferobjects.StudentGroupDTO;
-import datatransferobjects.TeacherDTO;
+import datatransferobjects.SimpleDTO;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.function.Supplier;
 
-public class SQLiteSimpleDAO<T extends SimpleeDTO> implements SimpleDAO<T> {
+public class SQLiteSimpleDAO<T extends SimpleDTO> implements SimpleDAO<T> {
     private Connection conn;
     private String tablename;
+    private Supplier<T> supplier;
 
-    public SQLiteSimpleDAO(Connection conn, String tablename) {
+    public SQLiteSimpleDAO(Connection conn, String tablename, Supplier<T> supplier) {
         this.conn = conn;
         this.tablename = tablename;
+        this.supplier = supplier;
     }
 
     @Override
@@ -51,16 +49,11 @@ public class SQLiteSimpleDAO<T extends SimpleeDTO> implements SimpleDAO<T> {
     }
 
     private List<T> verwerkResultaat(ResultSet resultSet) {
-        HashMap<String, Supplier<T>> dataTransferObjects = new HashMap<>();
-
-        dataTransferObjects.put("teacher", () -> (T) new TeacherDTO()); //TODO schrijf dit op een manier waar je niet moet casten.
-        dataTransferObjects.put("location", () -> (T) new LocationDTO());
-        dataTransferObjects.put("students", () -> (T) new StudentGroupDTO());
-
         List<T> result = new ArrayList<>();
+
         try {
             while (resultSet.next()) {
-                T dataTransferObject = dataTransferObjects.get(tablename).get();
+                T dataTransferObject = supplier.get();
                 dataTransferObject.setId(resultSet.getInt("id"));
                 dataTransferObject.setName(resultSet.getString("name"));
 

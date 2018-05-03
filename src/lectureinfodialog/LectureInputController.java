@@ -30,6 +30,7 @@ public class LectureInputController {
 
     public void initialize(){
         choiceBoxes = new ArrayList<>();
+
         choiceBoxes.add(studentGroupChoiceBox);
         choiceBoxes.add(teacherChoiceBox);
         choiceBoxes.add(locationChoiceBox);

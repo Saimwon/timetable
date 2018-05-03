@@ -38,7 +38,7 @@ public class EditLectureInputController extends LectureInputController {
 
     @Override
     protected <T> void fillAndSelectFirst(ChoiceBox<T> choiceBox, List<T> content) {
-        choiceBox.getItems().addAll(content);
+        choiceBox.getItems().setAll(content);
     }
 
     private void selectChoiceBoxData(){
@@ -63,14 +63,6 @@ public class EditLectureInputController extends LectureInputController {
 
     @Override
     public LectureDTO makeLectureDTO(){
-        System.out.println(studentGroupChoiceBox.getSelectionModel().getSelectedItem());
-        System.out.println(teacherChoiceBox.getSelectionModel().getSelectedItem());
-        System.out.println(locationChoiceBox.getSelectionModel().getSelectedItem());
-        System.out.println(courseNameTextField.getText());
-        System.out.println(dayChoiceBox.getSelectionModel().getSelectedItem());
-        System.out.println(periodChoiceBox.getSelectionModel().getSelectedItem());
-        System.out.println(durationChoiceBox.getSelectionModel().getSelectedItem());
-        
         int student_id = studentGroupChoiceBox.getSelectionModel().getSelectedItem() == null ?
                 selectedLecture.getLectureDTO().getStudent_id() :
                 studentGroupChoiceBox.getSelectionModel().getSelectedItem().getId();
@@ -96,7 +88,9 @@ public class EditLectureInputController extends LectureInputController {
         return new LectureDTO(student_id, teacher_id, location_id, courseName, day, period, duration);
     }
 
-    public void fillChoiceBoxes(List<SimpleDTO> studentgroups, List<SimpleDTO> teachers, List<SimpleDTO> locations, List<String> startHours){
+    @Override
+    public void fillChoiceBoxes(List<SimpleDTO> studentgroups, List<SimpleDTO> teachers, List<SimpleDTO> locations,
+                                List<String> startHours){
         super.fillChoiceBoxes(studentgroups, teachers, locations, startHours);
         selectChoiceBoxData();
     }

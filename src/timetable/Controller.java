@@ -313,6 +313,7 @@ public class Controller {
     public void editLecture(){
         if (selectedLecture == null){
             showErrorDialog("A lecture must be selected.");
+            return;
         }
         editLecture(selectedLecture);
     }
@@ -320,7 +321,6 @@ public class Controller {
     public void editLecture(LectureRepresentation source){
         LectureInput lectureInput = new EditLectureInput(studentGroupsView.getItems(), teachersView.getItems(),
                 locationsView.getItems(), timetableModel.getStartHours(), source);
-
         lectureInput.initOwner(gridPane.getScene().getWindow());
         lectureInput.showAndWait();
 
