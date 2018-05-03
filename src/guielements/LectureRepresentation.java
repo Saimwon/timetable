@@ -4,18 +4,16 @@ Van Braeckel Simon
 
 package guielements;
 
-import com.sun.org.apache.xpath.internal.SourceTree;
 import datatransferobjects.LectureDTO;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
-import javafx.scene.input.ContextMenuEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
-import timetable.Controller;
+import timetable.MainWindowController;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,18 +26,18 @@ public class LectureRepresentation extends VBox {
     private String teacherName;
     private String courseName;
     private LectureDTO lectureDTO;
-    private Controller controller;
+    private MainWindowController mainWindowController;
 
     public LectureRepresentation(String name1, String profName1, LectureDTO lectureDTO,
-                                 Controller controller, List<LectureRepresentation> lectureGroup){
-        this(name1, profName1, lectureDTO, controller);
+                                 MainWindowController mainWindowController, List<LectureRepresentation> lectureGroup){
+        this(name1, profName1, lectureDTO, mainWindowController);
         this.setLectureGroup(lectureGroup);
     }
 
-    public LectureRepresentation(String name1, String profName1, LectureDTO lectureDTO, Controller controller){
+    public LectureRepresentation(String name1, String profName1, LectureDTO lectureDTO, MainWindowController mainWindowController){
         this.lectureGroup = new ArrayList<>();
 
-        this.controller = controller;
+        this.mainWindowController = mainWindowController;
         this.lectureDTO = lectureDTO;
         this.getStyleClass().add("lecture");
         this.teacherName = profName1;
@@ -50,10 +48,10 @@ public class LectureRepresentation extends VBox {
         initializeContextMenu();
         this.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> {
             if (event.getButton() != MouseButton.SECONDARY) {
-                controller.onLectureSelected(this);
-                controller.editLecture(this);
+                mainWindowController.onLectureSelected(this);
+                mainWindowController.editLecture(this);
             } else{
-                controller.onLectureSelected(this);
+                mainWindowController.onLectureSelected(this);
                 contextMenu.hide();
                 contextMenu.show(this, event.getScreenX(), event.getScreenY());
             };
@@ -66,13 +64,13 @@ public class LectureRepresentation extends VBox {
         MenuItem item1 = new MenuItem("Edit");
         item1.setOnAction(new EventHandler<ActionEvent>() {
             public void handle(ActionEvent e) {
-                controller.editLecture();
+                mainWindowController.editLecture();
             }
         });
         MenuItem item2 = new MenuItem("Delete");
         item2.setOnAction(new EventHandler<ActionEvent>() {
             public void handle(ActionEvent e) {
-                controller.deleteLecture();
+                mainWindowController.deleteLecture();
             }
         });
         contextMenu.getItems().addAll(item1, item2);
@@ -106,11 +104,11 @@ public class LectureRepresentation extends VBox {
         this.lectureDTO = lec;
     }
 
-    public Controller getController() {
-        return controller;
+    public MainWindowController getMainWindowController() {
+        return mainWindowController;
     }
 
-    public void setController(Controller controller) {
-        this.controller = controller;
+    public void setMainWindowController(MainWindowController mainWindowController) {
+        this.mainWindowController = mainWindowController;
     }
 }

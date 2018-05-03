@@ -1,32 +1,14 @@
-Mooi venster tonen bij opstarten van programma
-
-Delete knop toevoegen bij edit lecture
-
-Bij open Databank nog checken of databank correct is
-In SimpleDAO Compiler ding fixen
-
-zorg dat errorvensters vanzelf verdwijnen
-hoogte van accordion moet groter
-voeg knop toe om te kiezen aan welke kant accordion staat
 verwijder apart veld course uit lectureRepresentation
-Zorg dat controller geen dataAccessProvider nodig heeft?
 
-Maak klasse om errors te tonen
-TableModel moet zelf starturen uit DB halen
-
-
-Probleem met groeperen van lectures:
-We moeten lectures koppelen op niveau van de databank zelf om bij edit of delete te laten kiezen tussen enkel de geselecteerde lecture of alle lectures
-
-NU:
-- Klik op lectureContainer implementeren (create lecture op die plaats)
-	= LC ook eventfilter geven.
-	probleem: - LC moet ook veld hebben dat naar controller verwijst.
-		- LC worden aangemaakt in View -> View heeft ook verwijzing naar controller nodig. Of view moet controller via Model ophalen
-	Wat gebeurt er als je dan op een LR klikt
-
-- Rechterklik op lectures implementeren (Kiezen voor delete of edit)
-	en bij edit een deleteknop zetten
 - MVC uitbreiden voor listviews
 
+probeer cleartable en containermap te verwijderen
 
+MVC Listviews:
+klasse maken de observablelist en invalidationlistener implementeert
+invalidated: vul zelf op met nieuwe stuff
+
+Documentatie schrijven in About venster:
+Methode aan koppelen
+methode doet:
+ opent venster met text in

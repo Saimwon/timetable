@@ -2,7 +2,7 @@
 Simon Van Braeckel
  */
 
-package timetable;
+package guielements;
 
 import javafx.scene.control.Alert;
 import javafx.stage.Window;

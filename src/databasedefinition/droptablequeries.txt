@@ -1,0 +1,5 @@
+drop table period;
+drop table students;
+drop table teacher;
+drop table location;
+drop table lecture;

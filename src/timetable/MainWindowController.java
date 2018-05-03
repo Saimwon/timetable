@@ -9,6 +9,7 @@ import databaseextra.DataAccessProvider;
 import databaseextra.SQLiteDataAccessProvider;
 import dataaccessobjects.dataccessinterfaces.SimpleDAO;
 import datatransferobjects.*;
+import guielements.ErrorDialog;
 import guielements.LectureRepresentation;
 import guielements.LectureContainer;
 import javafx.scene.control.*;
@@ -17,12 +18,13 @@ import lectureinfodialog.EditLectureInput;
 import lectureinfodialog.LectureInput;
 import lectureinfodialog.LectureInputController;
 import starthourdialog.StartHourDialog;
+import usagewindow.HelpWindow;
 
 import java.io.File;
 import java.util.*;
 
-public class Controller {
-    private TimetableModel timetableModel;
+public class MainWindowController {
+    private MainWindowModel mainWindowModel;
 
     private DataAccessProvider dataAccessProvider;
 
@@ -36,49 +38,56 @@ public class Controller {
     public ListView<SimpleDTO> locationsView;
     private Map<String, LectureContainer> containerMap;
 
-    //Alles ivm toevoegbar van lectures onderaan de applicatie
-    public ComboBox<StudentGroupDTO> studentGroupComboBox;
-    public ComboBox<TeacherDTO> teacherComboBox;
-    public ComboBox<LocationDTO> locationComboBox;
-
     private LectureRepresentation selectedLecture;
-
 
     public void initialize() {
         dataAccessProvider = new SQLiteDataAccessProvider();
-        timetableModel = new TimetableModel(dataAccessProvider, this);
-        gridPane.setModel(timetableModel);
+        mainWindowModel = new MainWindowModel(dataAccessProvider, this, null);
+        gridPane.setModel(mainWindowModel);
         selectedLecture = null;
-        timetableModel.updateStarthours();
 
-        initializeViews();
+        addListViewEventListeners();
         containerMap = new HashMap<>();
     }
 
-    private void initializeViews() {
+    private void addListViewEventListeners() {
         teachersView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> onNameSelected("teacher_id", teachersView.getSelectionModel().getSelectedItem()));
 
         studentGroupsView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> onNameSelected("students_id", studentGroupsView.getSelectionModel().getSelectedItem()));
 
         locationsView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> onNameSelected("location_id", locationsView.getSelectionModel().getSelectedItem()));
-        refreshViews();
     }
 
-    private boolean refreshViews() {
+    private boolean databaseValid(){
+        DataAccessContext dataAccessContext = dataAccessProvider.getDataAccessContext();
+
+        List<TeacherDTO> teachers = dataAccessContext.getTeacherDAO().getAllEntries();
+        if (teachers == null) {
+            return false;
+        }
+        List<StudentGroupDTO> studentGroups = dataAccessContext.getStudentDAO().getAllEntries();
+        if (studentGroups == null) {
+            return false;
+        }
+        List<LocationDTO> locations = dataAccessContext.getLocationDAO().getAllEntries();
+
+        return locations != null && dataAccessContext.getLectureDAO().tableExists();
+    }
+
+    private void refreshListViews() {
+//        mainWindowModel.refreshListViews();
+
+        mainWindowModel.refreshListViews();
+
         DataAccessContext dataAccessContext = dataAccessProvider.getDataAccessContext();
 
         List<TeacherDTO> teachers = dataAccessContext.getTeacherDAO().getAllEntries();
         List<StudentGroupDTO> studentGroups = dataAccessContext.getStudentDAO().getAllEntries();
         List<LocationDTO> locations = dataAccessContext.getLocationDAO().getAllEntries();
 
-        if (teachers == null || studentGroups == null || locations == null || ! dataAccessContext.getLectureDAO().tableExists()) {
-            return false;
-        }
-
         teachersView.getItems().setAll(teachers);
         studentGroupsView.getItems().setAll(studentGroups);
         locationsView.getItems().setAll(locations);
-        return true;
     }
 
     private void onNameSelected(String tableName, SimpleDTO simpleDTO) {
@@ -98,7 +107,7 @@ public class Controller {
     private void updateTableContents(String columnName, int id) {
 //gelievee het selecteren van lectures nog niet te breken
         //TODO: Fix selecteren van lectures
-        timetableModel.updateTableContents(columnName, id);
+        mainWindowModel.updateTableContents(columnName, id);
 
 //        lastColumnName = columnName;
 //        lastId = id;
@@ -182,13 +191,14 @@ public class Controller {
 
             dataAccessProvider.setDbConnectionString(newPath);
 
-            if (! refreshViews()){
+            if (! databaseValid()){
                 showErrorDialog("This is not a valid database.");
                 return;
             }
 
+            refreshListViews();
             clearTable();
-            timetableModel.updateStarthours();
+            mainWindowModel.updateStarthours();
         } else if (file != null) {
             showErrorDialog("Please choose a file that has the .db extension.");
         }
@@ -214,7 +224,8 @@ public class Controller {
             dataAccessProvider.getDataAccessContext().getDatabaseDefiner().define(newStartHours);
 
             clearTable();
-            timetableModel.updateStarthours();
+            mainWindowModel.updateStarthours();
+            mainWindowModel.clearListViews();
         }
     }
 
@@ -238,7 +249,7 @@ public class Controller {
         } else {
             //naam v geopende pane vragen en omzetten naar tabelnaam waar we de nieuwe persoon moeten invoegen
             SimpleDAO simpleDAO = titledPaneNameToTableName.get(openedPane.getText());
-            //naam die we moeten toevoegen aan DB ophalen
+            //naam die we moeten toevoegen ophalen
             String nameToAdd = newEntryTextField.getText();
 
             //Block deze operatie als er al een entry bestaat met deze naam:
@@ -251,7 +262,8 @@ public class Controller {
             if (! addingEntryWasSucces){
                 showErrorDialog("Failed to add entry.");
             }
-            refreshViews();
+
+            refreshListViews();
         }
     }
 
@@ -297,12 +309,12 @@ public class Controller {
         if (! renamingEntryWasSuccess){
             showErrorDialog("Failed to rename entry.");
         }
-        refreshViews();
-        timetableModel.refreshTable();
+        refreshListViews();
+        mainWindowModel.refreshTable();
     }
 
     public void createLecture(){
-        LectureInput lectureInput = new LectureInput(studentGroupsView.getItems(), teachersView.getItems(), locationsView.getItems(), timetableModel.getStartHours(), new LectureInputController());
+        LectureInput lectureInput = new LectureInput(studentGroupsView.getItems(), teachersView.getItems(), locationsView.getItems(), mainWindowModel.getStartHours(), new LectureInputController());
 
         lectureInput.initOwner(gridPane.getScene().getWindow());
         lectureInput.showAndWait();
@@ -312,7 +324,7 @@ public class Controller {
         if (lectureDTO != null) {
             //adhv deze lectureDTO een entry toevoegen
             if (dataAccessProvider.getDataAccessContext().getLectureDAO().addEntry(lectureDTO)) {
-                timetableModel.refreshTable();
+                mainWindowModel.refreshTable();
             } else {
                 showErrorDialog("Failed to add entry.");
             }
@@ -329,7 +341,7 @@ public class Controller {
 
     public void editLecture(LectureRepresentation source){
         LectureInput lectureInput = new EditLectureInput(studentGroupsView.getItems(), teachersView.getItems(),
-                locationsView.getItems(), timetableModel.getStartHours(), source);
+                locationsView.getItems(), mainWindowModel.getStartHours(), source);
         lectureInput.initOwner(gridPane.getScene().getWindow());
         lectureInput.showAndWait();
 
@@ -343,7 +355,7 @@ public class Controller {
 
             //adhv nieuwe lectureDTO een entry toevoegen
             if (dataAccessProvider.getDataAccessContext().getLectureDAO().addEntry(newLectureDTO)) {
-                timetableModel.refreshTable();
+                mainWindowModel.refreshTable();
             } else {
                 showErrorDialog("Failed to add entry.");
             }
@@ -361,11 +373,17 @@ public class Controller {
             return;
         }
 
-        timetableModel.refreshTable();
+        mainWindowModel.refreshTable();
     }
 
     private void showErrorDialog(String message){
         ErrorDialog timedErrorDialog = new ErrorDialog(message, gridPane.getScene().getWindow());
         timedErrorDialog.showAndWait();
+    }
+
+    public void showHelpWindow(){
+        HelpWindow helpWindow = new HelpWindow();
+        helpWindow.initOwner(gridPane.getScene().getWindow());
+        helpWindow.show();
     }
 }

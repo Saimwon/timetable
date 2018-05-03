@@ -5,6 +5,7 @@ Van Braeckel Simon
 package databaseextra;
 
 import dataaccessobjects.dataccessinterfaces.*;
+import databasedefinition.DatabaseDefiner;
 import datatransferobjects.LocationDTO;
 import datatransferobjects.StudentGroupDTO;
 import datatransferobjects.TeacherDTO;

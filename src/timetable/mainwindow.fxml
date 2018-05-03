@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import guielements.MyTable?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import timetable.TimetableView?>
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" stylesheets="@styles.css" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="timetable.Controller">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" stylesheets="@styles.css" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="timetable.MainWindowController">
    <center>
        <TimetableView fx:id="gridPane" alignment="TOP_CENTER" gridLinesVisible="true">
            <columnConstraints>
@@ -39,14 +38,14 @@
         <VBox BorderPane.alignment="CENTER">
             <Accordion fx:id="accordion">
                 <panes>
-                    <TitledPane fx:id="studentGroupsTitledPane" animated="true" text="Studentgroups">
+                    <TitledPane text="Studentgroups">
                         <ListView fx:id="studentGroupsView"/>
                     </TitledPane>
-                    <TitledPane fx:id="teachersTitledPane" animated="true" text="Teachers">
-                        <ListView fx:id="teachersView"/>
+                    <TitledPane text="Teachers">
+                        <ListView  fx:id="teachersView"/>
                     </TitledPane>
-                    <TitledPane fx:id="locationsTitledPane" animated="true" text="Locations">
-                        <ListView fx:id="locationsView"/>
+                    <TitledPane text="Locations">
+                        <ListView  fx:id="locationsView"/>
                     </TitledPane>
                 </panes>
             </Accordion>
@@ -72,21 +71,8 @@
                 <MenuItem mnemonicParsing="false" text="Delete Selected Lecture" onAction="#deleteLecture"/>
             </Menu>
             <Menu mnemonicParsing="false" text="Help">
-                <MenuItem mnemonicParsing="false" text="About"/>
+                <MenuItem mnemonicParsing="false" text="Usage" onAction="#showHelpWindow"/>
             </Menu>
         </MenuBar>
     </top>
-    <bottom>
-        <HBox prefHeight="21.0" prefWidth="600.0" BorderPane.alignment="CENTER">
-            <ComboBox fx:id="studentGroupComboBox" prefWidth="150.0" promptText="StudentGroup"/>
-            <ComboBox fx:id="locationComboBox" prefWidth="150.0" promptText="Location"/>
-            <ComboBox fx:id="teacherComboBox" prefWidth="150.0" promptText="Teacher"/>
-            <Label text="CourseName"/>
-            <TextField fx:id="courseNameTextField"/>
-            <ComboBox fx:id="dayComboBox" prefWidth="150.0" promptText="Day"/>
-            <ComboBox fx:id="startTimeComboBox" prefWidth="150.0" promptText="StartTime"/>
-            <ComboBox fx:id="durationComboBox" prefWidth="150.0" promptText="Duration"/>
-            <Button fx:id="addLectureButton" mnemonicParsing="false" text="Add Lecture"/>
-        </HBox>
-    </bottom>
 </BorderPane>

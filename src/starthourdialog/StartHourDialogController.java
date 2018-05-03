@@ -13,6 +13,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
+import javax.xml.soap.Text;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -33,11 +34,13 @@ public class StartHourDialogController {
         TextField hourField = new TextField();
         TextField minuteField = new TextField();
         Label dubbelpuntLabel = new Label(":");
-        Button removeButton = new Button("-");
-        removeButton.setOnAction(event -> textFieldContainer.getChildren().remove(fieldContainer));
 
-        //Zet de textfields samen in de lijst zodat we ze bij het saven gemakkelijk kunnen overlopen
-        times.add(new TextField[]{hourField, minuteField});
+        //Zet de textfields samen in een lijst zodat we ze bij het saven gemakkelijk kunnen overlopen
+        TextField[] textFields = new TextField[]{hourField, minuteField};
+        times.add(textFields);
+
+        Button removeButton = new Button("-");
+        removeButton.setOnAction(event -> remove(fieldContainer, textFields));
 
         hourField.setPrefWidth(35.0);
         minuteField.setPrefWidth(35.0);
@@ -48,6 +51,11 @@ public class StartHourDialogController {
         }
 
         return fieldContainer;
+    }
+
+    private void remove(HBox container, TextField[] textFields){
+        textFieldContainer.getChildren().remove(container);
+        times.remove(textFields);
     }
 
     public void addTextField(){

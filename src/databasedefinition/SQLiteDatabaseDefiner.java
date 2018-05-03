@@ -1,8 +1,12 @@
 /*
 Simon Van Braeckel
  */
-package databaseextra;
+package databasedefinition;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.nio.Buffer;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -45,21 +49,30 @@ public class SQLiteDatabaseDefiner implements DatabaseDefiner {
 
     public void define(List<Integer[]> startHours){
         try {
-            execute(dropQuerys);
-        } catch (SQLException ignored){}
+            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(SQLiteDatabaseDefiner.class.getResourceAsStream("droptablequeries.txt")));
+            String line = bufferedReader.readLine();
 
-        try {
-            execute(createQuerys);
-        } catch (SQLException e){
-            crash(e);
-        }
+            while (line != null){
+                try {
+                    execute(line);
+                } catch (SQLException ignored){}
 
-        for (Integer[] period : startHours){
-            try {
-                execute("INSERT INTO period (hour, minute) VALUES (" + period[0] + ", " + period[1] + ")");
-            } catch (SQLException e){
-                crash(e);
+                line = bufferedReader.readLine();
             }
+
+
+            bufferedReader = new BufferedReader(new InputStreamReader(SQLiteDatabaseDefiner.class.getResourceAsStream("createtablequeries.txt")));
+            line = bufferedReader.readLine();
+            while (line != null) {
+                execute(line);
+                line = bufferedReader.readLine();
+            }
+
+            for (Integer[] period : startHours) {
+                execute("INSERT INTO period (hour, minute) VALUES (" + period[0] + ", " + period[1] + ")");
+            }
+        } catch (SQLException | IOException e){
+            crash(e);
         }
     }
 

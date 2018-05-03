@@ -20,16 +20,17 @@ import java.util.List;
 
 public class TimetableView extends GridPane implements InvalidationListener {
     private List<HBox> hboxLijst;
-    private TimetableModel timetableModel;
+    private MainWindowModel mainWindowModel;
 
     public TimetableView(){
         hboxLijst = new ArrayList<>();
-        this.timetableModel = null;
+        this.mainWindowModel = null;
     }
 
-    public void initializeStartHours(List<String> startUren){
+    private void initializeStartHours(List<String> startUren){
         //maak eerste kolom leeg
         this.getChildren().removeAll(hboxLijst);
+        hboxLijst.clear();
         //verwijder rowconstraints
         this.getRowConstraints().clear();
         //voeg eerst toe om de eerste rij klein te maken
@@ -60,18 +61,18 @@ public class TimetableView extends GridPane implements InvalidationListener {
         }
     }
 
-    public void setModel(TimetableModel timetableModel){
-        this.timetableModel = timetableModel;
-        timetableModel.addListener(this);
+    public void setModel(MainWindowModel mainWindowModel){
+        this.mainWindowModel = mainWindowModel;
+        mainWindowModel.addListener(this);
     }
 
     @Override
     public void invalidated(Observable observable) {
-        List<String> startHours = timetableModel.getStartHours();
+        List<String> startHours = mainWindowModel.getStartHours();
 
         initializeStartHours(startHours);
 
-        List<List<ObservableList<LectureRepresentation>>> table = timetableModel.getTable();
+        List<List<ObservableList<LectureRepresentation>>> table = mainWindowModel.getTable();
 
         for (int i = 0; i < table.size(); i++){
             List<ObservableList<LectureRepresentation>> kolom = table.get(i);

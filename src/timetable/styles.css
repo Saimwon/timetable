@@ -2,21 +2,18 @@
 Van Braeckel Simon
  */
 
-.root{
+.root {
     -fx-font-size: 10pt;
     -fx-font-family: "Consolas";
-    -fx-base: rgb(10, 10, 10);
-    -fx-background: rgb(10, 10, 10);
+    -fx-base: #0f1011;
+    -fx-background: #0f1011;
 }
 
 LectureContainer {
     -fx-alignment: center;
-    -fx-border-style: solid inside;
-    -fx-border-color: black;
     -fx-padding: 2;
     -fx-border-width: 2;
     -fx-border-insets: 2;
-    -fx-border-radius: 5;
 }
 
 LectureContainer Label {
@@ -39,10 +36,14 @@ LectureRepresentation {
 }
 
 .correctlecture {
+    -fx-border-style: solid inside;
+    -fx-border-radius: 5;
     -fx-border-color: #09bc20;
 }
 
 .incorrectlecture {
+    -fx-border-style: solid inside;
+    -fx-border-radius: 5;
     -fx-border-color: #f90000;
 }
 

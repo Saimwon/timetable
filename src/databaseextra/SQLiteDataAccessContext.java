@@ -6,6 +6,8 @@ package databaseextra;
 
 import dataaccessobjects.*;
 import dataaccessobjects.dataccessinterfaces.*;
+import databasedefinition.DatabaseDefiner;
+import databasedefinition.SQLiteDatabaseDefiner;
 import datatransferobjects.LocationDTO;
 import datatransferobjects.StudentGroupDTO;
 import datatransferobjects.TeacherDTO;

@@ -11,7 +11,7 @@ public class SQLiteDataAccessProvider implements DataAccessProvider{
     private String dbConnectionString;
 
     public SQLiteDataAccessProvider() {
-        dbConnectionString = "jdbc:sqlite::resource:timetable/lectures.db";
+        dbConnectionString = "";//"jdbc:sqlite::resource:timetable/lectures.db";
     }
 
     private Connection makeConnection(){

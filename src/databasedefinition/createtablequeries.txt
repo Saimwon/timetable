@@ -1,0 +1,5 @@
+create table period ('id' integer primary key, 'hour', 'minute')
+create table students ('id' integer primary key, 'name')
+create table location ('id' integer primary key, 'name')
+create table teacher ('id' integer primary key, 'name')
+create table lecture ('students_id', 'teacher_id', 'location_id', 'course', 'day', 'first_block', 'duration')

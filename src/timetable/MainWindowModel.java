@@ -1,45 +1,43 @@
 package timetable;
 
 import dataaccessobjects.dataccessinterfaces.LectureDAO;
-import databaseextra.DataAccessContext;
+import dataaccessobjects.dataccessinterfaces.SimpleDAO;
 import databaseextra.DataAccessProvider;
-import datatransferobjects.LectureDTO;
-import datatransferobjects.TeacherDTO;
-import guielements.LectureContainer;
+import datatransferobjects.*;
 import guielements.LectureRepresentation;
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.GridPane;
 
 import java.util.*;
 
-public class TimetableModel implements Observable {
+public class MainWindowModel implements Observable {
     private DataAccessProvider dataAccessProvider;
     private static int AANTAL_DAGEN = 5;
     private List<String> startHours;
-    private Controller controller;
+    private MainWindowController mainWindowController;
 
-    private List<List<LectureRepresentation>> lectureGroups;
+    private ObservableList<StudentGroupDTO> studentGroupDTOS;
+    private ObservableList<TeacherDTO> teacherDTOS;
+    private ObservableList<LocationDTO> locationDTOS;
+
     private List<List<ObservableList<LectureRepresentation>>> table;
 
 //moet in initialize al de juiste kolommen toevoegen
-    public TimetableModel(DataAccessProvider dataAccessProvider, Controller controller){
+    public MainWindowModel(DataAccessProvider dataAccessProvider, MainWindowController mainWindowController, ObservableList<SimpleDTO>[] observableLists) {
         this.dataAccessProvider = dataAccessProvider;
-        this.startHours = dataAccessProvider.getDataAccessContext().getPeriodDAO().getStartTimes();
-        this.controller = controller;
+        this.mainWindowController = mainWindowController;
 
-        this.lectureGroups = new ArrayList<>();
+        studentGroupDTOS = FXCollections.observableArrayList();
+        teacherDTOS = FXCollections.observableArrayList();
+        locationDTOS = FXCollections.observableArrayList();
 
         table = new ArrayList<>();
         //steek kolommen in table
         for (int i = 0; i < AANTAL_DAGEN; i++){
             table.add(new ArrayList<>());
         }
-
-        this.setStartHours(this.startHours);
     }
 
     public void updateStarthours(){
@@ -48,7 +46,7 @@ public class TimetableModel implements Observable {
         this.setStartHours(startHours);
     }
 
-    public void setStartHours(List<String> startUren){
+    private void setStartHours(List<String> startUren){
         this.startHours = startHours;
 
         for (int j = 0; j < table.size(); j ++) {
@@ -82,7 +80,6 @@ public class TimetableModel implements Observable {
 
         for (LectureDTO lectureDTO : lectureList) {
             List<LectureRepresentation> lectureGroup = new ArrayList<>();
-            this.lectureGroups.add(lectureGroup);
             //loop over duration
             for (int i = 0; i < lectureDTO.getDuration(); i++) {
                 int row = lectureDTO.getFirst_block() + i;
@@ -95,31 +92,19 @@ public class TimetableModel implements Observable {
                 }
 
                 //zet lecture in lijst
-                LectureRepresentation lectureRepresentation = new LectureRepresentation(lectureDTO.getCourse(), teacherById.getName(), lectureDTO, controller);
+                LectureRepresentation lectureRepresentation = new LectureRepresentation(lectureDTO.getCourse(), teacherById.getName(), lectureDTO, mainWindowController);
                 lectureRepresentation.setLectureGroup(lectureGroup);
 
                 table.get(column-1).get(row-1).add(lectureRepresentation);
                 lectureGroup.add(lectureRepresentation);
             }
         }
-        checkTable();
     }
 
     private void clearTableContents(){
         for (List<ObservableList<LectureRepresentation>> column: table){
             for (ObservableList<LectureRepresentation> observableList : column){
                 observableList.clear();
-            }
-        }
-    }
-    private void checkTable(){
-        for (int i = 0 ; i < table.size(); i++){
-            for (int j = 0; j < table.get(i).size(); j++){
-//                System.out.println("Plaats: " + i + " " + j + ":");
-//                for (LectureRepresentation lectureRepresentation : table.get(i).get(j)){
-//                    System.out.println(lectureRepresentation.getCourseName());
-//                }
-//                System.out.println("-----------------------------------------------");
             }
         }
     }
@@ -132,6 +117,21 @@ public class TimetableModel implements Observable {
         updateTableContents(lastColumnName, lastId);
     }
 
+    public void refreshListViews(){
+        refreshListView(dataAccessProvider.getDataAccessContext().getStudentDAO(), studentGroupDTOS);
+        refreshListView(dataAccessProvider.getDataAccessContext().getTeacherDAO(), teacherDTOS);
+        refreshListView(dataAccessProvider.getDataAccessContext().getLocationDAO(), locationDTOS);
+    }
+
+    public void clearListViews(){
+        studentGroupDTOS.clear();
+        teacherDTOS.clear();
+        locationDTOS.clear();
+    }
+
+    private <T> void refreshListView(SimpleDAO<T> simpleDAO, ObservableList<T> observableList) {
+        observableList.setAll(simpleDAO.getAllEntries());
+    }
 
     //Luisteraargerelateerde dingen:
     /**

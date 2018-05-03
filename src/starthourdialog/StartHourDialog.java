@@ -16,7 +16,7 @@ public class StartHourDialog extends Stage {
 
     public StartHourDialog() {
         this.startHours = null;
-        //koppel fxml aan zelf
+
         FXMLLoader loader = new FXMLLoader(getClass().getResource("starthourdialog.fxml"));
         Parent root = null;
         try {

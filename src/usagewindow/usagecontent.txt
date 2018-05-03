@@ -1,0 +1,9 @@
+Editing lectures:
+- To edit a lecture, click on it in the timetable. Or right click and click "edit"
+
+Deleting lectures:
+- To delete a lecture, right click it in the timetable and click delete.
+
+Adding/editing studentgroups, teachers or locations:
+- To add a studentgroup, teacher or location, open the corresponding list on the right of the screen, input the name in the textfield below and click add.
+- To rename a studentgroup, teacher or location, select the name you want to change, input the new name on the right of the screen and press rename.
