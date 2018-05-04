@@ -1,9 +1,9 @@
 /*
 Simon Van Braeckel
  */
-package dataaccessobjects;
+package databasemanipulation.dataaccessobjects;
 
-import dataaccessobjects.dataccessinterfaces.SimpleDAO;
+import databasemanipulation.dataaccessobjects.dataccessinterfaces.SimpleDAO;
 import datatransferobjects.SimpleDTO;
 
 import java.sql.Connection;
@@ -25,6 +25,9 @@ public class SQLiteSimpleDAO<T extends SimpleDTO> implements SimpleDAO<T> {
         this.supplier = supplier;
     }
 
+    /*
+    Vraag alle entries op.
+     */
     @Override
     public List<T> getAllEntries() {
         try (PreparedStatement statement = conn.prepareStatement("select * from " + tablename + " order by name COLLATE NOCASE")) {
@@ -36,6 +39,9 @@ public class SQLiteSimpleDAO<T extends SimpleDTO> implements SimpleDAO<T> {
         }
     }
 
+    /*
+    Vraag entries op met gegeven naam.
+     */
     @Override
     public List<T> getEntryByName(String name) {
         try (PreparedStatement statement = conn.prepareStatement("select * from " + tablename + " where name = ?")) {
@@ -48,6 +54,9 @@ public class SQLiteSimpleDAO<T extends SimpleDTO> implements SimpleDAO<T> {
         }
     }
 
+    /*
+    Zet resultset om in lijst van DTO's
+     */
     private List<T> verwerkResultaat(ResultSet resultSet) {
         List<T> result = new ArrayList<>();
 
@@ -66,6 +75,9 @@ public class SQLiteSimpleDAO<T extends SimpleDTO> implements SimpleDAO<T> {
         return result;
     }
 
+    /*
+    Voeg een entry toe aan de databank
+     */
     @Override
     public boolean addEntry(String name) {
         //Voeg nieuwe entry toe aan DB
@@ -75,12 +87,15 @@ public class SQLiteSimpleDAO<T extends SimpleDTO> implements SimpleDAO<T> {
             statement.setString(1, name);
             statement.executeUpdate();
         } catch (SQLException ex) {
-            System.out.println("could not add entry");
+            System.out.println("Failed to add entry: " + name);
             return false;
         }
         return true;
     }
 
+    /*
+    Geef entry met id naam newname
+     */
     @Override
     public boolean renameEntry(int id, String newName) {
         //Voeg nieuwe entry toe aan DB
@@ -96,9 +111,13 @@ public class SQLiteSimpleDAO<T extends SimpleDTO> implements SimpleDAO<T> {
         return true;
     }
 
-    public T getEntryById(int teacher_id) {
+    /*
+    Vraag DTO op aan de hand van naam. Wordt normaal enkel gebruikt om
+    in een lecturerepresentation de juiste prof te kunnen steken.
+     */
+    public T getEntryById(int id) {
         try (PreparedStatement statement = conn.prepareStatement("select * from " + tablename + " where id = ? order by name")) {
-            statement.setInt(1, teacher_id);
+            statement.setInt(1, id);
             ResultSet resultSet = statement.executeQuery();
             List<T> teachers = verwerkResultaat(resultSet);
             if (teachers != null && teachers.size() != 0) {

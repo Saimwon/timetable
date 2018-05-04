@@ -12,3 +12,17 @@ Documentatie schrijven in About venster:
 Methode aan koppelen
 methode doet:
  opent venster met text in
+
+
+NU:
+tablename in dto wordt nu niet meer gebruikt.
+
+Als je weet dat er aleen dingen van een bepaald type in een lijst zitten maak je een specifieke subklasse van dat type en steek je die in die lijst. Dat is dus zo bij de DTO's
+
+Was aan het doen:
+refresh listviews methode opdelen
+tablename overbodig maken in DTO
+
+Listproperties in model
+listview.itemproperty.bind(listproperty)
+

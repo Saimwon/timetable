@@ -2,7 +2,7 @@
 Van Braeckel Simon
  */
 
-package dataaccessobjects.dataccessinterfaces;
+package databasemanipulation.dataaccessobjects.dataccessinterfaces;
 
 import java.util.List;
 

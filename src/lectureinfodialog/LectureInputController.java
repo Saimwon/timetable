@@ -5,10 +5,7 @@ Controller voor het venster dat zich opent wanneer je een lecture toevoegt of aa
 
 package lectureinfodialog;
 
-import datatransferobjects.DayDTO;
-import datatransferobjects.LectureDTO;
-import datatransferobjects.PeriodDTO;
-import datatransferobjects.SimpleDTO;
+import datatransferobjects.*;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TextField;
 
@@ -18,9 +15,9 @@ import java.util.List;
 
 public class LectureInputController {
     private LectureInput lectureInput;
-    public ChoiceBox<SimpleDTO> studentGroupChoiceBox;
-    public ChoiceBox<SimpleDTO> teacherChoiceBox;
-    public ChoiceBox<SimpleDTO> locationChoiceBox;
+    public ChoiceBox<StudentGroupDTO> studentGroupChoiceBox;
+    public ChoiceBox<TeacherDTO> teacherChoiceBox;
+    public ChoiceBox<LocationDTO> locationChoiceBox;
     public TextField courseNameTextField;
     public ChoiceBox<DayDTO> dayChoiceBox;
     public ChoiceBox<PeriodDTO> periodChoiceBox;
@@ -40,7 +37,7 @@ public class LectureInputController {
     }
 
 
-    public void fillChoiceBoxes(List<SimpleDTO> studentgroups, List<SimpleDTO> teachers, List<SimpleDTO> locations, List<String> startHours){
+    public void fillChoiceBoxes(List<StudentGroupDTO> studentgroups, List<TeacherDTO> teachers, List<LocationDTO> locations, List<String> startHours){
         String[] dayNames = new String[]{"Monday", "Tuesday", "Wednesday", "Thursday", "Friday"};
         List<PeriodDTO> periods = new ArrayList<>();
         List<DayDTO> days = new ArrayList<>();

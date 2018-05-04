@@ -2,9 +2,9 @@
 Van Braeckel Simon
  */
 
-package dataaccessobjects;
+package databasemanipulation.dataaccessobjects;
 
-import dataaccessobjects.dataccessinterfaces.PeriodDAO;
+import databasemanipulation.dataaccessobjects.dataccessinterfaces.PeriodDAO;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -24,6 +24,7 @@ public class SQLitePeriodDAO implements PeriodDAO {
     public List<String> getStartTimes() {
         try (PreparedStatement statement = conn.prepareStatement("select hour, minute from period order by hour, minute")){
             ResultSet resultSet = statement.executeQuery();
+
             return verwerkResultaat(resultSet);
         } catch (SQLException e){
             e.printStackTrace();

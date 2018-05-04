@@ -2,7 +2,7 @@
 Van Braeckel Simon
  */
 
-package databaseextra;
+package databasemanipulation.databaseextra;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -11,7 +11,7 @@ public class SQLiteDataAccessProvider implements DataAccessProvider{
     private String dbConnectionString;
 
     public SQLiteDataAccessProvider() {
-        dbConnectionString = "";//"jdbc:sqlite::resource:timetable/lectures.db";
+        dbConnectionString = "";
     }
 
     private Connection makeConnection(){

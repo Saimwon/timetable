@@ -2,7 +2,7 @@
 Van Braeckel Simon
  */
 
-package dataaccessobjects;
+package databasemanipulation.dataaccessobjects;
 
 import datatransferobjects.LocationDTO;
 

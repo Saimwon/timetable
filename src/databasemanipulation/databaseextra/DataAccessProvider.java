@@ -2,7 +2,7 @@
 Van Braeckel Simon
  */
 
-package databaseextra;
+package databasemanipulation.databaseextra;
 
 public interface DataAccessProvider {
     DataAccessContext getDataAccessContext();

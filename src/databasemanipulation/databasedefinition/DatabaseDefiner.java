@@ -1,7 +1,7 @@
 /*
 Simon Van Braeckel
  */
-package databasedefinition;
+package databasemanipulation.databasedefinition;
 
 import java.util.List;
 

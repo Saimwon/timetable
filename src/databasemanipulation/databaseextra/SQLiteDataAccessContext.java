@@ -2,12 +2,12 @@
 Van Braeckel Simon
  */
 
-package databaseextra;
+package databasemanipulation.databaseextra;
 
-import dataaccessobjects.*;
-import dataaccessobjects.dataccessinterfaces.*;
-import databasedefinition.DatabaseDefiner;
-import databasedefinition.SQLiteDatabaseDefiner;
+import databasemanipulation.dataaccessobjects.*;
+import databasemanipulation.dataaccessobjects.dataccessinterfaces.*;
+import databasemanipulation.databasedefinition.DatabaseDefiner;
+import databasemanipulation.databasedefinition.SQLiteDatabaseDefiner;
 import datatransferobjects.LocationDTO;
 import datatransferobjects.StudentGroupDTO;
 import datatransferobjects.TeacherDTO;
@@ -15,9 +15,9 @@ import datatransferobjects.TeacherDTO;
 import java.sql.Connection;
 import java.sql.SQLException;
 
-public class SQLiteDataAccessContext implements DataAccessContext{
+public class SQLiteDataAccessContext implements DataAccessContext {
     private final Connection conn;
-    public SQLiteDataAccessContext(Connection conn){
+    SQLiteDataAccessContext(Connection conn){
         this.conn = conn;
     }
 

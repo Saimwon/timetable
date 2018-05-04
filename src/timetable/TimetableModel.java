@@ -1,37 +1,39 @@
 package timetable;
 
-import dataaccessobjects.dataccessinterfaces.LectureDAO;
-import dataaccessobjects.dataccessinterfaces.SimpleDAO;
-import databaseextra.DataAccessProvider;
+import databasemanipulation.dataaccessobjects.dataccessinterfaces.LectureDAO;
+import databasemanipulation.dataaccessobjects.dataccessinterfaces.SimpleDAO;
+import databasemanipulation.databaseextra.DataAccessProvider;
 import datatransferobjects.*;
 import guielements.LectureRepresentation;
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
+import javafx.beans.property.ListProperty;
+import javafx.beans.property.SimpleListProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
 import java.util.*;
 
-public class MainWindowModel implements Observable {
+public class TimetableModel implements Observable {
     private DataAccessProvider dataAccessProvider;
     private static int AANTAL_DAGEN = 5;
     private List<String> startHours;
     private MainWindowController mainWindowController;
 
-    private ObservableList<StudentGroupDTO> studentGroupDTOS;
-    private ObservableList<TeacherDTO> teacherDTOS;
-    private ObservableList<LocationDTO> locationDTOS;
+    private ListProperty<StudentGroupDTO> studentGroupDTOList;
+    private ListProperty<TeacherDTO> teacherDTOList;
+    private ListProperty<LocationDTO> locationDTOList;
 
     private List<List<ObservableList<LectureRepresentation>>> table;
 
 //moet in initialize al de juiste kolommen toevoegen
-    public MainWindowModel(DataAccessProvider dataAccessProvider, MainWindowController mainWindowController, ObservableList<SimpleDTO>[] observableLists) {
+    public TimetableModel(DataAccessProvider dataAccessProvider, MainWindowController mainWindowController, ObservableList<SimpleDTO>[] observableLists) {
         this.dataAccessProvider = dataAccessProvider;
         this.mainWindowController = mainWindowController;
 
-        studentGroupDTOS = FXCollections.observableArrayList();
-        teacherDTOS = FXCollections.observableArrayList();
-        locationDTOS = FXCollections.observableArrayList();
+        studentGroupDTOList = new SimpleListProperty<>();
+        teacherDTOList = new SimpleListProperty<>();
+        locationDTOList = new SimpleListProperty<>();
 
         table = new ArrayList<>();
         //steek kolommen in table
@@ -85,13 +87,12 @@ public class MainWindowModel implements Observable {
                 int row = lectureDTO.getFirst_block() + i;
                 int column = lectureDTO.getDay();
 
+                //Vraag de naam van de prof op om in de lectureRepresentation te zetten.
                 TeacherDTO teacherById = dataAccessProvider.getDataAccessContext().getTeacherDAO().getEntryById(lectureDTO.getTeacher_id());
                 if (teacherById == null) {
-//showErrorDialog("One of the lectures uses a TeacherID for which there is no entry in table \"teachers\".");
                     continue;
                 }
 
-                //zet lecture in lijst
                 LectureRepresentation lectureRepresentation = new LectureRepresentation(lectureDTO.getCourse(), teacherById.getName(), lectureDTO, mainWindowController);
                 lectureRepresentation.setLectureGroup(lectureGroup);
 
@@ -133,6 +134,23 @@ public class MainWindowModel implements Observable {
         observableList.setAll(simpleDAO.getAllEntries());
     }
 
+    public ListProperty<StudentGroupDTO> studentGroupDTOListProperty() {
+        return studentGroupDTOList;
+    }
+
+    public ListProperty<TeacherDTO> teacherDTOListProperty() {
+        return teacherDTOList;
+    }
+
+    public ListProperty<LocationDTO> locationDTOListProperty() {
+        return locationDTOList;
+    }
+
+    public List<String> getStartHours() {
+        return startHours;
+    }
+
+
     //Luisteraargerelateerde dingen:
     /**
      * Lijst van geregistreerde luisteraars.
@@ -156,9 +174,5 @@ public class MainWindowModel implements Observable {
     @Override
     public void removeListener(InvalidationListener listener) {
         listenerList.remove(listener);
-    }
-
-    public List<String> getStartHours() {
-        return startHours;
     }
 }

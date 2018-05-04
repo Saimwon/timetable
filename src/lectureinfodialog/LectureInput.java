@@ -4,8 +4,7 @@ Simon Van Braeckel
 
 package lectureinfodialog;
 
-import datatransferobjects.LectureDTO;
-import datatransferobjects.SimpleDTO;
+import datatransferobjects.*;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -17,7 +16,7 @@ import java.util.List;
 public class LectureInput extends Stage {
     private LectureDTO resultLectureDTO;
 
-    public LectureInput(List<SimpleDTO> studentgroups, List<SimpleDTO> teachers, List<SimpleDTO> locations, List<String> startHours, LectureInputController controller){
+    public LectureInput(List<StudentGroupDTO> studentgroups, List<TeacherDTO> teachers, List<LocationDTO> locations, List<String> startHours, LectureInputController controller){
         resultLectureDTO = null;
 
         FXMLLoader loader = new FXMLLoader(getClass().getResource("lectureinput.fxml"));

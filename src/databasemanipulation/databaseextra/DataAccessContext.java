@@ -2,10 +2,10 @@
 Van Braeckel Simon
  */
 
-package databaseextra;
+package databasemanipulation.databaseextra;
 
-import dataaccessobjects.dataccessinterfaces.*;
-import databasedefinition.DatabaseDefiner;
+import databasemanipulation.dataaccessobjects.dataccessinterfaces.*;
+import databasemanipulation.databasedefinition.DatabaseDefiner;
 import datatransferobjects.LocationDTO;
 import datatransferobjects.StudentGroupDTO;
 import datatransferobjects.TeacherDTO;
