@@ -24,37 +24,30 @@ public class LectureRepresentation extends VBox {
     private ContextMenu contextMenu;
 
     private String teacherName;
-    private String courseName;
     private LectureDTO lectureDTO;
     private MainWindowController mainWindowController;
 
-    public LectureRepresentation(String name1, String profName1, LectureDTO lectureDTO,
-                                 MainWindowController mainWindowController, List<LectureRepresentation> lectureGroup){
-        this(name1, profName1, lectureDTO, mainWindowController);
-        this.setLectureGroup(lectureGroup);
-    }
-
-    public LectureRepresentation(String name1, String profName1, LectureDTO lectureDTO, MainWindowController mainWindowController){
+    public LectureRepresentation(String profName1, LectureDTO lectureDTO, MainWindowController mainWindowController){
         this.lectureGroup = new ArrayList<>();
-
         this.mainWindowController = mainWindowController;
         this.lectureDTO = lectureDTO;
-        this.getStyleClass().add("lecture");
         this.teacherName = profName1;
-        this.courseName = name1;
+
+        this.getStyleClass().add("lecture");
 
         initialize();
-
         initializeContextMenu();
+
         this.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> {
-            if (event.getButton() != MouseButton.SECONDARY) {
-                mainWindowController.onLectureSelected(this);
-                mainWindowController.editLecture(this);
-            } else{
+            if (event.getButton() == MouseButton.SECONDARY) {
                 mainWindowController.onLectureSelected(this);
                 contextMenu.hide();
                 contextMenu.show(this, event.getScreenX(), event.getScreenY());
-            };
+            } else {
+                mainWindowController.onLectureSelected(this);
+                mainWindowController.editLecture(event.getScreenX(), event.getScreenY(), this);
+            }
+            ;
         });
     }
 
@@ -62,17 +55,9 @@ public class LectureRepresentation extends VBox {
         contextMenu = new ContextMenu();
 
         MenuItem item1 = new MenuItem("Edit");
-        item1.setOnAction(new EventHandler<ActionEvent>() {
-            public void handle(ActionEvent e) {
-                mainWindowController.editLecture();
-            }
-        });
+        item1.setOnAction(e -> mainWindowController.editLecture(contextMenu.getX(), contextMenu.getY()));
         MenuItem item2 = new MenuItem("Delete");
-        item2.setOnAction(new EventHandler<ActionEvent>() {
-            public void handle(ActionEvent e) {
-                mainWindowController.deleteLecture();
-            }
-        });
+        item2.setOnAction(e -> mainWindowController.deleteLecture());
         contextMenu.getItems().addAll(item1, item2);
     }
 
@@ -85,14 +70,14 @@ public class LectureRepresentation extends VBox {
     }
 
     public String getCourseName(){
-        return courseName;
+        return this.lectureDTO.getCourse();
     }
     public String getTeacherName(){
         return teacherName;
     }
 
     private void initialize(){
-        getChildren().add(new Label(courseName));
+        getChildren().add(new Label(this.getCourseName()));
         getChildren().add(new Label(teacherName));
     }
 

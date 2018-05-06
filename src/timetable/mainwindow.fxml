@@ -38,13 +38,13 @@
         <VBox BorderPane.alignment="CENTER">
             <Accordion fx:id="accordion">
                 <panes>
-                    <TitledPane text="Studentgroups">
+                    <TitledPane text="Studentgroups" fx:id="simon1">
                         <ListView fx:id="studentGroupsView"/>
                     </TitledPane>
-                    <TitledPane text="Teachers">
+                    <TitledPane text="Teachers" fx:id="simon2">
                         <ListView  fx:id="teachersView"/>
                     </TitledPane>
-                    <TitledPane text="Locations">
+                    <TitledPane text="Locations" fx:id="simon3">
                         <ListView  fx:id="locationsView"/>
                     </TitledPane>
                 </panes>
@@ -53,9 +53,9 @@
                 <TextField fx:id="newEntryTextField" prefHeight="27.0" prefWidth="249.0"/>
             </HBox>
             <HBox alignment="BOTTOM_CENTER" prefHeight="21.0" prefWidth="202.0">
-                <Button fx:id="newEntryButton" mnemonicParsing="false" text="New" onAction="#newEntry"/>
-                <Button fx:id="renameEntryButton" mnemonicParsing="false" text="Rename Selected"
-                        onAction="#renameEntry"/>
+                <Button fx:id="newEntryButton" userData="new" mnemonicParsing="false" text="New" onAction="#editEntry"/>
+                <Button fx:id="renameEntryButton" userData="rename" mnemonicParsing="false" text="Rename Selected"
+                        onAction="#editEntry"/>
             </HBox>
         </VBox>
     </right>
@@ -67,8 +67,6 @@
             </Menu>
             <Menu mnemonicParsing="false" text="Edit">
                 <MenuItem mnemonicParsing="false" text="Add New Lecture" onAction="#createLecture"/>
-                <MenuItem mnemonicParsing="false" text="Edit Selected Lecture" onAction="#editLecture"/>
-                <MenuItem mnemonicParsing="false" text="Delete Selected Lecture" onAction="#deleteLecture"/>
             </Menu>
             <Menu mnemonicParsing="false" text="Help">
                 <MenuItem mnemonicParsing="false" text="Usage" onAction="#showHelpWindow"/>

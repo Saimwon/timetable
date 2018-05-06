@@ -1,3 +1,6 @@
+/*
+Simon Van Braeckel
+ */
 package timetable;
 
 import databasemanipulation.dataaccessobjects.dataccessinterfaces.LectureDAO;
@@ -20,20 +23,11 @@ public class TimetableModel implements Observable {
     private List<String> startHours;
     private MainWindowController mainWindowController;
 
-    private ListProperty<StudentGroupDTO> studentGroupDTOList;
-    private ListProperty<TeacherDTO> teacherDTOList;
-    private ListProperty<LocationDTO> locationDTOList;
-
     private List<List<ObservableList<LectureRepresentation>>> table;
 
-//moet in initialize al de juiste kolommen toevoegen
-    public TimetableModel(DataAccessProvider dataAccessProvider, MainWindowController mainWindowController, ObservableList<SimpleDTO>[] observableLists) {
+    public TimetableModel(DataAccessProvider dataAccessProvider, MainWindowController mainWindowController) {
         this.dataAccessProvider = dataAccessProvider;
         this.mainWindowController = mainWindowController;
-
-        studentGroupDTOList = new SimpleListProperty<>();
-        teacherDTOList = new SimpleListProperty<>();
-        locationDTOList = new SimpleListProperty<>();
 
         table = new ArrayList<>();
         //steek kolommen in table
@@ -44,34 +38,35 @@ public class TimetableModel implements Observable {
 
     public void updateStarthours(){
         List<String> startHours = dataAccessProvider.getDataAccessContext().getPeriodDAO().getStartTimes();
-        this.startHours = startHours;
         this.setStartHours(startHours);
     }
 
+    /*
+    Zet het starthours veld en zet het juiste aantal rijen in de tabel.
+     */
     private void setStartHours(List<String> startUren){
-        this.startHours = startHours;
+        this.startHours = startUren;
 
-        for (int j = 0; j < table.size(); j ++) {
-            table.get(j).clear();
+        for (List<ObservableList<LectureRepresentation>> column : table) {
+            column.clear();
             for (int i = 0; i < startUren.size(); i++) {
                 ObservableList<LectureRepresentation> observableList = FXCollections.observableArrayList();
 
-                table.get(j).add(observableList);
+                column.add(observableList);
             }
         }
 
         fireInvalidationEvent();
     }
 
+
+    /*
+    haal lectures uit de databank adhv gegeven kolomnaam en id
+    zet lectures in tabel.
+     */
     private String lastColumnName;
     private int lastId;
     public void updateTableContents(String columnName, int id){
-        /*
-        Wat moet er hier nog gebeuren?
-        Waar maken we de lijsten aan en delen we lectures op in deelLectures?
-         */
-
-
         lastColumnName = columnName;
         lastId = id;
 
@@ -93,7 +88,7 @@ public class TimetableModel implements Observable {
                     continue;
                 }
 
-                LectureRepresentation lectureRepresentation = new LectureRepresentation(lectureDTO.getCourse(), teacherById.getName(), lectureDTO, mainWindowController);
+                LectureRepresentation lectureRepresentation = new LectureRepresentation(teacherById.getName(), lectureDTO, mainWindowController);
                 lectureRepresentation.setLectureGroup(lectureGroup);
 
                 table.get(column-1).get(row-1).add(lectureRepresentation);
@@ -102,7 +97,7 @@ public class TimetableModel implements Observable {
         }
     }
 
-    private void clearTableContents(){
+    public void clearTableContents(){
         for (List<ObservableList<LectureRepresentation>> column: table){
             for (ObservableList<LectureRepresentation> observableList : column){
                 observableList.clear();
@@ -118,38 +113,9 @@ public class TimetableModel implements Observable {
         updateTableContents(lastColumnName, lastId);
     }
 
-    public void refreshListViews(){
-        refreshListView(dataAccessProvider.getDataAccessContext().getStudentDAO(), studentGroupDTOS);
-        refreshListView(dataAccessProvider.getDataAccessContext().getTeacherDAO(), teacherDTOS);
-        refreshListView(dataAccessProvider.getDataAccessContext().getLocationDAO(), locationDTOS);
-    }
-
-    public void clearListViews(){
-        studentGroupDTOS.clear();
-        teacherDTOS.clear();
-        locationDTOS.clear();
-    }
-
-    private <T> void refreshListView(SimpleDAO<T> simpleDAO, ObservableList<T> observableList) {
-        observableList.setAll(simpleDAO.getAllEntries());
-    }
-
-    public ListProperty<StudentGroupDTO> studentGroupDTOListProperty() {
-        return studentGroupDTOList;
-    }
-
-    public ListProperty<TeacherDTO> teacherDTOListProperty() {
-        return teacherDTOList;
-    }
-
-    public ListProperty<LocationDTO> locationDTOListProperty() {
-        return locationDTOList;
-    }
-
     public List<String> getStartHours() {
         return startHours;
     }
-
 
     //Luisteraargerelateerde dingen:
     /**

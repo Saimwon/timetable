@@ -19,7 +19,7 @@ public class HelpWindow extends Stage {
     public Button closeButton;
 
     public HelpWindow(){
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("../usagewindow/usagewindow.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("usagewindow.fxml"));
         loader.setController(this);
         Parent root = null;
         try {
@@ -39,6 +39,10 @@ public class HelpWindow extends Stage {
         this.setScene(scene);
     }
 
+    /**
+     * Haal hulptext uit het bestand en zet die in dit venster.
+     * @param text
+     */
     private void setContent(Text text){
         try {
             BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(HelpWindow.class.getResourceAsStream("usagecontent.txt")));

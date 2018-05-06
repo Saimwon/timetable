@@ -35,15 +35,16 @@ LectureRepresentation {
     -fx-alignment: center;
 }
 
-.correctlecture {
+.filledlecturecontainer {
     -fx-border-style: solid inside;
     -fx-border-radius: 5;
+}
+
+.correctlecture {
     -fx-border-color: #09bc20;
 }
 
 .incorrectlecture {
-    -fx-border-style: solid inside;
-    -fx-border-radius: 5;
     -fx-border-color: #f90000;
 }
 

@@ -10,8 +10,13 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.util.List;
-
+/*
+Venster waar men starturen moet kiezen bij het aanmaken van een nieuwe databank.
+ */
 public class StartHourDialog extends Stage {
+    /*
+    Resultaat van het ingeven. Wordt door de controller geset nadat er op save wordt gedrukt.
+     */
     private List<Integer[]> startHours;
 
     public StartHourDialog() {
@@ -34,7 +39,6 @@ public class StartHourDialog extends Stage {
         StartHourDialogController controller = loader.getController();
         controller.setStartHourDialog(this);
     }
-
 
     public void setStartHours(List<Integer[]> startHours){
         this.startHours = startHours;

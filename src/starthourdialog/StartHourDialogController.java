@@ -13,22 +13,23 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
-import javax.xml.soap.Text;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 
 @SuppressWarnings("WeakerAccess")
 public class StartHourDialogController {
-    private List<TextField[]> times;
     private StartHourDialog startHourDialog;
-    public VBox textFieldContainer;
+    private List<TextField[]> times;
+    public VBox inputLineContainer;
 
     public void initialize(){
         times = new ArrayList<>();
         addTextField();
     }
 
+    /*
+    Methode die een nieuwe lijn voor input van een startuur teruggeeft.
+     */
     private HBox newInputFields(){
         HBox fieldContainer = new HBox();
         TextField hourField = new TextField();
@@ -53,14 +54,20 @@ public class StartHourDialogController {
         return fieldContainer;
     }
 
+    /*
+    Verwijder inputlijn van GUI en uit lijst van arrays van textfields die overlopen wordt wanneer men op save drukt.
+     */
     private void remove(HBox container, TextField[] textFields){
-        textFieldContainer.getChildren().remove(container);
+        inputLineContainer.getChildren().remove(container);
         times.remove(textFields);
     }
 
+    /*
+    Voegt nieuwe inputlijn toe.
+     */
     public void addTextField(){
         HBox fieldContainer = newInputFields();
-        textFieldContainer.getChildren().add(fieldContainer);
+        inputLineContainer.getChildren().add(fieldContainer);
         if (startHourDialog != null) { //want dit is null wanneer de methode in initialize wordt opgeroepen.
             startHourDialog.sizeToScene();
         }
@@ -70,6 +77,10 @@ public class StartHourDialogController {
         this.startHourDialog = startHourDialog;
     }
 
+    /*
+    Methode die alle inputvelden overloopt en checkt of ze geldig zijn.
+    Als dat niet het geval is wordt dat duidelijk gemaakt in de GUI
+     */
     public void save(){
         List<Integer[]> result = new ArrayList<>();
 
@@ -95,7 +106,7 @@ public class StartHourDialogController {
             return;
         }
 
-        //Sorteer lijst van starttijden oplopend
+        //Sorteer lijst van starttijden oplopend voor het teruggeven
         result.sort((o1, o2) -> {
             if (o1[0].equals(o2[0])){
                 return o1[1] - o2[1];
@@ -108,14 +119,17 @@ public class StartHourDialogController {
         startHourDialog.close();
     }
 
+    /*
+    Checkt van 1 veld of de ino
+     */
     private boolean isgeldig(CharSequence content, boolean hour){
         if (! content.chars().allMatch(Character::isDigit) || content.length() == 0){ // als er een niet-cijfer in zit of de string leeg is
             return false;
         }
 
-        int getal = hour ? 24 : 60; //Wordt 24 als param een uur is, anders 60
+        int max = hour ? 23 : 59; //Wordt 24 als param een uur is, anders 60
 
-        return (Integer.parseInt(content.toString()) < getal);
+        return (Integer.parseInt(content.toString()) <= max);
     }
 
     public void cancel(){

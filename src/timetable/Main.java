@@ -27,13 +27,12 @@ public class Main extends Application {
         primaryStage.setScene(scene);
         setFullScreen(primaryStage);
 
-        /*
-        Zorg dat primarystage wordt ingeladen zonder dat er iets aan een databank wordt gevraagd.
-         */
-
         primaryStage.show();
     }
 
+    /*
+    Zet de applicatie naar de grootte van het scherm.
+     */
     private void setFullScreen(Stage stage){
         Screen screen = Screen.getPrimary();
         Rectangle2D bounds = screen.getVisualBounds();

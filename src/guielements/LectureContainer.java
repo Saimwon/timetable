@@ -18,7 +18,7 @@ public class LectureContainer extends VBox implements InvalidationListener {
 
     private ObservableList<LectureRepresentation> lectureList; //veld voor corresponderende cel in Model
 
-    public LectureContainer() {//MainWindowController mainWindowController){
+    public LectureContainer() {
         this.setFillWidth(true);
 
         this.contentBox = new VBox();
@@ -31,26 +31,27 @@ public class LectureContainer extends VBox implements InvalidationListener {
         scrollPane.setContent(contentBox);
 
         this.getChildren().add(scrollPane);
-        this.getStyleClass().add("lecture");
 
         this.mainWindowController = mainWindowController;
     }
 
-    public void updateStyleClass(){
+    private void updateStyleClass(){
         int amounfOfChildren = contentBox.getChildren().size();
+        if (amounfOfChildren > 0){
+            addAndRemove("filledlecturecontainer", "filledlecturecontainer");
+        }
         if (amounfOfChildren > 1){
-            this.getStyleClass().removeAll("correctlecture");
-            this.getStyleClass().add("incorrectlecture");
+            addAndRemove("incorrectlecture", "correctlecture");
         } else if (amounfOfChildren == 1){
-            this.getStyleClass().removeAll("incorrectlecture");
-            this.getStyleClass().add("correctlecture");
+            addAndRemove("correctlecture", "incorrectlecture");
         } else {
-            this.getStyleClass().removeAll("incorrectlecture", "correctlecture");
+            this.getStyleClass().removeAll("incorrectlecture", "correctlecture", "filledlecturecontainer");
         }
     }
 
-    public void addLecture(LectureRepresentation lecture){
-        contentBox.getChildren().add(lecture);
+    private void addAndRemove(String toAdd, String toRemove){
+        this.getStyleClass().removeAll(toRemove);
+        this.getStyleClass().add(toAdd);
     }
 
     @Override

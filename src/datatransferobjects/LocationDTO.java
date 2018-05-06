@@ -6,10 +6,10 @@ package datatransferobjects;
 
 public class LocationDTO extends SimpleDTO {
     public LocationDTO(int id, String name){
-        super(id, name, "location");
+        super(id, name);
     }
 
     public LocationDTO(){
-        super("location");
+        super();
     }
 }

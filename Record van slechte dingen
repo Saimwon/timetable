@@ -1,28 +1,19 @@
-verwijder apart veld course uit lectureRepresentation
-
-- MVC uitbreiden voor listviews
-
 probeer cleartable en containermap te verwijderen
 
-MVC Listviews:
-klasse maken de observablelist en invalidationlistener implementeert
-invalidated: vul zelf op met nieuwe stuff
+Edit lecture klikken moet vorige EditLecturevensters sluiten.
 
-Documentatie schrijven in About venster:
-Methode aan koppelen
-methode doet:
- opent venster met text in
+Add new knoppen moeten geïmplementeerd worden
+LC moet dus aan mainController kunnen.
+Wat moet die methode doen?
+Textveld checken
+Input nemen uit veld
+addEntry doen met nieuwe naam.
 
+DB toegang in ListViewModelmoet ook gecheckt worden of een entry al bestaat.
+groot probleem?
+op zich niet toch?
+We zetten die methode ook in de Model.
 
-NU:
-tablename in dto wordt nu niet meer gebruikt.
-
-Als je weet dat er aleen dingen van een bepaald type in een lijst zitten maak je een specifieke subklasse van dat type en steek je die in die lijst. Dat is dus zo bij de DTO's
-
-Was aan het doen:
-refresh listviews methode opdelen
-tablename overbodig maken in DTO
-
-Listproperties in model
-listview.itemproperty.bind(listproperty)
+kijken of bestaat: 
+dao meegeven aan checktextfield
 

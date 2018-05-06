@@ -8,7 +8,7 @@
 <VBox stylesheets="@../timetable/styles.css" xmlns="http://javafx.com/javafx/8.0.141"
       xmlns:fx="http://javafx.com/fxml/1" fx:controller="starthourdialog.StartHourDialogController">
     <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0">
-        <VBox fx:id="textFieldContainer" alignment="CENTER" prefHeight="30.0" prefWidth="195.0">
+        <VBox fx:id="inputLineContainer" alignment="CENTER" prefHeight="30.0" prefWidth="195.0">
             <VBox.margin>
                 <Insets/>
             </VBox.margin>

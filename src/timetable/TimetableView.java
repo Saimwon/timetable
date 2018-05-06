@@ -27,6 +27,10 @@ public class TimetableView extends GridPane implements InvalidationListener {
         this.timetableModel = null;
     }
 
+    /**
+     * Vul de eerste kolom waar de starturen in staan in.
+     * @param startUren
+     */
     private void initializeStartHours(List<String> startUren){
         //maak eerste kolom leeg
         this.getChildren().removeAll(hboxLijst);
@@ -66,6 +70,10 @@ public class TimetableView extends GridPane implements InvalidationListener {
         timetableModel.addListener(this);
     }
 
+    /**
+     * Wordt opgeroepen door het model wanneer er veranderd wordt van databank.
+     * @param observable
+     */
     @Override
     public void invalidated(Observable observable) {
         List<String> startHours = timetableModel.getStartHours();

@@ -12,9 +12,15 @@ import datatransferobjects.*;
 import guielements.ErrorDialog;
 import guielements.LectureRepresentation;
 import guielements.LectureContainer;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.event.ActionEvent;
 import javafx.scene.control.*;
+import javafx.scene.control.cell.TextFieldListCell;
 import javafx.stage.FileChooser;
-import lectureinfodialog.EditLectureInput;
+import javafx.util.Callback;
+import javafx.util.StringConverter;
+import lectureinfodialog.EditLectureInputController;
 import lectureinfodialog.LectureInput;
 import lectureinfodialog.LectureInputController;
 import starthourdialog.StartHourDialog;
@@ -22,9 +28,14 @@ import usagewindow.HelpWindow;
 
 import java.io.File;
 import java.util.*;
+import java.util.function.Supplier;
 
+/*
+Controller voor het hoofdvenster van het programma.
+ */
 public class MainWindowController {
     private TimetableModel timetableModel;
+    private ListViewModel listViewModel;
     private DataAccessProvider dataAccessProvider;
 
     public TextField newEntryTextField;
@@ -37,32 +48,42 @@ public class MainWindowController {
     public ListView<TeacherDTO> teachersView;
     public ListView<LocationDTO> locationsView;
 
-    private Map<String, LectureContainer> containerMap;
-
     private LectureRepresentation selectedLecture;
+    private LectureInput lectureInput;
 
     public void initialize() {
         dataAccessProvider = new SQLiteDataAccessProvider();
-        timetableModel = new TimetableModel(dataAccessProvider, this, null);
+        timetableModel = new TimetableModel(dataAccessProvider, this);
         gridPane.setModel(timetableModel);
 
-        studentGroupsView.itemsProperty().bind(timetableModel.studentGroupDTOListProperty());
-        teachersView.itemsProperty().bind(timetableModel.teacherDTOListProperty());
-        locationsView.itemsProperty().bind(timetableModel.locationDTOListProperty());
+        listViewModel = new ListViewModel(dataAccessProvider);
+        studentGroupsView.itemsProperty().bind(listViewModel.studentGroupDTOListProperty());
+        teachersView.itemsProperty().bind(listViewModel.teacherDTOListProperty());
+        locationsView.itemsProperty().bind(listViewModel.locationDTOListProperty());
+
+        lectureInput = null;
 
         selectedLecture = null;
         addListViewEventListeners();
-        containerMap = new HashMap<>();
     }
 
+    /*
+    Add event listeners to detect when a listview element is selected.
+     */
     private void addListViewEventListeners() {
-        teachersView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> onNameSelected("teacher_id", teachersView.getSelectionModel().getSelectedItem()));
+        teachersView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) ->
+                onNameSelected("teacher_id", teachersView.getSelectionModel().getSelectedItem()));
 
-        studentGroupsView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> onNameSelected("students_id", studentGroupsView.getSelectionModel().getSelectedItem()));
+        studentGroupsView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) ->
+                onNameSelected("students_id", studentGroupsView.getSelectionModel().getSelectedItem()));
 
-        locationsView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> onNameSelected("location_id", locationsView.getSelectionModel().getSelectedItem()));
+        locationsView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) ->
+                onNameSelected("location_id", locationsView.getSelectionModel().getSelectedItem()));
     }
 
+    /*
+    Methode die checkt of een databank de juiste tabellen bevat.
+     */
     private boolean databaseValid(){
         DataAccessContext dataAccessContext = dataAccessProvider.getDataAccessContext();
 
@@ -79,25 +100,9 @@ public class MainWindowController {
         return locations != null && dataAccessContext.getLectureDAO().tableExists();
     }
 
-    private void refreshListViews() {
-//        timetableModel.refreshListViews();
-        DataAccessContext dataAccessContext = dataAccessProvider.getDataAccessContext();
-
-        //refreshListView(dataAccessContext.getStudentDAO(), studentGroupsView);
-
-        List<TeacherDTO> teachers = dataAccessContext.getTeacherDAO().getAllEntries();
-        List<StudentGroupDTO> studentGroups = dataAccessContext.getStudentDAO().getAllEntries();
-        List<LocationDTO> locations = dataAccessContext.getLocationDAO().getAllEntries();
-
-        teachersView.getItems().setAll(teachers);
-        studentGroupsView.getItems().setAll(studentGroups);
-        locationsView.getItems().setAll(locations);
-    }
-
-    private <T> void refreshListView(SimpleDAO<T> simpleDAO, ListView<T> listView){
-        listView.getItems().setAll(simpleDAO.getAllEntries());
-    }
-
+    /*
+    Opgeroepen wanneer men iets selecteert in de listviews, zorgt dat selectedlecture null wordt.
+     */
     private void onNameSelected(String tableName, SimpleDTO simpleDTO) {
         selectedLecture = null;
 
@@ -107,10 +112,9 @@ public class MainWindowController {
         timetableModel.updateTableContents(tableName, simpleDTO.getId());
     }
 
-    private void clearTable() {
-        gridPane.getChildren().removeAll(containerMap.values());
-    }
-
+    /*
+    Verwijder stijlklasse van voriggeselecteerde lecturerepresentations en voegt toe aan de nieuwgeselecteerde.
+     */
     public void onLectureSelected(LectureRepresentation lectureRepresentation){
         if (selectedLecture != null) {
             for (LectureRepresentation lecture : selectedLecture.getLectureGroup()) {
@@ -123,6 +127,9 @@ public class MainWindowController {
         }
     }
 
+    /*
+    Selecteer een databank om te openen.
+     */
     public void openDatabase() {
         FileChooser chooser = new FileChooser();
         chooser.setTitle("Open Database File");
@@ -130,6 +137,7 @@ public class MainWindowController {
                 new FileChooser.ExtensionFilter("Sqlite Files (.db)", "*.db"),
                 new FileChooser.ExtensionFilter("All Files", "*.*"));
         File file = chooser.showOpenDialog(gridPane.getScene().getWindow());
+
         if (file != null && file.getName().endsWith(".db")) {
             String oldDatabaseConnectionString = dataAccessProvider.getDbConnectionString();
             String newPath = file.getPath();
@@ -141,14 +149,18 @@ public class MainWindowController {
                 return;
             }
 
-            refreshListViews();
-            clearTable();
+            listViewModel.refreshListViews();
+            timetableModel.clearTableContents();
             timetableModel.updateStarthours();
         } else if (file != null) {
             showErrorDialog("Please choose a file that has the .db extension.");
         }
     }
 
+    /*
+    Kies starturen en een locatie voor een nieuwe Databank
+    Maak de nieuwe databank aan en laad hem in.
+     */
     public void createDatabase() {
         StartHourDialog startHourDialog = new StartHourDialog();
         startHourDialog.initOwner(gridPane.getScene().getWindow());
@@ -168,100 +180,113 @@ public class MainWindowController {
             dataAccessProvider.setDbConnectionString(path);
             dataAccessProvider.getDataAccessContext().getDatabaseDefiner().define(newStartHours);
 
-            clearTable();
+            timetableModel.clearTableContents();
             timetableModel.updateStarthours();
-            timetableModel.clearListViews();
+            listViewModel.clearListViews();
         }
     }
 
-    public void newEntry(){
-        //Ingegeven naam controleren
-        if (newEntryTextField.getText().contains("\"") || newEntryTextField.getText().isEmpty()){
+    /*
+    Check of de text in het toevoegtextveld rechts niet leeg is en geen naam bevat die al in de databank bestaat.
+     */
+    private boolean checkTextField(SimpleDAO dao){
+        String newName = newEntryTextField.getText();
+        if (newName.isEmpty()) {
             showErrorDialog("Invalid name.");
+            return false;
+        }
+        if (! dao.getEntryByName(newName).isEmpty()) {
+            showErrorDialog("An entry with this name already exists.");
+            return false;
+        }
+        return true;
+    }
+
+    /*
+    Methode die wordt opgeroepen wanneer men op Add Entry of Rename Entry drukt. Was oorspronkelijk opgesplitst in
+    2 methoden maar dat gaf veel duplicatie van code. Vandaar deze aanpak met ifs en de UserData.
+     */
+    public void editEntry(ActionEvent event) {
+        Button butt = (Button) event.getSource();
+        boolean rename = butt.getUserData().equals("rename");
+
+        List<String> errorMessages = fillErrorMessages(rename);
+
+        Map<String, SimpleDAO> titledPaneNameToDAO = new HashMap<>();
+        Map<String, ListView<? extends SimpleDTO>> openedPaneNameToListView = new HashMap<>();
+        Map<ListView<? extends SimpleDTO>, SimpleDAO> listViewSimpleDAOMap = new HashMap<>();
+        SimpleDAO dao = null;
+        SimpleDTO dto = null;
+        int id = -1;
+
+        String newName = newEntryTextField.getText();
+
+        titledPaneNameToDAO.put("Locations", dataAccessProvider.getDataAccessContext().getLocationDAO());
+        titledPaneNameToDAO.put("Teachers", dataAccessProvider.getDataAccessContext().getTeacherDAO());
+        titledPaneNameToDAO.put("Studentgroups", dataAccessProvider.getDataAccessContext().getStudentDAO());
+
+        try {
+            String openedPaneName = accordion.getExpandedPane().getText();
+            dao = titledPaneNameToDAO.get(openedPaneName);
+
+            if (rename) {
+                openedPaneNameToListView.put("Locations", locationsView);
+                openedPaneNameToListView.put("Teachers", teachersView);
+                openedPaneNameToListView.put("Studentgroups", studentGroupsView);
+
+                ListView<? extends SimpleDTO> lijst = openedPaneNameToListView.get(openedPaneName);
+                dto = lijst.getSelectionModel().getSelectedItem();
+                id = dto.getId();
+            }
+
+        } catch (NullPointerException e) { //Komt voor als er geen TitledPane geopend is in de Accordion of als er geen naam geselecteerd was.
+            showErrorDialog(errorMessages.get(0));
             return;
         }
 
-        Map<String, SimpleDAO> titledPaneNameToTableName = new HashMap<>();
-        titledPaneNameToTableName.put("Locations", dataAccessProvider.getDataAccessContext().getLocationDAO());
-        titledPaneNameToTableName.put("Teachers", dataAccessProvider.getDataAccessContext().getTeacherDAO());
-        titledPaneNameToTableName.put("Studentgroups", dataAccessProvider.getDataAccessContext().getStudentDAO());
-
-        //zoeken welke pane van de accordion geopend is
-        TitledPane openedPane = accordion.getExpandedPane();
-
-        if (openedPane == null){
-            showErrorDialog("Open a category to add this entry to.");
-        } else {
-            //naam v geopende pane vragen en omzetten naar tabelnaam waar we de nieuwe persoon moeten invoegen
-            SimpleDAO simpleDAO = titledPaneNameToTableName.get(openedPane.getText());
-            //naam die we moeten toevoegen ophalen
-            String nameToAdd = newEntryTextField.getText();
-
-            //Block deze operatie als er al een entry bestaat met deze naam:
-            if (! simpleDAO.getEntryByName(nameToAdd).isEmpty()){
-                showErrorDialog("Entries with duplicate names are not allowed.");
+        if (checkTextField(dao)){
+            if (rename ? !dao.renameEntry(id, newName) : !dao.addEntry(newName)) {
+                showErrorDialog(errorMessages.get(1));
                 return;
             }
-
-            boolean addingEntryWasSucces = simpleDAO.addEntry(nameToAdd);
-            if (! addingEntryWasSucces){
-                showErrorDialog("Failed to add entry.");
-            }
-
-            refreshListViews();
         }
+
+        listViewModel.refreshListViews();
+        if (rename) timetableModel.refreshTable();
     }
 
-    public void renameEntry(){
-        if (newEntryTextField.getText().contains("\"") || newEntryTextField.getText().isEmpty()){
-            showErrorDialog("Invalid name.");
-            return;
+    /*
+    Geeft een lijst terug met de errormessages die nodig zijn in de editentry methode
+     */
+    private List<String> fillErrorMessages(boolean rename) {
+        List<String> result = new ArrayList<>();
+        if (rename){
+            result.add("Please select a location, studentgroup or teacher to rename.");
+            result.add("Failed to rename entry.");
+        } else {
+            result.add("Please open a category to add this entry to.");
+            result.add("Failed to add entry.");
         }
 
-        Map<ListView<? extends SimpleDTO>, SimpleDAO> listViewSimpleDAOMap = new HashMap<>();
-        listViewSimpleDAOMap.put(studentGroupsView, dataAccessProvider.getDataAccessContext().getStudentDAO());
-        listViewSimpleDAOMap.put(teachersView, dataAccessProvider.getDataAccessContext().getTeacherDAO());
-        listViewSimpleDAOMap.put(locationsView, dataAccessProvider.getDataAccessContext().getLocationDAO());
-
-        Map<String, ListView<? extends SimpleDTO>> openedPaneNameToListView = new HashMap<>();
-        openedPaneNameToListView.put("Locations", locationsView);
-        openedPaneNameToListView.put("Teachers", teachersView);
-        openedPaneNameToListView.put("Studentgroups", studentGroupsView);
-
-        //vind welke pane open staat
-        TitledPane openedPane = accordion.getExpandedPane();
-        if (openedPane == null){
-            showErrorDialog("Please select a location, studentgroup or teacher to rename.");
-            return;
-        }
-        //Neem de bijhorende listview en dataAccessObject
-        ListView<? extends SimpleDTO> listView = openedPaneNameToListView.get(openedPane.getText());
-        SimpleDAO simpleDAO = listViewSimpleDAOMap.get(listView);
-
-        //Neem geselecteerde DTO
-        SimpleDTO simpleDTO = listView.getSelectionModel().getSelectedItem();
-        if (simpleDTO == null){
-            showErrorDialog("Please select a location, studentgroup or teacher to rename.");
-            return;
-        }
-        //neem zijn ID en tabelnaam
-        int id = simpleDTO.getId();
-
-        //Voeg naam toe aan DB
-        String newName = newEntryTextField.getText();
-        boolean renamingEntryWasSuccess = simpleDAO.renameEntry(id, newName);
-
-        if (! renamingEntryWasSuccess){
-            showErrorDialog("Failed to rename entry.");
-            return;
-        }
-
-        refreshListViews();
-        timetableModel.refreshTable();
+        return result;
     }
 
+    /*
+    Opent venster om input te geven voor de nieuwe lecture
+    Neemt resultaat uit LectureInput
+    Voegt lecture toe aan de databank
+     */
     public void createLecture(){
-        LectureInput lectureInput = new LectureInput(studentGroupsView.getItems(), teachersView.getItems(), locationsView.getItems(), timetableModel.getStartHours(), new LectureInputController());
+        if (lectureInput != null){
+            lectureInput.close();
+            try {
+                Thread.sleep(500);
+            } catch (Exception ignored){}
+            lectureInput = null;
+        }
+
+        LectureInput lectureInput = new LectureInput(listViewModel, timetableModel.getStartHours(),
+                new LectureInputController(), "New Lecture.");
 
         lectureInput.initOwner(gridPane.getScene().getWindow());
         lectureInput.showAndWait();
@@ -278,17 +303,27 @@ public class MainWindowController {
         }
     }
 
-    public void editLecture(){
+    /*
+    Methode die editLecture oproept met de geselecteerde lecture als er geen parameters worden meegegeven.
+     */
+    public void editLecture(double xCo, double yCo){
         if (selectedLecture == null){
             showErrorDialog("A lecture must be selected.");
             return;
         }
-        editLecture(selectedLecture);
+        editLecture(xCo, yCo, selectedLecture);
     }
 
-    public void editLecture(LectureRepresentation source){
-        LectureInput lectureInput = new EditLectureInput(studentGroupsView.getItems(), teachersView.getItems(),
-                locationsView.getItems(), timetableModel.getStartHours(), source);
+    /*
+    Opent venster om input te geven om de lecture mee aan te passen
+    Neemt resultaat uit LectureInput
+    Voegt lecture toe aan de databank
+     */
+    public void editLecture(double xCo, double yCo, LectureRepresentation source){
+        lectureInput = new LectureInput(listViewModel, timetableModel.getStartHours(),
+                new EditLectureInputController(source), "Edit Lecture");
+        lectureInput.setX(xCo);
+        lectureInput.setY(yCo);
         lectureInput.initOwner(gridPane.getScene().getWindow());
         lectureInput.showAndWait();
 
@@ -309,6 +344,9 @@ public class MainWindowController {
         }
     }
 
+    /*
+    Verwijdert geselecteerde lecture.
+     */
     public void deleteLecture(){
         if (selectedLecture == null){
             showErrorDialog("A lecture must be selected.");
@@ -323,11 +361,17 @@ public class MainWindowController {
         timetableModel.refreshTable();
     }
 
+    /*
+    Toont een errorboodschap met de gegeven message
+     */
     private void showErrorDialog(String message){
         ErrorDialog timedErrorDialog = new ErrorDialog(message, gridPane.getScene().getWindow());
         timedErrorDialog.showAndWait();
     }
 
+    /*
+    Toont het venster waar de controls uitgelegd staan.
+     */
     public void showHelpWindow(){
         HelpWindow helpWindow = new HelpWindow();
         helpWindow.initOwner(gridPane.getScene().getWindow());

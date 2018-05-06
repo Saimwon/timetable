@@ -9,11 +9,13 @@ import databasemanipulation.dataaccessobjects.dataccessinterfaces.*;
 import databasemanipulation.databasedefinition.DatabaseDefiner;
 import databasemanipulation.databasedefinition.SQLiteDatabaseDefiner;
 import datatransferobjects.LocationDTO;
+import datatransferobjects.SimpleDTO;
 import datatransferobjects.StudentGroupDTO;
 import datatransferobjects.TeacherDTO;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.function.Supplier;
 
 public class SQLiteDataAccessContext implements DataAccessContext {
     private final Connection conn;
