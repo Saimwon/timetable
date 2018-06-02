@@ -10,8 +10,7 @@ import javafx.event.EventHandler;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
-import javafx.scene.input.MouseButton;
-import javafx.scene.input.MouseEvent;
+import javafx.scene.input.*;
 import javafx.scene.layout.VBox;
 import timetable.MainWindowController;
 
@@ -32,6 +31,7 @@ public class LectureRepresentation extends VBox {
         this.mainWindowController = mainWindowController;
         this.lectureDTO = lectureDTO;
         this.teacherName = profName1;
+        this.setOnDragDetected(this::onDragDetected);
 
         this.getStyleClass().add("lecture");
 
@@ -96,4 +96,25 @@ public class LectureRepresentation extends VBox {
     public void setMainWindowController(MainWindowController mainWindowController) {
         this.mainWindowController = mainWindowController;
     }
+
+
+
+
+    //Drag and Drop
+    public void onDragDetected(MouseEvent ev){
+        Dragboard db = startDragAndDrop(TransferMode.MOVE);
+
+        ClipboardContent cc = new ClipboardContent();
+        cc.put(mainWindowController.CUSTOM_LECTUREDTO, this.lectureDTO);
+        db.setContent(cc);
+
+        ev.consume();
+    }
 }
+
+
+
+
+
+
+

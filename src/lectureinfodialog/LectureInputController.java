@@ -57,12 +57,11 @@ public class LectureInputController {
     Vul choiceboxes op met inhoud uit databank en modellen.
      */
     public void fillChoiceBoxes(List<String> startHours){
-        fillDayAndPeriodChoiceBoxes(startHours);
-
         //Luisteraar die durationchoiceboxopties zal aanpassen wanneer er een period geselecteerd wordt.
         periodChoiceBox.getSelectionModel().selectedItemProperty().addListener(e ->
                 fillDurationChoiceBox(periodChoiceBox.getSelectionModel().getSelectedIndex(), startHours.size()-1));
 
+        fillDayAndPeriodChoiceBoxes(startHours);
         bindChoiceBoxes(this.listViewModel);
     }
 

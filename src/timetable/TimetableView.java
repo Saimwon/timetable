@@ -21,10 +21,12 @@ import java.util.List;
 public class TimetableView extends GridPane implements InvalidationListener {
     private List<HBox> hboxLijst;
     private TimetableModel timetableModel;
+    private MainWindowController mainWindowController;
 
     public TimetableView(){
         hboxLijst = new ArrayList<>();
         this.timetableModel = null;
+        this.mainWindowController = null;
     }
 
     /**
@@ -87,10 +89,17 @@ public class TimetableView extends GridPane implements InvalidationListener {
             for (int j = 0; j < kolom.size(); j++){
                 LectureContainer lectureContainer = new LectureContainer();
                 lectureContainer.setModel(kolom.get(j));
+                lectureContainer.setRij(j+1);
+                lectureContainer.setMainWindowController(mainWindowController);
+                lectureContainer.setKolom(i+1);
 
                 GridPane.setConstraints(lectureContainer, i+1, j+1);
                 this.getChildren().add(lectureContainer);
             }
         }
+    }
+
+    public void setMainWindowController(MainWindowController mainWindowController) {
+        this.mainWindowController = mainWindowController;
     }
 }

@@ -4,7 +4,10 @@ Van Braeckel Simon
 
 package datatransferobjects;
 
-public class LectureDTO{
+import java.io.Serializable;
+
+public class LectureDTO implements Serializable{
+    private static final long serialVersionUID = -3814156145397939477L;
 
     private int student_id;
     private int teacher_id;

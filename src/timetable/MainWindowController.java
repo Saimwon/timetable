@@ -17,6 +17,7 @@ import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.TextFieldListCell;
+import javafx.scene.input.DataFormat;
 import javafx.stage.FileChooser;
 import javafx.util.Callback;
 import javafx.util.StringConverter;
@@ -34,6 +35,8 @@ import java.util.function.Supplier;
 Controller voor het hoofdvenster van het programma.
  */
 public class MainWindowController {
+    public static DataFormat CUSTOM_LECTUREDTO = new DataFormat("LectureDTO");
+
     private TimetableModel timetableModel;
     private ListViewModel listViewModel;
     private DataAccessProvider dataAccessProvider;
@@ -65,6 +68,7 @@ public class MainWindowController {
 
         selectedLecture = null;
         addListViewEventListeners();
+        gridPane.setMainWindowController(this);
     }
 
     /*
@@ -330,16 +334,20 @@ public class MainWindowController {
         LectureDTO newLectureDTO = lectureInput.getResultLectureDTO();
         LectureDTO selectedLectureDTO = source.getLectureDTO();
 
-        if (newLectureDTO != null && ! newLectureDTO.equals(selectedLectureDTO)) {
+        commitLectureEdit(selectedLectureDTO, newLectureDTO);
+    }
+
+    public void commitLectureEdit(LectureDTO oldLectureDTO, LectureDTO newLectureDTO){
+        if (newLectureDTO != null && ! newLectureDTO.equals(oldLectureDTO)) {
             //oude lecture verwijderen
-            dataAccessProvider.getDataAccessContext().getLectureDAO().deleteEntry(selectedLectureDTO);
+            dataAccessProvider.getDataAccessContext().getLectureDAO().deleteEntry(oldLectureDTO);
             selectedLecture = null;
 
             //adhv nieuwe lectureDTO een entry toevoegen
             if (dataAccessProvider.getDataAccessContext().getLectureDAO().addEntryIfNotExists(newLectureDTO)) {
                 timetableModel.refreshTable();
             } else {
-                showErrorDialog("Failed to add entry.");
+                showErrorDialog("Failed to edit entry.");
             }
         }
     }
@@ -376,5 +384,9 @@ public class MainWindowController {
         HelpWindow helpWindow = new HelpWindow();
         helpWindow.initOwner(gridPane.getScene().getWindow());
         helpWindow.show();
+    }
+
+    public TimetableModel getTimetableModel(){
+        return this.timetableModel;
     }
 }
